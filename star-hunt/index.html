@@ -137,6 +137,20 @@ th{color:var(--muted);font-weight:400;white-space:nowrap}
 .present .favname{font-family:var(--display);font-size:clamp(24px,5vw,40px);margin-top:10px}
 .present .favreal{color:var(--muted)}
 .present .badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.present{justify-content:space-between}
+.pslide{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;max-width:820px}
+.pnav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+.pnav .tool[disabled]{opacity:.35}
+.pcount{font-family:var(--mono);color:var(--muted);min-width:5em}
+.pkind{font-family:var(--display);font-size:clamp(20px,3.5vw,28px)}
+.pmemos{display:grid;gap:8px;width:100%;max-width:640px;text-align:left}
+.pmemo{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:clamp(15px,2.2vw,19px)}
+.pmemo b{font-family:var(--display);font-weight:400;color:var(--gold);margin-right:6px}
+.pfact{color:var(--muted);font-size:15px;max-width:640px}
+.pnote{color:var(--muted);font-size:16px}
+.psum{display:grid;gap:10px;width:100%;max-width:720px;text-align:left}
+.psrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:clamp(15px,2.2vw,19px)}
+.pmiss{margin-left:auto;font-size:13px;color:var(--warn)}
 .footer{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:var(--muted);font-size:13px}
 /* standalone + class tracking */
 *,*::before,*::after{box-sizing:border-box}
@@ -752,24 +766,51 @@ function renderQuiz(){
 $('#quizReset').onclick=()=>{S.quiz={};save();renderQuiz();renderTop()};
 
 /* ---------- present ---------- */
-$('#presentBtn').onclick=()=>{
-  const ids=Object.keys(S.found);const n=ids.length;
-  const fav=OBJ.find(o=>S.found[o.id]&&S.found[o.id].nick)||OBJ.find(o=>S.found[o.id]);
+/* 발표 화면: 여러 장을 넘기는 슬라이드 */
+let PS={slides:[],i:0};
+function buildSlides(){
+  const n=Object.keys(S.found).filter(id=>id!=='mw').length;
   const qc=QUIZ.filter((q,i)=>S.quiz[i]===q.a).length;
-  const counts=ORDER.map(t=>[t,OBJ.filter(o=>o.type===t&&S.found[o.id]).length]).filter(x=>x[1]);
-  const p=$('#present');p.hidden=false;
-  const teamGot=OBJ.filter(o=>S.found[o.id]||matesFor(o.id).length).length;
-  const byNum={};teamRows.forEach(r=>{if(String(r.num)!==String(S.num))byNum[r.num]=(byNum[r.num]||0)+1});byNum[S.num]=n;
-  p.innerHTML=`<div class="tname">${esc(teamLabel())}</div>
-   <div class="bigscore">우리 모둠이 찾은 천체 ${teamGot} / ${OBJ.length}</div>
-   <div class="badges">${Object.keys(byNum).sort((a,b)=>a-b).map(k=>`<span class="chip" style="font-size:15px;padding:3px 12px;${k===String(S.num)?'border-color:var(--gold);color:var(--gold)':''}">${esc(String(k))}번 ${byNum[k]}개</span>`).join('')}</div>
-   <div style="color:var(--muted)">${esc(S.num)}번 · ★ ${score()}${Object.keys(S.quiz).length?` · 퀴즈 ${qc}/${QUIZ.length}`:''}</div>
-   <div class="badges">${counts.map(([t,c])=>`<span class="chip type" style="background:${TYPES[t].color};font-size:15px;padding:3px 12px">${TYPES[t].name} ${c}</span>`).join('')}</div>
-   ${fav?`<div class="fav"><canvas></canvas><div class="favname">${S.found[fav.id].nick?`“${esc(S.found[fav.id].nick)}”`:fav.name}</div><div class="favreal">${S.found[fav.id].nick?fav.name+' · ':''}${fav.type==='milkyway'?'우리은하':TYPES[fav.type].name}</div></div>`:'<div class="favreal">아직 발견한 천체가 없어요</div>'}
-   <button class="ghost" id="closePresent">닫기</button>`;
-  if(fav)requestAnimationFrame(()=>draw(p.querySelector('canvas'),fav,false));
-  $('#closePresent').onclick=()=>p.hidden=true;
+  const teamHas=o=>S.found[o.id]||matesFor(o.id).length;
+  const list=[...ORDER.flatMap(t=>OBJ.filter(o=>o.type===t&&teamHas(o))),...OBJ.filter(o=>o.type==='milkyway'&&teamHas(o))];
+  const byNum={};teamRows.forEach(r=>{if(String(r.num)!==String(S.num)&&OBJ.some(o=>o.id===r.id&&o.type!=='milkyway'))byNum[r.num]=(byNum[r.num]||0)+1});if(S.num)byNum[S.num]=n;
+  const teamGot=OBJ.filter(o=>o.type!=='milkyway'&&teamHas(o)).length,total=OBJ.filter(o=>o.type!=='milkyway').length;
+  const counts=ORDER.map(t=>[t,OBJ.filter(o=>o.type===t&&teamHas(o)).length]).filter(x=>x[1]);
+  const slides=[];
+  slides.push({html:`<div class="tname">${esc(teamLabel())}</div>
+    <div class="bigscore">우리 모둠이 찾은 천체 ${teamGot} / ${total}</div>
+    <div class="badges">${Object.keys(byNum).sort((a,b)=>a-b).map(k=>`<span class="chip" style="font-size:15px;padding:3px 12px;${k===String(S.num)?'border-color:var(--gold);color:var(--gold)':''}">${esc(String(k))}번 ${byNum[k]}개</span>`).join('')}</div>
+    <div class="badges">${counts.map(([t,c])=>`<span class="chip type" style="background:${TYPES[t].color};font-size:15px;padding:3px 12px">${TYPES[t].name} ${c}</span>`).join('')}</div>
+    ${S.num?`<div style="color:var(--muted)">발표: ${esc(S.num)}번 · ★ ${score()}${Object.keys(S.quiz).length?` · 퀴즈 ${qc}/${QUIZ.length}`:''}</div>`:''}
+    <div class="pnote">${list.length?'→ 다음을 눌러 우리 모둠이 찾은 천체를 하나씩 소개해요':'아직 모둠이 찾은 천체가 없어요'}</div>`});
+  list.forEach(o=>{
+    const T=TYPES[o.type],mine=S.found[o.id];
+    const finders=[...(mine?[{num:S.num,memo:mine.memo,me:true}]:[]),...matesFor(o.id).map(m=>({num:m.num,memo:m.memo}))];
+    slides.push({obj:o,html:`<div class="pkind" style="color:${T.color}">${o.type==='milkyway'?'우리은하':T.group+' · '+T.name}</div>
+      <div class="fav"><canvas></canvas></div>
+      <div class="favname">${mine&&mine.nick?`“${esc(mine.nick)}”`:o.name}</div>
+      <div class="favreal">${mine&&mine.nick?o.name+' · ':''}${o.code} · ${o.con}</div>
+      <div class="pmemos">${finders.map(f=>`<div class="pmemo"><b>${f.me?(S.num?esc(String(f.num))+'번 (나)':'나'):esc(String(f.num))+'번'}</b> ${esc(String(f.memo||''))||'<span style="color:var(--muted)">메모 없음</span>'}</div>`).join('')}</div>
+      <div class="pfact">${T.desc}</div>`});
+  });
+  slides.push({html:`<div class="tname" style="font-size:clamp(32px,6vw,56px)">우리 모둠 탐사 정리</div>
+    <div class="psum">${ORDER.map(t=>{const all=OBJ.filter(o=>o.type===t),got=all.filter(teamHas);return`<div class="psrow"><span class="chip type" style="background:${TYPES[t].color};font-size:15px;padding:3px 12px">${TYPES[t].name}</span><span>${got.map(o=>o.name).join(', ')||'<span style="color:var(--muted)">아직 없음</span>'}</span>${got.length<all.length?`<span class="pmiss">못 찾은 곳 ${all.length-got.length}</span>`:''}</div>`}).join('')}</div>
+    <div class="pnote">성단은 별 무리, 성운은 우주 구름!</div>`});
+  return slides;
+}
+function showSlide(k){
+  const p=$('#present');PS.i=Math.max(0,Math.min(PS.slides.length-1,k));const sl=PS.slides[PS.i];
+  p.innerHTML=`<div class="pslide">${sl.html}</div>
+    <div class="pnav"><button class="tool" id="pPrev" ${PS.i===0?'disabled':''}>← 이전</button><span class="pcount">${PS.i+1} / ${PS.slides.length}</span><button class="tool" id="pNext" ${PS.i===PS.slides.length-1?'disabled':''}>다음 →</button><button class="tool" id="closePresent">닫기</button></div>`;
+  if(sl.obj)requestAnimationFrame(()=>draw(p.querySelector('canvas'),sl.obj,false));
+  $('#pPrev').onclick=()=>showSlide(PS.i-1);$('#pNext').onclick=()=>showSlide(PS.i+1);$('#closePresent').onclick=()=>p.hidden=true;
+}
+$('#presentBtn').onclick=async()=>{
+  const p=$('#present');p.hidden=false;PS.slides=buildSlides();showSlide(0);
+  if(GAS&&S.num){await loadTeam();PS.slides=buildSlides();showSlide(PS.i)}
 };
+document.addEventListener('keydown',e=>{if($('#present').hidden)return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();showSlide(PS.i+1)}if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();showSlide(PS.i-1)}});
+(()=>{let x0=null;const p=$('#present');p.addEventListener('pointerdown',e=>{x0=e.clientX});p.addEventListener('pointerup',e=>{if(x0===null)return;const dx=e.clientX-x0;x0=null;if(Math.abs(dx)>60)showSlide(PS.i+(dx<0?1:-1))})})();
 
 
 /* ================= 우리은하 탭 ================= */
