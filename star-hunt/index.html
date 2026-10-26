@@ -206,10 +206,20 @@ body{margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 .pop{animation:pop .45s ease-out}
+
+/* ---------- 별과 우주 공통 메뉴 ---------- */
+.unitnav{position:relative;z-index:5;background:#050816;border-bottom:1px solid #26335E;font-family:'Do Hyeon','Noto Sans KR',sans-serif}
+.unitnav .in{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+.unitnav .lbl{color:#9BA8CE;font-size:15px;margin-right:4px}
+.unitnav a{color:#EAF0FF;text-decoration:none;font-size:17px;padding:4px 12px;border-radius:999px;border:1px solid #26335E;white-space:nowrap}
+.unitnav a:hover{border-color:#9BA8CE}
+.unitnav a[aria-current="page"]{background:#FFD166;color:#1a1200;border-color:#FFD166}
+@media (max-width:480px){.unitnav .lbl{display:none}.unitnav a{font-size:15px;padding:3px 10px}.unitnav .in{gap:6px}}
 </style>
 </head>
 <body>
 
+<nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="../">우주 탐사 기획단</a><a href="./" aria-current="page">우리은하 천체 탐험대</a></div></nav>
 <div class="banner" id="banner" hidden></div>
 <div class="wrap">
   <header class="top">
