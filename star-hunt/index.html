@@ -758,6 +758,7 @@ $('#dRefresh').onclick=async()=>{if(await loadDash())renderDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
 if(!GAS)showBanner('아직 구글 시트 주소(GAS_URL)가 설정되지 않아 기록이 이 기기에만 저장돼요.');
 flush();loadTeam();
+if(location.hash==="#teacher")$("#teacherBtn").click();
 function renderAll(){renderTop();renderMissions();if(!$('#tab-dex').hidden)renderDex();renderQuiz()}
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderAll,250)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(renderAll);
