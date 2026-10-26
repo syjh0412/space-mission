@@ -40,6 +40,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .tab{background:none;border:0;padding:8px 14px;border-radius:8px;font-family:var(--display);font-size:19px;color:var(--muted);white-space:nowrap}
 .tab[aria-selected="true"]{background:var(--panel2);color:var(--fg)}
 .tab .n{font-family:var(--mono);font-size:12px;margin-left:6px;color:var(--gold)}
+@media (max-width:520px){.tabs{gap:2px}.tab{font-size:16px;padding:6px 8px}.tab .n{font-size:11px;margin-left:3px}}
 
 /* tip strip */
 .tip{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:15px}
@@ -247,6 +248,7 @@ body{margin:0}
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-tab="mission" aria-selected="true">탐사 미션<span class="n" id="nMission"></span></button>
     <button class="tab" role="tab" data-tab="dex" aria-selected="false">천체 도감<span class="n" id="nDex"></span></button>
+    <button class="tab" role="tab" data-tab="note" aria-selected="false">탐험 노트<span class="n" id="nNote"></span></button>
     <button class="tab" role="tab" data-tab="quiz" aria-selected="false">최종 퀴즈<span class="n" id="nQuiz"></span></button>
   </nav>
 
@@ -263,7 +265,9 @@ body{margin:0}
   <section id="tab-dex" hidden>
     <div class="tstat" id="teamStat"><span>모둠원 기록 불러오는 중...</span><button class="ghost" id="teamReload">모둠 기록 새로고침</button></div>
     <div id="dexShelves"></div>
-    <h2 style="font-size:26px;margin:28px 0 6px">탐험 노트</h2>
+  </section>
+
+  <section id="tab-note" hidden>
     <p class="lockmsg" id="noteLock"></p>
     <div class="notes" id="notes"></div>
   </section>
@@ -509,6 +513,7 @@ function renderTop(){
   const n=Object.keys(S.found).length;
   $('#nMission').textContent=`${n}/${OBJ.length}`;
   $('#nDex').textContent=n;
+  $('#nNote').textContent=n<5?`${n}/5`:'열림';
   const qd=Object.keys(S.quiz).length;$('#nQuiz').textContent=qd?`${QUIZ.filter((q,i)=>S.quiz[i]===q.a).length}/${QUIZ.length}`:'';
 }
 function renderMissions(){
@@ -641,8 +646,11 @@ function renderDex(){
       b.innerHTML=`<canvas></canvas><div class="lbl">${o.name}${f&&f.nick?`<small>“${esc(f.nick)}”</small>`:''}<span class="by">${esc(who)} 관측</span></div>`;
       b.onclick=()=>openMission(o);dex.appendChild(b);requestAnimationFrame(()=>draw(b.querySelector('canvas'),o,false))});
     box.appendChild(sec)});
+
+}
+function renderNote(){
   const n=Object.keys(S.found).length;
-  $('#noteLock').textContent=n<5?`천체를 5개 이상 발견하면 탐험 노트가 열려요. (지금 ${n}개)`:'탐사에서 본 것을 과학자들의 분류와 비교해 보세요.';
+  $('#noteLock').textContent=n<5?`천체를 5개 이상 발견하면 탐험 노트가 열려요. (지금 ${n}개) 탐사 미션 탭에서 구역마다 1곳씩 찾아보세요.`:'탐사에서 본 것을 과학자들의 분류와 비교해 보세요.';
   $('#notes').innerHTML=n<5?'':`
    <div class="note"><h3 style="color:var(--open)">성단</h3><p>별들이 모여 있는 집단</p>
     <div class="tblwrap"><table><tr><th></th><th>산개 성단</th><th>구상 성단</th></tr>
@@ -718,7 +726,8 @@ function changeTeam(){
 $('#clsSel').onchange=changeTeam;$('#teamSel').onchange=changeTeam;$('#numSel').onchange=changeTeam;
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));
-  ['mission','dex','quiz'].forEach(k=>$('#tab-'+k).hidden=k!==t.dataset.tab);
+  ['mission','dex','note','quiz'].forEach(k=>$('#tab-'+k).hidden=k!==t.dataset.tab);
+  if(t.dataset.tab==='note')renderNote();
   if(t.dataset.tab==='dex'){renderDex();showTeamStat();loadTeam()}});
 $('#resetBtn').onclick=()=>{$('#resetConfirm').hidden=false};
 $('#resetNo').onclick=()=>{$('#resetConfirm').hidden=true};
@@ -803,7 +812,7 @@ try{localStorage.setItem('mw-test','1');localStorage.removeItem('mw-test')}catch
 $('#teamReload').onclick=()=>{teamStat={state:'idle',msg:''};showTeamStat();loadTeam()};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadTeam()});
 if(location.hash==="#teacher")$("#teacherBtn").click();
-function renderAll(){renderTop();renderMissions();if(!$('#tab-dex').hidden)renderDex();renderQuiz()}
+function renderAll(){renderTop();renderMissions();if(!$('#tab-dex').hidden)renderDex();renderNote();renderQuiz()}
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderAll,250)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(renderAll);
 renderAll();
