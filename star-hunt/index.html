@@ -156,6 +156,11 @@ body{margin:0}
 .banner{background:#4a1b22;color:#ffd7dd;padding:10px 16px;font-size:14px}
 @media (max-width:560px){.grid{grid-template-columns:1fr 1fr;gap:10px}.card .m{font-size:16px}.card .code{font-size:11px}.card .body{padding:10px}}
 /* zones + team */
+.tstat{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:14px;color:var(--muted)}
+.tstat.ok span{color:var(--ok)}
+.tstat.err{border-color:var(--emis)}
+.tstat.err span{color:#ffb3c0}
+.tstat .ghost{padding:6px 12px}
 .goal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:18px;display:grid;gap:10px}
 .goal h2{font-size:22px}
 .goal p{margin:0;color:var(--muted);font-size:14px}
@@ -256,6 +261,7 @@ body{margin:0}
   </section>
 
   <section id="tab-dex" hidden>
+    <div class="tstat" id="teamStat"><span>모둠원 기록 불러오는 중...</span><button class="ghost" id="teamReload">모둠 기록 새로고침</button></div>
     <div id="dexShelves"></div>
     <h2 style="font-size:26px;margin:28px 0 6px">탐험 노트</h2>
     <p class="lockmsg" id="noteLock"></p>
@@ -388,14 +394,21 @@ const ZONES=[{n:1,t:'open'},{n:2,t:'globular'},{n:3,t:'emission'},{n:4,t:'reflec
 const zoneDone=z=>OBJ.some(o=>o.type===z.t&&S.found[o.id]);
 /* 모둠원 기록 (시트에서 받아 옴) */
 let teamRows=[];
+let teamStat={state:'idle',msg:''};
 async function loadTeam(){
-  if(!GAS||!S.num)return;
-  try{const r=await fetch(`${GAS}?mode=team&cls=${encodeURIComponent(S.cls)}&team=${encodeURIComponent(S.teamNo)}&day=${today()}`);
-    const j=await r.json();if(!j.ok)return;
+  if(!S.num){teamStat={state:'wait',msg:'번호를 고르면 모둠원 기록을 불러와요.'};showTeamStat();return}
+  if(!GAS){teamStat={state:'err',msg:'구글 시트 주소가 없어 모둠원 기록을 볼 수 없어요.'};showTeamStat();return}
+  try{const r=await fetch(`${GAS}?mode=team&cls=${encodeURIComponent(S.cls)}&team=${encodeURIComponent(S.teamNo)}&day=${today()}&t=${Date.now()}`,{cache:'no-store'});
+    const j=await r.json();
+    if(!j.ok){teamStat={state:'err',msg:j.error==='pin'?'모둠원 기록을 불러오지 못했어요. 선생님: 구글 시트의 Apps Script를 새 Code.gs로 바꿔 새 버전으로 배포해 주세요.':'모둠원 기록을 불러오지 못했어요 ('+j.error+')'};showTeamStat();return}
     const latest={};(j.rows||[]).map(x=>(x.num=String(x.num==null?'':x.num).trim(),x)).sort((a,b)=>a.ts-b.ts).forEach(x=>{if(x.kind==='mission')latest[x.num+'|'+x.id]=x});
-    teamRows=Object.values(latest);renderMissions();if(!$('#tab-dex').hidden)renderDex();
-  }catch(e){}
+    teamRows=Object.values(latest);
+    const others=new Set(teamRows.filter(x=>x.num!==String(S.num)).map(x=>x.num)).size;
+    teamStat={state:'ok',msg:`${teamLabel()} 기록 불러옴 · 모둠원 ${others}명 · ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`};
+    renderMissions();if(!$('#tab-dex').hidden)renderDex();showTeamStat();
+  }catch(e){teamStat={state:'err',msg:'인터넷 연결을 확인해 주세요. 모둠원 기록을 불러오지 못했어요.'};showTeamStat()}
 }
+function showTeamStat(){const el=$('#teamStat');if(!el)return;el.className='tstat '+teamStat.state;el.querySelector('span').textContent=teamStat.msg||'모둠원 기록 불러오는 중...'}
 const matesFor=id=>teamRows.filter(r=>r.id===id&&String(r.num)!==String(S.num));
 setInterval(loadTeam,20000);
 
@@ -698,7 +711,7 @@ $('#clsSel').onchange=changeTeam;$('#teamSel').onchange=changeTeam;$('#numSel').
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));
   ['mission','dex','quiz'].forEach(k=>$('#tab-'+k).hidden=k!==t.dataset.tab);
-  if(t.dataset.tab==='dex')renderDex();});
+  if(t.dataset.tab==='dex'){renderDex();showTeamStat();loadTeam()}});
 $('#resetBtn').onclick=()=>{$('#resetConfirm').hidden=false};
 $('#resetNo').onclick=()=>{$('#resetConfirm').hidden=true};
 $('#resetYes').onclick=()=>{S.found={};S.quiz={};save();$('#resetConfirm').hidden=true;renderAll()};
@@ -778,6 +791,8 @@ $('#dRefresh').onclick=async()=>{if(await loadDash())openDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
 if(!GAS)showBanner('아직 구글 시트 주소(GAS_URL)가 설정되지 않아 기록이 이 기기에만 저장돼요.');
 flush();loadTeam();
+$('#teamReload').onclick=()=>{teamStat={state:'idle',msg:''};showTeamStat();loadTeam()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadTeam()});
 if(location.hash==="#teacher")$("#teacherBtn").click();
 function renderAll(){renderTop();renderMissions();if(!$('#tab-dex').hidden)renderDex();renderQuiz()}
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderAll,250)});
