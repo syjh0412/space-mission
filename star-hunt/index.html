@@ -336,7 +336,7 @@ body{margin:0}
 <div class="dash" id="dash" hidden><div class="wrap">
   <div class="dash-top"><h2>탐사 현황</h2>
     <div class="dash-ctrl">
-      <input type="date" id="dDay" aria-label="날짜">
+      <input type="date" id="dDay" aria-label="날짜"><button class="tog" id="dAll" aria-pressed="false">모든 날짜</button>
       <select id="dCls" aria-label="반"></select>
       <button class="ghost" id="dRefresh">새로고침</button>
       <span class="sync" id="dStatus"></span>
@@ -448,7 +448,7 @@ let teamStat={state:'idle',msg:''};
 async function loadTeam(){
   if(!GAS){teamStat={state:'idle',msg:'내가 찾은 천체가 이 도감에 모여요.'};showTeamStat();const rb=$('#teamReload');if(rb)rb.hidden=true;return}
   if(!S.num){teamStat={state:'wait',msg:'번호를 고르면 모둠원 기록을 불러와요.'};showTeamStat();return}
-  try{const r=await fetch(`${GAS}?mode=team&cls=${encodeURIComponent(S.cls)}&team=${encodeURIComponent(S.teamNo)}&day=${today()}&t=${Date.now()}`,{cache:'no-store'});
+  try{const r=await fetch(`${GAS}?mode=team&cls=${encodeURIComponent(S.cls)}&team=${encodeURIComponent(S.teamNo)}&t=${Date.now()}`,{cache:'no-store'});
     const j=await r.json();
     if(!j.ok){teamStat={state:'err',msg:j.error==='pin'?'모둠원 기록을 불러오지 못했어요. 선생님: 구글 시트의 Apps Script를 새 Code.gs로 바꿔 새 버전으로 배포해 주세요.':'모둠원 기록을 불러오지 못했어요 ('+j.error+')'};showTeamStat();return}
     const latest={};(j.rows||[]).map(x=>(x.num=String(x.num==null?'':x.num).trim(),x)).sort((a,b)=>a.ts-b.ts).forEach(x=>{if(x.kind==='mission')latest[x.num+'|'+x.id]=x});
@@ -1010,8 +1010,8 @@ $('#teacherBtn').onclick=()=>{
 };
 let dashErr='';
 async function loadDash(){
-  const day=$('#dDay').value||today();
-  try{const r=await fetch(`${GAS}?pin=${encodeURIComponent(PIN)}&day=${day}`);const j=await r.json();
+  const all=$('#dAll').getAttribute('aria-pressed')==='true';const day=all?'':($('#dDay').value||today());
+  try{const r=await fetch(`${GAS}?pin=${encodeURIComponent(PIN)}${day?`&day=${day}`:''}&t=${Date.now()}`,{cache:'no-store'});const j=await r.json();
     if(!j.ok){dashErr=j.error==='pin'?'PIN이 맞지 않아요.':'시트에서 읽지 못했어요: '+j.error;return false}
     dashRows=j.rows||[];$('#dStatus').className='sync ok';$('#dStatus').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' 기준';return true}
   catch(e){dashErr='구글 시트에 연결하지 못했어요. 주소와 배포 설정(액세스: 모든 사용자)을 확인해 주세요.';$('#dStatus').className='sync wait';$('#dStatus').textContent='연결 실패';return false}
@@ -1068,6 +1068,7 @@ function renderDash(){
 function fmtSecs(s){return s>=60?`${Math.floor(s/60)}분 ${s%60}초`:`${s}초`}
 function showBanner(m){const b=$('#banner');b.textContent=m;b.hidden=false}
 $('#dCls').onchange=()=>{dashUserPicked=true;renderDash()};
+$('#dAll').onclick=async()=>{const on=$('#dAll').getAttribute('aria-pressed')!=='true';$('#dAll').setAttribute('aria-pressed',on);$('#dDay').disabled=on;if(await loadDash())openDash()};
 $('#dDay').onchange=async()=>{if(await loadDash())openDash()};
 $('#dRefresh').onclick=async()=>{if(await loadDash())openDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
