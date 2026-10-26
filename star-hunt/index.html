@@ -392,7 +392,7 @@ async function loadTeam(){
   if(!GAS||!S.num)return;
   try{const r=await fetch(`${GAS}?mode=team&cls=${encodeURIComponent(S.cls)}&team=${encodeURIComponent(S.teamNo)}&day=${today()}`);
     const j=await r.json();if(!j.ok)return;
-    const latest={};(j.rows||[]).sort((a,b)=>a.ts-b.ts).forEach(x=>{if(x.kind==='mission')latest[x.num+'|'+x.id]=x});
+    const latest={};(j.rows||[]).map(x=>(x.num=String(x.num==null?'':x.num).trim(),x)).sort((a,b)=>a.ts-b.ts).forEach(x=>{if(x.kind==='mission')latest[x.num+'|'+x.id]=x});
     teamRows=Object.values(latest);renderMissions();if(!$('#tab-dex').hidden)renderDex();
   }catch(e){}
 }
@@ -722,20 +722,30 @@ async function loadDash(){
     dashRows=j.rows||[];$('#dStatus').className='sync ok';$('#dStatus').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' 기준';return true}
   catch(e){dashErr='구글 시트에 연결하지 못했어요. 주소와 배포 설정(액세스: 모든 사용자)을 확인해 주세요.';$('#dStatus').className='sync wait';$('#dStatus').textContent='연결 실패';return false}
 }
+/* 시트가 "2-3" 같은 반 이름을 날짜로 바꿔 저장했을 때 되돌리기 */
+function normCls(c){c=String(c==null?'':c).trim();
+  const m=c.match(/^(\d{4})-(\d{2})-(\d{2})T/);if(m){const d=new Date(c);return`${d.getMonth()+1}-${d.getDate()}`}
+  const d2=c.match(/^\w{3} (\w{3}) (\d{1,2}) \d{4}/);if(d2){const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(d2[1])+1;return`${mo}-${+d2[2]}`}
+  return c}
+let dashUserPicked=false;
 function openDash(){
   $('#dash').hidden=false;
   if(!$('#dDay').value)$('#dDay').value=today();
-  const cl=[...new Set([...CLASSES,...dashRows.map(r=>String(r.cls))])];
-  const keep=$('#dCls').value||S.cls;
-  $('#dCls').innerHTML=cl.map(c=>`<option value="${esc(c)}">${esc(c)}반</option>`).join('');$('#dCls').value=cl.includes(keep)?keep:cl[0];
-  renderDash();clearInterval(dashTimer);dashTimer=setInterval(async()=>{if(!$('#dash').hidden&&await loadDash())renderDash()},20000);
+  dashRows.forEach(r=>{r.cls=normCls(r.cls);r.num=String(r.num==null?'':r.num).trim();r.team=String(r.team==null?'':r.team).trim()});
+  const cl=[...new Set([...CLASSES,...dashRows.map(r=>r.cls).filter(Boolean)])];
+  const cnt={};dashRows.forEach(r=>cnt[r.cls]=(cnt[r.cls]||0)+1);
+  // 직접 고르기 전에는 가장 최근에 기록이 들어온 반을 먼저 보여 줌
+  let keep=$('#dCls').value;
+  if(!dashUserPicked){const last=dashRows.slice().sort((a,b)=>b.ts-a.ts)[0];keep=last?last.cls:(keep||S.cls)}
+  $('#dCls').innerHTML=cl.map(c=>`<option value="${esc(c)}">${esc(c)}반${cnt[c]?` (${cnt[c]})`:''}</option>`).join('');$('#dCls').value=cl.includes(keep)?keep:cl[0];
+  renderDash();clearInterval(dashTimer);dashTimer=setInterval(async()=>{if(!$('#dash').hidden&&await loadDash())openDash()},10000);
 }
 function renderDash(){
   const cls=$('#dCls').value;const seen=new Set();const latest={};
   dashRows.filter(r=>String(r.cls)===cls).sort((a,b)=>a.ts-b.ts).forEach(r=>{
     if(seen.has(r.uid))return;seen.add(r.uid);
     const k=r.num+'|'+r.id;latest[k]=r});
-  const stu={};Object.values(latest).forEach(r=>{if(r.num!==''&&r.num!==undefined)stu[r.num]=String(r.team)});
+  const stu={};Object.values(latest).forEach(r=>{stu[r.num]=String(r.team)});
   const nums=Object.keys(stu).sort((a,b)=>(+stu[a]-+stu[b])||(+a-+b));
   const short={mw:'은하수',beehive:'벌집',pleiades:'좀생이',jewelbox:'보석상자',tuc47:'47 Tuc',omega:'오메가',m13:'M13',crescent:'초승달',chicken:'달리는닭',rosette:'장미',runningman:'런닝맨',iris:'아이리스',coalsack:'석탄포대',horsehead:'말머리'};
   const zh=t=>({open:'1구역',globular:'2구역',emission:'3구역',reflection:'4구역',dark:'5구역',milkyway:'보너스'}[t]);
@@ -748,7 +758,7 @@ function renderDash(){
       return`<td><button class="cell${fast?' fast':''}${shortM?' short':''}" data-k="${u}|${o.id}"><span class="s">${'★'.repeat(+r.points||0)||'·'}</span><span class="t num">${fmtSecs(secs)}</span></button></td>`}).join('');
     const q=latest[u+'|quiz'];if(q)last=Math.max(last,q.ts);
     const sep=prevTeam!==null&&prevTeam!==stu[u]?' style="border-top:3px solid var(--line)"':'';prevTeam=stu[u];
-    h+=`<tr${sep}><td>${esc(stu[u])}모둠 ${esc(u)}번</td>${cells}<td class="num" style="color:${zones.size>=5?'var(--ok)':'inherit'}">${zones.size}/5</td><td class="num">${p}</td><td class="num">${q?q.points+'/'+QUIZ.length:''}</td><td class="num">${last?new Date(last).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):''}</td></tr>`});
+    h+=`<tr${sep}><td>${esc(stu[u])}모둠 ${u?esc(u)+'번':'(번호 없음)'}</td>${cells}<td class="num" style="color:${zones.size>=5?'var(--ok)':'inherit'}">${zones.size}/5</td><td class="num">${p}</td><td class="num">${q?q.points+'/'+QUIZ.length:''}</td><td class="num">${last?new Date(last).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):''}</td></tr>`});
   if(!nums.length)h+=`<tr><td colspan="${OBJ.length+5}" style="text-align:left;color:var(--muted);font-family:var(--body);font-size:14px">아직 이 반의 기록이 없어요.</td></tr>`;
   const absent=Array.from({length:NSTU},(_,i)=>String(i+1)).filter(x=>!stu[x]);
   $('#dMatrix').innerHTML=h+'</tbody></table>';
@@ -762,9 +772,9 @@ function renderDash(){
 }
 function fmtSecs(s){return s>=60?`${Math.floor(s/60)}분 ${s%60}초`:`${s}초`}
 function showBanner(m){const b=$('#banner');b.textContent=m;b.hidden=false}
-$('#dCls').onchange=renderDash;
+$('#dCls').onchange=()=>{dashUserPicked=true;renderDash()};
 $('#dDay').onchange=async()=>{if(await loadDash())openDash()};
-$('#dRefresh').onclick=async()=>{if(await loadDash())renderDash()};
+$('#dRefresh').onclick=async()=>{if(await loadDash())openDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
 if(!GAS)showBanner('아직 구글 시트 주소(GAS_URL)가 설정되지 않아 기록이 이 기기에만 저장돼요.');
 flush();loadTeam();
