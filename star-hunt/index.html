@@ -349,7 +349,7 @@ body{margin:0}
 </div></div>
 
 <script>
-window.addEventListener('error',function(e){var b=document.getElementById('banner');if(b){b.textContent='설정 또는 코드 오류: '+(e.message||'')+' (CONFIG의 따옴표와 쉼표를 확인하세요)';b.hidden=false}});
+window.addEventListener('error',function(e){var b=document.getElementById('banner');if(!b)return;b.textContent=window.__appReady?('앱 오류가 났어요. 페이지를 새로고침해 주세요. 계속 뜨면 선생님께 이 문구를 알려 주세요. ('+(e.message||'')+')'):('설정 오류: '+(e.message||'')+' (CONFIG의 따옴표와 쉼표를 확인하세요)');b.hidden=false});
 </script>
 <!-- ===== 설정: 이 부분만 고치세요 ===== -->
 <script>
@@ -1081,6 +1081,7 @@ function renderAll(){renderTop();if(!$('#tab-galaxy').hidden)renderGalaxy();else
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderAll,250)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(renderAll);
 renderAll();
+window.__appReady=true;
 </script>
 </body>
 </html>
