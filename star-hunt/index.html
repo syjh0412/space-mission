@@ -403,8 +403,15 @@ async function loadTeam(){
     if(!j.ok){teamStat={state:'err',msg:j.error==='pin'?'모둠원 기록을 불러오지 못했어요. 선생님: 구글 시트의 Apps Script를 새 Code.gs로 바꿔 새 버전으로 배포해 주세요.':'모둠원 기록을 불러오지 못했어요 ('+j.error+')'};showTeamStat();return}
     const latest={};(j.rows||[]).map(x=>(x.num=String(x.num==null?'':x.num).trim(),x)).sort((a,b)=>a.ts-b.ts).forEach(x=>{if(x.kind==='mission')latest[x.num+'|'+x.id]=x});
     teamRows=Object.values(latest);
+    // 이 기기에 기록이 없어도(새로고침, 다른 태블릿, 저장 차단) 시트에 남은 내 기록을 되살림
+    let restored=0;
+    teamRows.filter(x=>x.num===String(S.num)).forEach(x=>{
+      const o=OBJ.find(k=>k.id===x.id);if(!o||S.found[x.id])return;
+      const pts=+x.points||0;
+      S.found[x.id]={points:pts,guess:(o.type==='milkyway'||pts===3)?o.type:null,answers:{},nick:'',memo:String(x.memo||''),secs:0,restored:true};restored++});
+    if(restored){save();renderTop()}
     const others=new Set(teamRows.filter(x=>x.num!==String(S.num)).map(x=>x.num)).size;
-    teamStat={state:'ok',msg:`${teamLabel()} 기록 불러옴 · 모둠원 ${others}명 · ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`};
+    teamStat={state:'ok',msg:`${restored?`내 기록 ${restored}개 복원 · `:''}${teamLabel()} 기록 불러옴 · 모둠원 ${others}명 · ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`};
     renderMissions();if(!$('#tab-dex').hidden)renderDex();showTeamStat();
   }catch(e){teamStat={state:'err',msg:'인터넷 연결을 확인해 주세요. 모둠원 기록을 불러오지 못했어요.'};showTeamStat()}
 }
@@ -589,6 +596,7 @@ function showReveal(a,again){
     verdict=f.points===3?['good','은하수 박사!','7월 밤에는 밤하늘이 우리은하 중심(A 쪽, 궁수자리)을 향해서 별이 많이 겹쳐 보여요.']
      :['miss','다시 생각해 볼까?','지구가 공전하면서 밤하늘(태양 반대쪽)이 향하는 방향이 바뀌어요. 7월 밤에는 은하 중심(A 쪽)을, 1월 밤에는 은하 바깥(B 쪽)을 봐요. 지구 공전 궤도는 우리은하에 비해 아주 작아서 은하 중심에 가까워지지는 않아요.'];
   }else if(f.guess===o.type){verdict=['good','관찰 성공!',`여러분이 본 대로 ${T.name}이에요.`]}
+  else if(f.restored&&!f.guess){verdict=['miss','저장된 기록을 불러왔어요',`이 천체는 ${T.name}이에요. ${hint(o.type)}`]}
   else{const G=TYPES[f.guess];verdict=['miss','앗, 다시 보면?',`여러분은 ${G?G.name:'다른 것'}처럼 봤지만 실제로는 ${T.name}이에요. ${hint(o.type)}`]}
   $('#sheet').innerHTML=`<div class="sheet-head"><div><div class="code">${o.code}</div><h2>${o.name}</h2></div><button class="x" aria-label="닫기">✕</button></div>
    <div class="reveal" style="margin-top:12px"><canvas></canvas></div>
@@ -791,6 +799,7 @@ $('#dRefresh').onclick=async()=>{if(await loadDash())openDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
 if(!GAS)showBanner('아직 구글 시트 주소(GAS_URL)가 설정되지 않아 기록이 이 기기에만 저장돼요.');
 flush();loadTeam();
+try{localStorage.setItem('mw-test','1');localStorage.removeItem('mw-test')}catch(e){showBanner('이 브라우저는 기록을 기기에 저장하지 못해요(비공개 모드 등). 기록은 선생님 시트에 저장되고, 번호를 다시 고르면 불러와요.')}
 $('#teamReload').onclick=()=>{teamStat={state:'idle',msg:''};showTeamStat();loadTeam()};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadTeam()});
 if(location.hash==="#teacher")$("#teacherBtn").click();
