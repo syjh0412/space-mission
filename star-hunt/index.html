@@ -36,7 +36,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .score{font-family:var(--display);font-size:22px;background:var(--gold);color:var(--gold-ink);border-radius:999px;padding:4px 16px;font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* tabs */
-.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--sky);display:flex;gap:6px;margin:22px 0 18px;padding:8px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--tbh,0px));z-index:20;background:var(--sky);display:flex;gap:6px;margin:22px 0 18px;padding:8px 0;border-bottom:1px solid var(--line);overflow-x:auto}
 .tab{background:none;border:0;padding:8px 14px;border-radius:8px;font-family:var(--display);font-size:19px;color:var(--muted);white-space:nowrap}
 .tab[aria-selected="true"]{background:var(--panel2);color:var(--fg)}
 .tab .n{font-family:var(--mono);font-size:12px;margin-left:6px;color:var(--gold)}
@@ -156,6 +156,16 @@ body{margin:0}
 .mymemo b{color:var(--gold);font-weight:400;font-family:var(--display)}
 .banner{background:#4a1b22;color:#ffd7dd;padding:10px 16px;font-size:14px}
 @media (max-width:560px){.grid{grid-template-columns:1fr 1fr;gap:10px}.card .m{font-size:16px}.card .code{font-size:11px}.card .body{padding:10px}}
+/* tools + teacher mode */
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.tool{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-family:var(--display);font-size:16px;color:var(--fg)}
+.tool:hover{border-color:var(--gold)}
+#teacherBtn{margin-left:auto}
+#resetConfirm{font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.teachbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:25;background:#3a2c08;border-bottom:1px solid var(--gold)}
+.teachbar .in{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));font-size:14px;color:#ffe9b0}
+.teachbar b{font-family:var(--display);font-weight:400;font-size:18px;color:var(--gold)}
+.teachbar .tool{padding:5px 12px;font-size:15px}
 /* galaxy tab */
 .gintro{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:18px;display:grid;gap:8px}
 .gintro h2{font-size:24px}
@@ -262,6 +272,7 @@ body{margin:0}
 
 <nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="../">우주 탐사 기획단</a><a href="./" aria-current="page">우리은하 천체 탐험대</a></div></nav>
 <div class="banner" id="banner" hidden></div>
+<div class="teachbar" id="teachbar" hidden><div class="in"><b>교사 모드</b><span>여기서 누르는 내용은 시트에 기록되지 않아요.</span><button class="tool" id="tbDash">탐사 현황 보기</button><button class="tool" id="tbExit">교사 모드 끝내기</button></div></div>
 <div class="wrap">
   <header class="top">
     <div class="title">
@@ -279,6 +290,12 @@ body{margin:0}
       <span class="sync" id="syncPill">전송 준비</span>
     </div>
   </header>
+  <div class="tools">
+    <button class="tool" id="presentBtn">발표 화면</button>
+    <button class="tool" id="resetBtn">처음부터 다시</button>
+    <button class="tool" id="teacherBtn">선생님</button>
+    <span id="resetConfirm" hidden>정말 이 기기의 기록을 지울까요? <button class="tool" id="resetYes">지우기</button> <button class="tool" id="resetNo">취소</button></span>
+  </div>
 
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-tab="galaxy" aria-selected="true">우리은하<span class="n" id="nGalaxy"></span></button>
@@ -323,12 +340,6 @@ body{margin:0}
     <div class="rowbtns"><button class="ghost" id="quizReset">퀴즈 다시 풀기</button></div>
   </section>
 
-  <div class="footer">
-    <button class="ghost" id="presentBtn">발표 화면 열기</button>
-    <button class="ghost" id="resetBtn">처음부터 다시</button>
-    <button class="ghost" id="teacherBtn">선생님</button>
-    <span id="resetConfirm" hidden>정말 기록을 모두 지울까요? <button class="ghost" id="resetYes">지우기</button> <button class="ghost" id="resetNo">취소</button></span>
-  </div>
 </div>
 
 <div class="overlay" id="overlay" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
@@ -435,7 +446,8 @@ let S={cls:CLASSES[0],teamNo:'1',num:'',found:{},quiz:{},galaxy:{},queue:[]};
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
 if(!Array.isArray(S.queue))S.queue=[];
 if(!S.galaxy||typeof S.galaxy!=='object')S.galaxy={};
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let TEACH=false,SAVED=null;
+function save(){if(TEACH)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const $=s=>document.querySelector(s);
 const teamLabel=()=>`${S.cls}반 ${S.teamNo}모둠`;
 const meLabel=()=>`${S.cls}반 ${S.teamNo}모둠 ${S.num}번`;
@@ -472,10 +484,11 @@ setInterval(loadTeam,20000);
 
 /* ---------- 전송 (구글 시트) ---------- */
 function today(d){d=d||new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-function send(ev){ev.uid=Date.now().toString(36)+Math.random().toString(36).slice(2,7);ev.ts=Date.now();ev.cls=S.cls;ev.team=S.teamNo;ev.num=S.num;S.queue.push(ev);save();flush()}
+function send(ev){if(TEACH)return;ev.uid=Date.now().toString(36)+Math.random().toString(36).slice(2,7);ev.ts=Date.now();ev.cls=S.cls;ev.team=S.teamNo;ev.num=S.num;S.queue.push(ev);save();flush()}
 let flushing=false;
 async function flush(){
   const pill=$('#syncPill');
+  if(TEACH){pill.className='sync';pill.textContent='교사 모드 · 전송 안 함';return}
   if(!GAS){pill.className='sync';pill.textContent='이 기기에 저장';return}
   if(flushing||!S.queue.length){if(!S.queue.length){pill.className='sync ok';pill.textContent='선생님께 전송됨 ✓'}return}
   flushing=true;pill.className='sync wait';pill.textContent=`전송 중 ${S.queue.length}건`;
@@ -602,7 +615,7 @@ function questionsFor(o){
   return qs;
 }
 function openMission(o){
-  if(!S.num){$('#sheet').innerHTML=`<div class="sheet-head"><h2>번호를 먼저 골라 주세요</h2><button class="x" aria-label="닫기">✕</button></div><p>화면 위쪽에서 반, 모둠, 번호를 고르면 탐사를 시작할 수 있어요.</p>`;bindClose();openSheet();return}
+  if(!S.num&&!TEACH){$('#sheet').innerHTML=`<div class="sheet-head"><h2>번호를 먼저 골라 주세요</h2><button class="x" aria-label="닫기">✕</button></div><p>화면 위쪽에서 반, 모둠, 번호를 고르면 탐사를 시작할 수 있어요.</p>`;bindClose();openSheet();return}
   cur=o;ans={};const f=S.found[o.id];if(f){showReveal(f.answers,true);return}showHow()}
 function showHow(){
   const o=cur;
@@ -999,14 +1012,15 @@ $('#resetYes').onclick=()=>{S.found={};S.quiz={};S.galaxy={};save();$('#resetCon
 
 /* ---------- 선생님 대시보드 ---------- */
 let PIN='',dashRows=[],dashTimer=null;
-$('#teacherBtn').onclick=()=>{
+$('#teacherBtn').onclick=async()=>{
+  if(TEACH){if(await loadDash())openDash();return}
   if(!GAS){$('#sheet').innerHTML=`<div class="sheet-head"><h2>선생님 화면</h2><button class="x" aria-label="닫기">✕</button></div><p>선생님 화면은 구글 시트를 연결해야 쓸 수 있어요. 지금은 학생 기록이 각 기기에만 저장돼요.</p><p style="color:var(--muted)">연결 방법: index.html의 CONFIG에서 GAS_URL에 Apps Script 웹 앱 주소를 넣어 주세요.</p>`;bindClose();openSheet();return}
   $('#sheet').innerHTML=`<div class="sheet-head"><h2>선생님 확인</h2><button class="x" aria-label="닫기">✕</button></div>
    <form class="pinbox" id="pinForm"><label for="pinIn">PIN 번호</label><input id="pinIn" type="password" inputmode="numeric" autocomplete="off">
    <div id="pinErr" style="color:var(--emis)"></div><button class="cta" style="margin-top:0">탐사 현황 열기</button></form>`;
   bindClose();openSheet();$('#pinIn').focus();
   $('#pinForm').onsubmit=async e=>{e.preventDefault();PIN=$('#pinIn').value.trim();$('#pinErr').textContent='확인 중...';
-    const ok=await loadDash();if(ok){closeSheet();openDash()}else{$('#pinErr').textContent=dashErr}};
+    const ok=await loadDash();if(ok){closeSheet();enterTeacher();openDash()}else{$('#pinErr').textContent=dashErr}};
 };
 let dashErr='';
 async function loadDash(){
@@ -1072,6 +1086,26 @@ $('#dAll').onclick=async()=>{const on=$('#dAll').getAttribute('aria-pressed')!==
 $('#dDay').onchange=async()=>{if(await loadDash())openDash()};
 $('#dRefresh').onclick=async()=>{if(await loadDash())openDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
+$('#dClose').textContent='학생 화면 보기';
+function setTbh(){const b=$('#teachbar');document.documentElement.style.setProperty('--tbh',(b.hidden?0:b.offsetHeight)+'px')}
+window.addEventListener('resize',setTbh);
+function syncSelects(){$('#clsSel').value=S.cls;$('#teamSel').value=S.teamNo;$('#numSel').value=S.num}
+function enterTeacher(){
+  if(TEACH)return;TEACH=true;SAVED=S;
+  // 시범용 빈 기록 (기기에 저장되지 않고, 시트로도 보내지 않음)
+  S={cls:SAVED.cls,teamNo:SAVED.teamNo,num:'',found:{},quiz:{},galaxy:{},queue:[]};
+  teamRows=[];gAns={};gTap=null;syncSelects();
+  $('#teachbar').hidden=false;setTbh();$('#teacherBtn').textContent='탐사 현황';$('#resetBtn').textContent='시범 기록 지우기';
+  renderAll();flush();
+}
+function exitTeacher(){
+  if(!TEACH)return;TEACH=false;S=SAVED;SAVED=null;teamRows=[];gAns={};gTap=null;syncSelects();
+  $('#teachbar').hidden=true;setTbh();$('#dash').hidden=true;clearInterval(dashTimer);PIN='';
+  $('#teacherBtn').textContent='선생님';$('#resetBtn').textContent='처음부터 다시';
+  renderAll();loadTeam();flush();
+}
+$('#tbDash').onclick=async()=>{if(await loadDash())openDash()};
+$('#tbExit').onclick=exitTeacher;
 flush();loadTeam();
 try{localStorage.setItem('mw-test','1');localStorage.removeItem('mw-test')}catch(e){showBanner('이 브라우저는 기록을 기기에 저장하지 못해요(비공개 모드 등). 기록은 선생님 시트에 저장되고, 번호를 다시 고르면 불러와요.')}
 $('#teamReload').onclick=()=>{teamStat={state:'idle',msg:''};showTeamStat();loadTeam()};
