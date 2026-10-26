@@ -446,8 +446,8 @@ const zoneDone=z=>OBJ.some(o=>o.type===z.t&&S.found[o.id]);
 let teamRows=[];
 let teamStat={state:'idle',msg:''};
 async function loadTeam(){
+  if(!GAS){teamStat={state:'idle',msg:'내가 찾은 천체가 이 도감에 모여요.'};showTeamStat();const rb=$('#teamReload');if(rb)rb.hidden=true;return}
   if(!S.num){teamStat={state:'wait',msg:'번호를 고르면 모둠원 기록을 불러와요.'};showTeamStat();return}
-  if(!GAS){teamStat={state:'err',msg:'구글 시트 주소가 없어 모둠원 기록을 볼 수 없어요.'};showTeamStat();return}
   try{const r=await fetch(`${GAS}?mode=team&cls=${encodeURIComponent(S.cls)}&team=${encodeURIComponent(S.teamNo)}&day=${today()}&t=${Date.now()}`,{cache:'no-store'});
     const j=await r.json();
     if(!j.ok){teamStat={state:'err',msg:j.error==='pin'?'모둠원 기록을 불러오지 못했어요. 선생님: 구글 시트의 Apps Script를 새 Code.gs로 바꿔 새 버전으로 배포해 주세요.':'모둠원 기록을 불러오지 못했어요 ('+j.error+')'};showTeamStat();return}
@@ -476,7 +476,7 @@ function send(ev){ev.uid=Date.now().toString(36)+Math.random().toString(36).slic
 let flushing=false;
 async function flush(){
   const pill=$('#syncPill');
-  if(!GAS){pill.className='sync wait';pill.textContent='전송 주소 없음';return}
+  if(!GAS){pill.className='sync';pill.textContent='이 기기에 저장';return}
   if(flushing||!S.queue.length){if(!S.queue.length){pill.className='sync ok';pill.textContent='선생님께 전송됨 ✓'}return}
   flushing=true;pill.className='sync wait';pill.textContent=`전송 중 ${S.queue.length}건`;
   const batch=S.queue.slice(0,20);
@@ -1000,7 +1000,7 @@ $('#resetYes').onclick=()=>{S.found={};S.quiz={};S.galaxy={};save();$('#resetCon
 /* ---------- 선생님 대시보드 ---------- */
 let PIN='',dashRows=[],dashTimer=null;
 $('#teacherBtn').onclick=()=>{
-  if(!GAS){showBanner('설정의 GAS_URL이 비어 있어서 선생님 화면을 열 수 없어요. index.html 위쪽 CONFIG에 주소를 넣어 주세요.');return}
+  if(!GAS){$('#sheet').innerHTML=`<div class="sheet-head"><h2>선생님 화면</h2><button class="x" aria-label="닫기">✕</button></div><p>선생님 화면은 구글 시트를 연결해야 쓸 수 있어요. 지금은 학생 기록이 각 기기에만 저장돼요.</p><p style="color:var(--muted)">연결 방법: index.html의 CONFIG에서 GAS_URL에 Apps Script 웹 앱 주소를 넣어 주세요.</p>`;bindClose();openSheet();return}
   $('#sheet').innerHTML=`<div class="sheet-head"><h2>선생님 확인</h2><button class="x" aria-label="닫기">✕</button></div>
    <form class="pinbox" id="pinForm"><label for="pinIn">PIN 번호</label><input id="pinIn" type="password" inputmode="numeric" autocomplete="off">
    <div id="pinErr" style="color:var(--emis)"></div><button class="cta" style="margin-top:0">탐사 현황 열기</button></form>`;
@@ -1071,7 +1071,6 @@ $('#dCls').onchange=()=>{dashUserPicked=true;renderDash()};
 $('#dDay').onchange=async()=>{if(await loadDash())openDash()};
 $('#dRefresh').onclick=async()=>{if(await loadDash())openDash()};
 $('#dClose').onclick=()=>{$('#dash').hidden=true;clearInterval(dashTimer)};
-if(!GAS)showBanner('아직 구글 시트 주소(GAS_URL)가 설정되지 않아 기록이 이 기기에만 저장돼요.');
 flush();loadTeam();
 try{localStorage.setItem('mw-test','1');localStorage.removeItem('mw-test')}catch(e){showBanner('이 브라우저는 기록을 기기에 저장하지 못해요(비공개 모드 등). 기록은 선생님 시트에 저장되고, 번호를 다시 고르면 불러와요.')}
 $('#teamReload').onclick=()=>{teamStat={state:'idle',msg:''};showTeamStat();loadTeam()};
