@@ -831,7 +831,7 @@ function renderGalaxy(){
       <p class="lead">${st.lead}</p><div class="gbody"></div><div class="gq"></div><div class="gmsg" hidden></div><div class="gbtns"></div>`;
     box.appendChild(el);
     ({g1:body1,g2:body2,g3:body3,g4:body4})[st.id](el.querySelector('.gbody'),el);
-    renderQs(st,el);
+    renderGQs(st,el);
   });
   const mw=OBJ.find(o=>o.id==='mw');const f=S.found.mw;
   const card=document.createElement('div');card.className='gstep';
@@ -840,7 +840,7 @@ function renderGalaxy(){
     <div class="gbtns"><button class="cta" id="mwGo">${f?'관측 기록 보기':'미션 시작'}</button></div>`;
   box.appendChild(card);$('#mwGo').onclick=()=>openMission(mw);
 }
-function renderQs(st,el){
+function renderGQs(st,el){
   const done=S.galaxy[st.id];const q=el.querySelector('.gq');const a=gAns[st.id]||(gAns[st.id]={});
   const checked=!!(done&&done.answers);
   q.innerHTML=st.qs.map((Q,k)=>{const pick=checked?done.answers[k]:a[k];
@@ -848,7 +848,7 @@ function renderQs(st,el){
       if(checked){if(j===Q.a)cl+=' right';else if(j===pick)cl+=' wrong'}
       return`<button class="${cl}" data-k="${k}" data-j="${j}" aria-pressed="${!checked&&pick===j}" ${checked?'disabled':''}>${t}</button>`}).join('')}</div>
       ${checked?`<div class="why">${pick===Q.a?'정답!':'아쉬워요.'} ${Q.e}</div>`:''}`}).join('');
-  q.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{a[+b.dataset.k]=+b.dataset.j;renderQs(st,el)});
+  q.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{a[+b.dataset.k]=+b.dataset.j;renderGQs(st,el)});
   const btns=el.querySelector('.gbtns');
   if(done&&done.restored&&!done.answers){btns.innerHTML='<span class="why" style="color:var(--muted)">저장된 기록을 불러왔어요.</span> <button class="ghost">다시 풀기</button>';btns.querySelector('button').onclick=()=>{delete S.galaxy[st.id];gAns[st.id]={};save();renderGalaxy()};return}
   if(checked){btns.innerHTML='<button class="ghost">다시 풀기</button>';btns.querySelector('button').onclick=()=>{delete S.galaxy[st.id];gAns[st.id]={};if(st.id==='g1')gTap=null;save();renderGalaxy();document.getElementById('step-'+st.id).scrollIntoView({block:'start'})};return}
@@ -891,7 +891,7 @@ function body1(b,el){
     if(gTap.ok){m.className='gmsg good';m.textContent=`정답에 가까워요! 고른 곳은 중심에서 약 ${d.toLocaleString()} pc. 실제 태양계는 은하 중심에서 약 8500 pc 떨어진 나선팔에 있어요.`}
     else if(pc<6000){m.className='gmsg miss';m.textContent=`고른 곳은 중심에서 약 ${d.toLocaleString()} pc. 태양계는 생각보다 중심에서 멀어요. 실제로는 약 8500 pc 떨어진 나선팔에 있어요 (★ 표시).`}
     else{m.className='gmsg miss';m.textContent=`고른 곳은 중심에서 약 ${d.toLocaleString()} pc. 태양계는 그보다 안쪽, 중심에서 약 8500 pc 떨어진 나선팔에 있어요 (★ 표시).`}
-    renderQs(GSTEPS[0],el)};
+    renderGQs(GSTEPS[0],el)};
   const lb=$('#lab1');lb.setAttribute('aria-pressed',labels);lb.onclick=()=>{labels=!labels;lb.setAttribute('aria-pressed',labels);G=draw()};
   if(!done&&!gTap){const m=el.querySelector('.gmsg');m.hidden=false;m.className='gmsg';m.textContent='지도를 눌러 태양계가 있을 것 같은 곳을 골라 보세요.'}
 }
