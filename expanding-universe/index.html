@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>팽창하는 우주 탐구실</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+/* Layout: 수업 순서대로 6단계 탭, 위쪽에 모둠 정보 띠. 풍선 분홍 + 남색 잉크. 시뮬레이터 창은 늘 깊은 우주색. */
+:root{
+  --bg:#f2f1f8; --surface:#ffffff; --surface-2:#f8f7fc; --ink:#1d1b3a; --muted:#5d5a7a; --line:#dcd9ec;
+  --accent:#d93a6f; --accent-soft:#fce4ec; --indigo:#3b3a8f; --indigo-soft:#e7e6f7;
+  --good:#1d7f53; --good-soft:#e2f4ea; --warn:#9a6212; --warn-soft:#fbf0dc;
+  --space:#0d0c24; --space-ink:#e8e7ff;
+  --f-display:"Do Hyeon","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#110f26; --surface:#1b1a38; --surface-2:#22204a; --ink:#ecebf8; --muted:#a6a3c8; --line:#34315c;
+  --accent:#ff6f9f; --accent-soft:#3d1a30; --indigo:#a3a1ff; --indigo-soft:#2a2860;
+  --good:#52c993; --good-soft:#163527; --warn:#e9b44f; --warn-soft:#3a2c12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#110f26; --surface:#1b1a38; --surface-2:#22204a; --ink:#ecebf8; --muted:#a6a3c8; --line:#34315c;
+  --accent:#ff6f9f; --accent-soft:#3d1a30; --indigo:#a3a1ff; --indigo-soft:#2a2860;
+  --good:#52c993; --good-soft:#163527; --warn:#e9b44f; --warn-soft:#3a2c12; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.25}
+h2{font-size:clamp(26px,4vw,34px)}
+h3{font-size:21px}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* header */
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{padding-block:18px 0;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-size:clamp(30px,5vw,42px);letter-spacing:-.5px}
+.brand h1 b{font-weight:400;color:var(--accent)}
+.unit{font-size:13px;color:var(--muted);letter-spacing:.06em}
+.team{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+.team label{color:var(--muted)}
+.team select,.team input{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:6px 10px}
+.team input{width:min(240px,100%)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs a{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 11px;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent;font-weight:500;font-size:15px}
+nav.tabs a .n{font-family:var(--f-mono);font-size:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line)}
+nav.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs a[aria-current="page"] .n{background:var(--accent);border-color:var(--accent);color:#fff}
+nav.tabs a.done .n{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+
+main{padding-block:28px 64px}
+section.view{display:flex;flex-direction:column;gap:22px}
+.lead{max-width:62ch;color:var(--muted)}
+.eyebrow{font-size:12.5px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid2>*{min-width:0}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:999px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--indigo)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.small{padding:6px 12px;font-size:14px}
+.next{align-self:flex-end}
+.note{font-size:14px;color:var(--muted)}
+.callout{border-radius:12px;padding:14px 16px;font-size:15px}
+.callout.good{background:var(--good-soft);color:var(--ink);border-left:4px solid var(--good)}
+.callout.warn{background:var(--warn-soft);border-left:4px solid var(--warn)}
+.callout.info{background:var(--indigo-soft);border-left:4px solid var(--indigo)}
+
+/* intro */
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;align-items:center}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.hero h2{font-size:clamp(32px,5.5vw,48px)}
+.hero canvas{width:100%;aspect-ratio:4/3;border-radius:14px;background:var(--space);display:block;max-width:100%}
+.sci{display:flex;gap:14px;align-items:flex-start}
+.sci .badge{flex:0 0 auto;font-family:var(--f-display);background:var(--indigo);color:var(--surface);border-radius:8px;padding:4px 10px;font-size:15px}
+.choices{display:grid;gap:8px}
+.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;background:var(--surface)}
+.choice:hover{border-color:var(--indigo)}
+.choice input{margin-top:5px;accent-color:var(--accent)}
+.choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+
+/* lab */
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.steps li{display:flex;gap:12px;align-items:flex-start}
+.steps .k{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--f-mono);font-size:14px;margin-top:1px}
+.steps label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.steps input{accent-color:var(--good);width:18px;height:18px;margin-top:4px}
+.steps input:checked+span{color:var(--muted);text-decoration:line-through}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px}
+.role{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--surface-2)}
+.role b{font-size:15px}
+.role span{font-size:13px;color:var(--muted)}
+.role input{border:1px solid var(--line);border-radius:6px;padding:5px 8px;background:var(--surface);width:100%}
+.tablewrap{overflow-x:auto}
+table.data{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+table.data th,table.data td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:center}
+table.data th{font-weight:500;color:var(--muted);font-size:13.5px}
+table.data td:first-child,table.data th:first-child{text-align:left}
+table.data input{width:84px;text-align:right;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface-2);font-family:var(--f-mono)}
+table.data input:focus{border-color:var(--accent)}
+.pair{display:inline-flex;align-items:center;gap:6px;font-weight:500}
+.dot{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--indigo);color:var(--surface);font-family:var(--f-mono);font-size:12px}
+.tag{font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:1px 8px;color:var(--muted);margin-left:4px}
+.calc{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calc.up{color:var(--accent);font-weight:500}
+.chartbox{position:relative}
+.chartbox canvas{width:100%;height:260px;display:block}
+.chartbox .ex{position:absolute;top:6px;right:8px;font-size:12px;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:2px 10px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* sim */
+.simwrap{background:var(--space);border-radius:16px;overflow:hidden;color:var(--space-ink)}
+.simwrap canvas{width:100%;height:min(62vh,520px);min-height:320px;display:block;cursor:crosshair;touch-action:manipulation}
+.simbar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;padding:14px 16px;border-top:1px solid rgba(255,255,255,.1)}
+.simbar .btn{background:transparent;color:var(--space-ink);border-color:rgba(255,255,255,.25)}
+.simbar .btn.on{background:#ff6f9f;border-color:#ff6f9f;color:#1a0b14}
+.slider{display:flex;align-items:center;gap:10px;flex:1 1 260px;font-size:13px}
+.slider input{flex:1;accent-color:#ff6f9f}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+.read{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.read .lab{font-size:13px;color:var(--muted)}
+.read .val{font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums}
+.missions{counter-reset:m;display:grid;gap:10px;padding:0;margin:0;list-style:none}
+.missions li{display:flex;gap:10px;align-items:flex-start}
+.missions li::before{counter-increment:m;content:counter(m);flex:0 0 auto;width:24px;height:24px;border-radius:6px;background:var(--indigo-soft);color:var(--indigo);display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;margin-top:2px}
+
+/* talk */
+.q{display:flex;flex-direction:column;gap:10px}
+.q .qh{display:flex;gap:10px;align-items:baseline}
+.q .qn{font-family:var(--f-display);font-size:22px;color:var(--accent);flex:0 0 auto}
+.q .src{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2);resize:vertical;line-height:1.6}
+textarea:focus{border-color:var(--accent);outline:none}
+details.hint{font-size:14px}
+details.hint summary{cursor:pointer;color:var(--indigo);font-weight:500}
+details.hint div{margin-top:6px;padding:10px 12px;background:var(--indigo-soft);border-radius:8px}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.compare div{border:1px dashed var(--line);border-radius:10px;padding:12px}
+.compare b{display:block;font-size:14px;color:var(--muted);font-weight:500;margin-bottom:4px}
+
+/* concept + quiz */
+.timeline canvas{width:100%;height:190px;display:block;border-radius:12px;background:var(--space)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.key{border-top:3px solid var(--accent);background:var(--surface);border-radius:0 0 12px 12px;padding:14px 16px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.key b{display:block;font-family:var(--f-display);font-size:19px;font-weight:400;margin-bottom:4px}
+.quiz{display:grid;gap:14px}
+.qz{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.qz .opts{display:grid;gap:6px}
+.qz button.opt{text-align:left;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 12px;cursor:pointer}
+.qz button.opt:hover{border-color:var(--indigo)}
+.qz button.opt.right{background:var(--good-soft);border-color:var(--good)}
+.qz button.opt.wrong{background:var(--accent-soft);border-color:var(--accent)}
+.qz .fb{font-size:14.5px}
+.score{font-family:var(--f-display);font-size:24px}
+
+/* report */
+.report{border:2px solid var(--ink);border-radius:14px;padding:22px;background:var(--surface);display:flex;flex-direction:column;gap:14px}
+.report h3{font-size:26px}
+.report dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:15px}
+.report dt{color:var(--muted)}
+.report dd{margin:0;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+pre.out{white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--f-mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px;margin:0;max-height:260px;overflow:auto}
+.confirm{display:inline-flex;gap:8px;align-items:center;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:999px;font-size:14px;z-index:20}
+.sync{font-size:13px;border-radius:999px;padding:3px 12px;border:1px solid var(--line);white-space:nowrap}
+.sync.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.sync.wait{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.sync.off{color:var(--muted)}
+#cfgErr{margin:12px auto 0;max-width:1040px}
+.tctl{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.tctl label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.tctl input,.tctl select{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:7px 10px;color:var(--ink)}
+.tctl .chk{flex-direction:row;align-items:center;gap:6px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.tile .lab{font-size:13px;color:var(--muted)}
+.tile .val{font-family:var(--f-mono);font-size:26px;font-variant-numeric:tabular-nums}
+.pbar{display:grid;grid-template-columns:minmax(0,15em) 1fr 2.5em;gap:10px;align-items:center;font-size:14px}
+.pbar .bar{height:14px;border-radius:7px;background:var(--surface-2);overflow:hidden}
+.pbar .bar i{display:block;height:100%;background:var(--accent)}
+table.tlist{border-collapse:collapse;width:100%;min-width:640px;font-size:14.5px}
+table.tlist th,table.tlist td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+table.tlist th{color:var(--muted);font-weight:500;font-size:13px}
+table.tlist tr.g{cursor:pointer}
+table.tlist tr.g:hover td{background:var(--surface-2)}
+.chip{display:inline-block;font-size:12px;border-radius:999px;padding:1px 9px;border:1px solid var(--line)}
+.chip.y{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.chip.n{color:var(--muted)}
+.det{background:var(--surface-2);font-size:14px}
+.det dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:0}
+.det dt{color:var(--muted)} .det dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
+footer.foot{padding-block:0 32px}
+footer.foot a{color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="cfgErr" class="callout warn" hidden>설정(CONFIG) 부분에 오류가 있어 구글 시트 저장이 꺼졌습니다. index.html 위쪽의 GAS_URL 줄에서 따옴표와 쉼표를 확인해 주세요.</div>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div>
+        <div class="unit">중2 과학 · Ⅷ. 별과 우주 · 우주 팽창</div>
+        <h1>팽창하는 <b>우주</b> 탐구실</h1>
+      </div>
+      <div class="team">
+        <label for="cls">반</label>
+        <select id="cls"><option value="">선택</option><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select>
+        <label for="grp">모둠</label>
+        <select id="grp"><option value="">선택</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+        <input id="members" placeholder="모둠원 이름 (예: 3 김하늘, 7 이별)" aria-label="모둠원 이름">
+        <span class="sync off" id="sync" hidden></span>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="수업 단계">
+  <div class="wrap" id="tabs">
+    <a href="#open" data-v="open"><span class="n">1</span>생각 열기</a>
+    <a href="#lab" data-v="lab"><span class="n">2</span>풍선 실험</a>
+    <a href="#sim" data-v="sim"><span class="n">3</span>우주 시뮬레이터</a>
+    <a href="#talk" data-v="talk"><span class="n">4</span>모둠 토의</a>
+    <a href="#check" data-v="check"><span class="n">5</span>개념 확인</a>
+    <a href="#report" data-v="report"><span class="n">6</span>모둠 결과</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- 1 생각 열기 -->
+<section class="view" id="v-open">
+  <div class="hero">
+    <div class="stack">
+      <div class="eyebrow">오늘의 질문</div>
+      <h2>은하들은 왜 서로 멀어지고 있을까?</h2>
+      <p class="lead">우주에는 우리은하 말고도 셀 수 없이 많은 은하가 있습니다. 1920년대, 한 천문학자가 우리은하 밖의 외부 은하를 관측하다가 놀라운 사실을 발견했어요.</p>
+      <div class="sci panel">
+        <span class="badge">과학자</span>
+        <div><b>허블</b> <span class="note num">(Hubble, E. P., 1889~1953)</span>
+          <p class="note">미국의 천문학자. 외부 은하의 존재를 알아냈고, 외부 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈다.</p></div>
+      </div>
+    </div>
+    <canvas id="heroCanvas" aria-label="은하들이 서로 멀어지는 애니메이션"></canvas>
+  </div>
+
+  <div class="panel stack">
+    <h3>실험 전에 예측해 보자</h3>
+    <p>풍선에 붙임딱지 1, 2, 3을 붙이고 풍선을 <b>더 크게</b> 불면, 딱지 사이의 거리는 어떻게 될까요? 모둠의 예측을 하나 고르세요.</p>
+    <div class="choices" id="predict">
+      <label class="choice"><input type="radio" name="pred" value="a"><span>1~2 거리와 1~3 거리가 <b>똑같은 길이만큼</b> 늘어날 것이다.</span></label>
+      <label class="choice"><input type="radio" name="pred" value="b"><span>처음에 더 멀었던 <b>1~3 거리가 더 많이</b> 늘어날 것이다.</span></label>
+      <label class="choice"><input type="radio" name="pred" value="c"><span>처음에 더 가까웠던 <b>1~2 거리가 더 많이</b> 늘어날 것이다.</span></label>
+      <label class="choice"><input type="radio" name="pred" value="d"><span>딱지가 붙어 있으니 거리는 <b>변하지 않을</b> 것이다.</span></label>
+    </div>
+    <label for="predWhy" class="note">그렇게 예측한 까닭</label>
+    <textarea id="predWhy" placeholder="예) 풍선 고무가 전체적으로 늘어나니까…"></textarea>
+  </div>
+  <button class="btn primary next" data-go="lab">풍선 실험으로 →</button>
+</section>
+
+<!-- 2 풍선 실험 -->
+<section class="view" id="v-lab" hidden>
+  <div class="stack">
+    <div class="eyebrow">해 보기 · 모형</div>
+    <h2>풍선 모형으로 우주 팽창 알아보기</h2>
+    <p class="lead">풍선 표면은 우주 공간, 붙임딱지는 은하입니다. 풍선을 불어 우주를 팽창시키고, 은하 사이의 거리를 재 봅시다.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel stack">
+      <h3>준비물</h3>
+      <p>둥근 모양 풍선 · 줄자 · 펜 · 붙임딱지 <span class="note">(부록 336쪽)</span></p>
+      <h3 style="margin-top:6px">모둠 역할</h3>
+      <div class="roles">
+        <div class="role"><b>풍선 담당</b><span>풍선을 불고 입구를 잡는다</span><input id="r1" aria-label="풍선 담당 이름" placeholder="이름"></div>
+        <div class="role"><b>측정 담당</b><span>줄자로 거리를 잰다</span><input id="r2" aria-label="측정 담당 이름" placeholder="이름"></div>
+        <div class="role"><b>기록 담당</b><span>표에 값을 입력한다</span><input id="r3" aria-label="기록 담당 이름" placeholder="이름"></div>
+        <div class="role"><b>발표 담당</b><span>결과와 토의를 발표한다</span><input id="r4" aria-label="발표 담당 이름" placeholder="이름"></div>
+      </div>
+    </div>
+    <div class="panel stack">
+      <h3>실험 과정 <span class="note">— 끝낸 단계에 체크</span></h3>
+      <ol class="steps" id="steps">
+        <li><span class="k">1</span><label><input type="checkbox" id="s1"><span>풍선을 <b>작게</b> 불어 표면에 붙임딱지를 골고루 붙인 후, 딱지 3개에 각각 1, 2, 3을 쓴다.</span></label></li>
+        <li><span class="k">2</span><label><input type="checkbox" id="s2"><span>줄자로 1~2, 1~3까지의 거리를 각각 측정한다.</span></label></li>
+        <li><span class="k">3</span><label><input type="checkbox" id="s3"><span>풍선을 <b>더 크게</b> 불어 1~2, 1~3까지의 거리를 측정한다.</span></label></li>
+        <li><span class="k">+</span><label><input type="checkbox" id="s4"><span><b>도전</b> 2~3 거리도 재고, 풍선을 한 번 더 크게 불어 측정한다.</span></label></li>
+      </ol>
+      <div class="callout info">줄자는 풍선 <b>표면을 따라</b> 대고, 딱지의 <b>가운데</b>에서 가운데까지 잽니다. 측정하는 동안 풍선 입구가 새지 않게 꼭 잡아 주세요.</div>
+    </div>
+  </div>
+
+  <div class="panel stack">
+    <div class="row" style="justify-content:space-between">
+      <h3>측정 기록 <span class="note">(단위: cm)</span></h3>
+      <div class="row">
+        <button class="btn small" id="clearData">기록 지우기</button>
+        <span class="confirm" id="clearConfirm" hidden>정말 지울까요? <button class="btn small primary" id="clearYes">지우기</button><button class="btn small" id="clearNo">취소</button></span>
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table class="data">
+        <thead><tr><th>딱지 사이</th><th>① 작게 분 풍선</th><th>② 크게 분 풍선</th><th>늘어난 거리<br><span class="note">② − ①</span></th><th>몇 배?<br><span class="note">② ÷ ①</span></th><th>③ 더 크게 <span class="tag">도전</span></th><th>몇 배?<br><span class="note">③ ÷ ①</span></th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div id="labFeedback"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel stack">
+      <h3>풍선 크기에 따른 딱지 사이 거리</h3>
+      <div class="legend"><span><i style="background:var(--indigo)"></i>작게</span><span><i style="background:var(--accent)"></i>크게</span><span><i style="background:var(--warn)"></i>더 크게</span></div>
+      <div class="chartbox"><canvas id="barChart"></canvas><span class="ex" id="ex1">예시 데이터</span></div>
+    </div>
+    <div class="panel stack">
+      <h3>처음 거리가 멀수록 더 많이 멀어질까?</h3>
+      <div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>우리 모둠 측정값</span><span><i style="background:var(--muted);height:2px"></i>원점을 지나는 직선</span></div>
+      <div class="chartbox"><canvas id="scatter"></canvas><span class="ex" id="ex2">예시 데이터</span></div>
+      <p class="note">가로축은 처음(작게 분 풍선) 거리, 세로축은 크게 불었을 때 늘어난 거리입니다. 점들이 원점을 지나는 직선 가까이 놓이면, 늘어난 거리가 처음 거리에 비례한다는 뜻이에요.</p>
+    </div>
+  </div>
+  <button class="btn primary next" data-go="sim">우주 시뮬레이터로 →</button>
+</section>
+
+<!-- 3 시뮬레이터 -->
+<section class="view" id="v-sim" hidden>
+  <div class="stack">
+    <div class="eyebrow">모형 확장 · 시뮬레이션</div>
+    <h2>내가 서 있는 은하에서 우주를 보면</h2>
+    <p class="lead">풍선 실험을 컴퓨터 속 우주로 옮겼습니다. 아무 은하나 눌러 그 은하를 <b>관측자</b>로 정하고, 우주를 팽창시켜 보세요. 화면은 언제나 관측자 은하를 가운데에 둡니다.</p>
+  </div>
+  <div class="simwrap">
+    <canvas id="sim" aria-label="우주 팽창 시뮬레이터. 은하를 누르면 관측자가 바뀝니다."></canvas>
+    <div class="simbar">
+      <button class="btn small" id="play">▶ 팽창</button>
+      <button class="btn small" id="rewind">◀ 시간 되돌리기</button>
+      <button class="btn small on" id="arrows" aria-pressed="true">화살표 보기</button>
+      <div class="slider"><span>과거</span><input type="range" id="scale" min="2" max="160" value="100" aria-label="우주의 크기"><span>미래</span></div>
+      <span class="num" id="scaleLabel" style="font-size:13px">우주 크기 ×1.00 (현재)</span>
+    </div>
+  </div>
+  <div class="readout" id="readout"></div>
+  <div class="grid2">
+    <div class="panel stack">
+      <h3>탐구 미션</h3>
+      <ol class="missions">
+        <li>▶ 팽창을 누르고, 가까운 은하 A와 먼 은하 B 중 어느 쪽이 더 빨리 멀어지는지 아래 숫자로 확인하자.</li>
+        <li>멀어지는 속도 ÷ 거리 값을 은하 A와 B에서 비교해 보자. 무엇을 알 수 있을까?</li>
+        <li>다른 은하를 눌러 관측자를 바꿔 보자. 그 은하에서 봐도 다른 은하들이 멀어지는가?</li>
+        <li>◀ 시간 되돌리기를 눌러 보자. 우주의 크기는 어떻게 될까?</li>
+      </ol>
+    </div>
+    <div class="panel stack">
+      <h3>미션 기록</h3>
+      <label for="simNote" class="note">발견한 것을 한두 문장으로 적어 보세요.</label>
+      <textarea id="simNote" placeholder="예) 관측자를 바꿔도…"></textarea>
+      <div class="callout info">은하의 점 크기는 팽창해도 그대로입니다. 늘어나는 것은 은하 <b>사이의 공간</b>이에요. 풍선에서도 붙임딱지 자체는 커지지 않았죠.</div>
+    </div>
+  </div>
+  <button class="btn primary next" data-go="talk">모둠 토의로 →</button>
+</section>
+
+<!-- 4 토의 -->
+<section class="view" id="v-talk" hidden>
+  <div class="stack">
+    <div class="eyebrow">모둠 토의</div>
+    <h2>풍선에서 우주로 생각 넓히기</h2>
+    <p class="lead">실험 결과와 시뮬레이터에서 본 것을 근거로 모둠의 생각을 정리하세요. 막히면 ‘생각 도우미’를 열어 보세요.</p>
+  </div>
+  <div class="panel q">
+    <div class="qh"><span class="qn">1</span><b>풍선을 더 크게 불면 붙임딱지 1과 2, 1과 3 사이의 거리는 어떻게 변하는지 비교해 보자.</b><span class="src">교과서 1</span></div>
+    <div class="compare" id="myData"></div>
+    <textarea id="t1" aria-label="토의 1 답"></textarea>
+    <details class="hint"><summary>생각 도우미</summary><div>두 거리 모두 늘었나요? 늘어난 길이는 어느 쪽이 더 큰가요? ‘몇 배’ 값은 서로 비슷한가요? 표의 숫자를 문장에 넣어 써 보세요.</div></details>
+  </div>
+  <div class="panel q">
+    <div class="qh"><span class="qn">2</span><b>풍선 표면은 우주 공간, 붙임딱지는 은하라고 비유할 때, 은하 사이의 거리는 어떻게 변하는지 토의해 보자.</b><span class="src">교과서 토의</span></div>
+    <textarea id="t2" aria-label="토의 2 답"></textarea>
+    <details class="hint"><summary>생각 도우미</summary><div>딱지가 스스로 움직였나요, 아니면 딱지 사이의 고무가 늘어났나요? 우주에서 ‘고무’에 해당하는 것은 무엇일까요?</div></details>
+  </div>
+  <div class="panel q">
+    <div class="qh"><span class="qn">3</span><b>2번 딱지 위에 작은 개미가 산다면, 개미 눈에는 다른 딱지들이 어떻게 보일까? 팽창하는 우주의 ‘중심’은 어디일까?</b><span class="src">심화</span></div>
+    <textarea id="t3" aria-label="토의 3 답"></textarea>
+    <details class="hint"><summary>생각 도우미</summary><div>시뮬레이터에서 관측자 은하를 여러 번 바꿔 보았지요. 어떤 은하에서 보아도 결과가 같았나요? 풍선 <b>표면 위</b>에서 중심이라고 할 만한 곳이 있나요?</div></details>
+  </div>
+  <div class="panel q">
+    <div class="qh"><span class="qn">4</span><b>풍선 모형이 실제 우주와 다른 점(모형의 한계)을 찾아보자.</b><span class="src">심화</span></div>
+    <textarea id="t4" aria-label="토의 4 답"></textarea>
+    <details class="hint"><summary>생각 도우미</summary><div>풍선에는 안쪽 공간과 입구가 있고 끝도 있어요. 풍선은 바람을 넣는 사람이 있고, 언젠가 터지기도 하죠. 붙임딱지 대신 펜으로 점을 찍었다면 점의 크기는 어떻게 되었을까요?</div></details>
+  </div>
+  <div class="row" style="justify-content:space-between">
+    <button class="btn" id="revealKey">핵심 정리 보기</button>
+    <button class="btn primary" data-go="check">개념 확인으로 →</button>
+  </div>
+  <div class="panel stack" id="keyBox" hidden>
+    <h3>핵심 정리</h3>
+    <p>풍선 표면이 팽창할수록 붙임딱지 사이의 거리는 멀어진다. 이와 마찬가지로 관측된 외부 은하들 사이의 거리가 멀어지는 것은 <b>우주 공간이 팽창</b>하고 있기 때문이다.</p>
+    <p>팽창하는 풍선 표면에 중심이 없는 것처럼, 팽창하는 우주에도 <b>중심이 없다</b>. 어느 은하에서 관측하더라도 다른 은하들은 멀어지고, 멀리 있는 은하일수록 더 빨리 멀어진다.</p>
+    <p class="note">모형의 한계 예시: 실제 우주는 풍선처럼 ‘안쪽’이나 ‘바깥’이 있는 물체가 아니다. 은하 자체는 팽창하지 않는다(붙임딱지가 커지지 않는 것과 같다).</p>
+  </div>
+</section>
+
+<!-- 5 개념 확인 -->
+<section class="view" id="v-check" hidden>
+  <div class="stack">
+    <div class="eyebrow">개념 정리</div>
+    <h2>시간을 거꾸로 돌리면</h2>
+    <p class="lead">팽창하는 우주의 시간을 과거로 되돌리면 우주의 크기는 점점 작아집니다. 이를 바탕으로 과학자들은 우주가 약 138억 년 전에 탄생하였고, 점점 팽창하여 현재의 모습이 되었다고 설명합니다.</p>
+  </div>
+  <div class="timeline"><canvas id="timeline" aria-label="과거에서 현재로 우주가 커지는 모습"></canvas></div>
+  <div class="keys">
+    <div class="key"><b>허블의 발견</b>우리은하 밖 외부 은하를 관측하여 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈다.</div>
+    <div class="key"><b>우주 공간의 팽창</b>은하가 스스로 날아가는 것이 아니라, 은하 사이의 공간이 늘어나 거리가 멀어진다.</div>
+    <div class="key"><b>중심이 없다</b>어느 은하에서 보아도 다른 은하가 멀어진다. 멀리 있는 은하일수록 더 빨리 멀어진다.</div>
+    <div class="key"><b>우주의 탄생</b>시간을 되돌리면 우주는 점점 작아진다. 우주는 약 138억 년 전에 탄생하여 팽창해 왔다.</div>
+  </div>
+  <div class="row" style="justify-content:space-between">
+    <h3>개념 확인 문제</h3>
+    <span class="score" id="score">0 / 6</span>
+  </div>
+  <div class="quiz" id="quiz"></div>
+  <button class="btn primary next" data-go="report">모둠 결과 정리로 →</button>
+</section>
+
+<!-- 6 결과 -->
+<section class="view" id="v-report" hidden>
+  <div class="stack">
+    <div class="eyebrow">마무리</div>
+    <h2>모둠 결과 카드</h2>
+    <p class="lead" id="reportLead">지금까지 입력한 내용이 한 장에 모였습니다. 빠진 곳이 없는지 확인한 뒤 <b>결과 복사</b>를 눌러 선생님이 안내한 곳(하이러닝, 패들렛 등)에 붙여 넣으세요.</p>
+  </div>
+  <div class="report" id="reportCard"></div>
+  <div class="row">
+    <button class="btn primary" id="sendNow" hidden>선생님께 지금 보내기</button>
+    <button class="btn" id="copyBtn">결과 복사</button>
+    <button class="btn" id="resetAll">이 기기의 모든 기록 지우기</button>
+    <span class="confirm" id="resetConfirm" hidden>모든 입력이 사라집니다. 계속할까요? <button class="btn small primary" id="resetYes">모두 지우기</button><button class="btn small" id="resetNo">취소</button></span>
+  </div>
+  <pre class="out" id="copyText" aria-label="복사할 결과 텍스트"></pre>
+</section>
+<!-- 선생님 화면 -->
+<section class="view" id="v-teacher" hidden>
+  <div class="stack">
+    <div class="eyebrow">선생님 화면</div>
+    <h2>모둠 기록 모아 보기</h2>
+    <p class="lead">구글 시트에 모인 모둠 기록을 날짜와 반별로 봅니다. 학생 화면에는 이 메뉴가 탭으로 보이지 않아요.</p>
+  </div>
+  <div class="panel tctl">
+    <label for="tPin">PIN<input id="tPin" type="password" inputmode="numeric" autocomplete="off" style="width:110px"></label>
+    <label for="tDay">날짜<input id="tDay" type="date"></label>
+    <label for="tCls">반<select id="tCls"><option value="">전체</option><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select></label>
+    <button class="btn primary" id="tLoad">불러오기</button>
+    <label class="chk" for="tAuto"><input type="checkbox" id="tAuto"> 20초마다 새로고침</label>
+    <span class="note" id="tStatus"></span>
+  </div>
+  <div id="tOut" class="stack" style="gap:18px"></div>
+  <a class="btn next" href="#open" style="text-decoration:none">학생 화면으로</a>
+</section>
+</main>
+<footer class="foot wrap"><a href="#teacher">선생님 화면</a></footer>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ===== 설정 =====
+   GAS_URL: 구글 Apps Script 웹 앱 주소(…/exec)를 큰따옴표 안에 붙여 넣으세요.
+   비워 두면 기록은 각 기기에만 저장됩니다. */
+window.CONFIG = {
+  GAS_URL: ""
+};
+</script>
+<script>
+(function(){
+'use strict';
+const KEY='expanding-universe-lab-v1';
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- state ---------- */
+const PAIRS=[{id:'12',a:1,b:2,label:'1 ~ 2'},{id:'13',a:1,b:3,label:'1 ~ 3'},{id:'23',a:2,b:3,label:'2 ~ 3',challenge:true}];
+let S={cls:'',grp:'',members:'',pred:'',predWhy:'',roles:['','','',''],steps:[false,false,false,false],data:{},notes:{},quiz:{},unsent:false};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function save(){S.unsent=true;persist();queueSend();}
+
+/* ---------- 구글 시트 전송 ---------- */
+const CFG=window.CONFIG||null;
+if(!CFG) document.getElementById('cfgErr').hidden=false;
+const GAS=String((CFG&&CFG.GAS_URL)||'').replace(/[\u201C\u201D\u2018\u2019"']/g,'').trim();
+let sending=false,sendTimer=null;
+function pill(kind,text){const p=$('#sync'); if(!p) return; p.hidden=!GAS; p.className='sync '+kind; p.textContent=text;}
+function payload(){
+  const d={}; ['12','13','23'].forEach(p=>['s','b','x'].forEach(k=>{d['d'+p+k]=((S.data[p]||{})[k]||'').toString().trim();}));
+  return Object.assign({cls:S.cls,grp:S.grp,members:S.members,
+    roles:['풍선 ','측정 ','기록 ','발표 '].map((r,i)=>r+(S.roles[i]||'-')).join(' / '),
+    pred:S.pred?PRED_TEXT[S.pred]:'',predWhy:S.predWhy,sim:S.notes.sim||'',
+    t1:S.notes.t1||'',t2:S.notes.t2||'',t3:S.notes.t3||'',t4:S.notes.t4||'',
+    score:String(QUIZ.filter((it,i)=>S.quiz[i]===it.a).length),answered:String(Object.keys(S.quiz).length)},d);
+}
+function queueSend(){
+  if(!GAS) return;
+  if(!S.cls||!S.grp){pill('wait','반·모둠을 고르면 선생님께 저장돼요');return;}
+  pill('wait','저장 대기'); clearTimeout(sendTimer); sendTimer=setTimeout(push,2500);
+}
+async function push(){
+  if(!GAS||sending||!S.unsent) return;
+  if(!S.cls||!S.grp){pill('wait','반·모둠을 고르면 선생님께 저장돼요');return;}
+  sending=true; S.unsent=false; persist(); pill('wait','전송 중');
+  try{
+    const r=await fetch(GAS,{method:'POST',body:JSON.stringify(payload())});
+    const j=await r.json(); if(!j.ok) throw new Error(j.error||'fail');
+    pill('ok','선생님께 전송됨 ✓');
+  }catch(e){ S.unsent=true; persist(); pill('wait','전송 대기 · 자동으로 다시 보냄'); }
+  sending=false;
+}
+setInterval(()=>{ if(S.unsent) push(); },15000);
+window.addEventListener('online',()=>{ if(S.unsent) push(); });
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,1800);}
+
+/* ---------- routing ---------- */
+const VIEWS=['open','lab','sim','talk','check','report','teacher'];
+function show(){
+  let v=(location.hash||'').slice(1); if(!VIEWS.includes(v)) v='open';
+  VIEWS.forEach(x=>{$('#v-'+x).hidden=(x!==v);});
+  $$('#tabs a').forEach(a=>{ if(a.dataset.v===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+  const cur=$('#tabs a[aria-current]'); if(cur) cur.scrollIntoView({block:'nearest',inline:'nearest'});
+  if(v==='lab') drawCharts();
+  if(v==='sim'){ resizeSim(); drawSim(); }
+  if(v==='talk') renderMyData();
+  if(v==='check') drawTimeline();
+  if(v==='report') renderReport();
+  if(v==='teacher') teacherOpen();
+  $('#tabs').parentElement.hidden=(v==='teacher');
+  $('.team').hidden=(v==='teacher'); $('footer.foot').hidden=(v==='teacher');
+  markDone();
+}
+window.addEventListener('hashchange',()=>{show();window.scrollTo(0,0);});
+$$('[data-go]').forEach(b=>b.addEventListener('click',()=>{location.hash=b.dataset.go;}));
+function markDone(){
+  const d={open:!!S.pred,lab:filled('12','s')&&filled('12','b')&&filled('13','s')&&filled('13','b'),sim:!!(S.notes.sim||'').trim(),
+    talk:['t1','t2'].every(k=>(S.notes[k]||'').trim()),check:Object.keys(S.quiz).length>=QUIZ.length,report:false};
+  $$('#tabs a').forEach(a=>a.classList.toggle('done',!!d[a.dataset.v]&&a.getAttribute('aria-current')!=='page'));
+}
+
+/* ---------- header team info ---------- */
+['cls','grp','members'].forEach(id=>{const el=$('#'+id); el.value=S[id]||''; el.addEventListener('input',()=>{S[id]=el.value;save();});});
+
+/* ---------- predict ---------- */
+$$('#predict input').forEach(r=>{ r.checked=(r.value===S.pred); r.addEventListener('change',()=>{S.pred=r.value;save();paintPred();markDone();}); });
+function paintPred(){$$('#predict .choice').forEach(c=>c.classList.toggle('sel',c.querySelector('input').checked));}
+paintPred();
+$('#predWhy').value=S.predWhy||''; $('#predWhy').addEventListener('input',e=>{S.predWhy=e.target.value;save();});
+const PRED_TEXT={a:'똑같은 길이만큼 늘어난다',b:'1~3 거리가 더 많이 늘어난다',c:'1~2 거리가 더 많이 늘어난다',d:'변하지 않는다'};
+
+/* ---------- lab ---------- */
+['r1','r2','r3','r4'].forEach((id,i)=>{const el=$('#'+id);el.value=S.roles[i]||'';el.addEventListener('input',()=>{S.roles[i]=el.value;save();});});
+['s1','s2','s3','s4'].forEach((id,i)=>{const el=$('#'+id);el.checked=!!S.steps[i];el.addEventListener('change',()=>{S.steps[i]=el.checked;save();});});
+
+function val(p,k){const v=parseFloat(((S.data[p]||{})[k]||'').toString().replace(',','.'));return isFinite(v)&&v>0?v:null;}
+function filled(p,k){return val(p,k)!==null;}
+const f1=x=>x===null?'–':(Math.round(x*10)/10).toFixed(1);
+const f2=x=>x===null?'–':(Math.round(x*100)/100).toFixed(2);
+
+const tb=$('#tbody');
+PAIRS.forEach(p=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><span class="pair"><span class="dot">${p.a}</span>~<span class="dot">${p.b}</span></span>${p.challenge?'<span class="tag">도전</span>':''}</td>
+  <td><input id="d${p.id}s" inputmode="decimal" aria-label="${p.label} 작게 분 풍선 거리"></td>
+  <td><input id="d${p.id}b" inputmode="decimal" aria-label="${p.label} 크게 분 풍선 거리"></td>
+  <td class="calc up" id="inc${p.id}">–</td><td class="calc" id="rat${p.id}">–</td>
+  <td><input id="d${p.id}x" inputmode="decimal" aria-label="${p.label} 더 크게 분 풍선 거리"></td>
+  <td class="calc" id="ratx${p.id}">–</td>`;
+  tb.appendChild(tr);
+  ['s','b','x'].forEach(k=>{
+    const el=tr.querySelector('#d'+p.id+k); el.value=(S.data[p.id]||{})[k]||'';
+    el.addEventListener('input',()=>{S.data[p.id]=S.data[p.id]||{};S.data[p.id][k]=el.value;save();updateLab();});
+  });
+});
+function updateLab(){
+  PAIRS.forEach(p=>{
+    const s=val(p.id,'s'),b=val(p.id,'b'),x=val(p.id,'x');
+    $('#inc'+p.id).textContent=(s&&b)?(b-s>=0?'+':'')+f1(b-s):'–';
+    $('#rat'+p.id).textContent=(s&&b)?f2(b/s)+'배':'–';
+    $('#ratx'+p.id).textContent=(s&&x)?f2(x/s)+'배':'–';
+  });
+  feedback(); drawCharts(); markDone();
+}
+function feedback(){
+  const box=$('#labFeedback');
+  const s12=val('12','s'),b12=val('12','b'),s13=val('13','s'),b13=val('13','b');
+  if(!(s12&&b12&&s13&&b13)){box.innerHTML='<p class="note">1~2, 1~3의 ①②칸을 모두 입력하면 결과 해석이 나타납니다.</p>';return;}
+  const msgs=[]; let kind='good';
+  const i12=b12-s12,i13=b13-s13,r12=b12/s12,r13=b13/s13;
+  if(i12<=0||i13<=0){kind='warn';msgs.push('크게 분 풍선의 거리가 작게 분 풍선보다 짧거나 같게 기록되었어요. ①과 ② 칸이 바뀌지 않았는지, 측정 위치가 같은지 확인해 보세요.');}
+  else{
+    msgs.push(`두 거리 모두 늘어났어요. 1~2는 <b class="num">${f1(i12)} cm</b>, 1~3은 <b class="num">${f1(i13)} cm</b> 늘었습니다.`);
+    const far=s13>s12?'13':'12';
+    const farMore=(far==='13'&&i13>i12)||(far==='12'&&i12>i13);
+    if(farMore) msgs.push('처음에 <b>더 멀리 있던 딱지 쌍이 더 많이</b> 멀어졌어요.');
+    else {kind='warn';msgs.push('처음에 더 가까웠던 쌍이 더 많이 늘었네요. 측정 오차일 수 있어요. 줄자를 표면에 밀착했는지, 딱지 가운데를 기준으로 쟀는지 확인하고 한 번 더 재 보세요.');}
+    const diff=Math.abs(r12-r13)/((r12+r13)/2);
+    if(diff<=0.15) msgs.push(`그런데 ‘몇 배’ 값은 <b class="num">${f2(r12)}배</b>와 <b class="num">${f2(r13)}배</b>로 비슷해요. 풍선 전체가 <b>같은 비율로</b> 늘어났다는 뜻입니다.`);
+    else msgs.push(`‘몇 배’ 값이 <span class="num">${f2(r12)}배</span>와 <span class="num">${f2(r13)}배</span>로 차이가 조금 커요. 풍선이 고르게 부풀지 않았거나(입구 근처는 덜 늘어나요) 측정 오차가 있을 수 있어요.`);
+    if(S.pred) msgs.push(`우리 모둠의 예측: “${PRED_TEXT[S.pred]}” → 실험 결과와 비교해 보세요.`);
+  }
+  box.innerHTML=`<div class="callout ${kind}">${msgs.map(m=>'<p>'+m+'</p>').join('')}</div>`;
+}
+$('#clearData').addEventListener('click',()=>{$('#clearConfirm').hidden=false;});
+$('#clearNo').addEventListener('click',()=>{$('#clearConfirm').hidden=true;});
+$('#clearYes').addEventListener('click',()=>{S.data={};save();$$('#tbody input').forEach(i=>i.value='');$('#clearConfirm').hidden=true;updateLab();toast('측정 기록을 지웠어요');});
+
+/* charts */
+const EX={'12':{s:6,b:9.2,x:12.1},'13':{s:10,b:15.1,x:20.3},'23':{s:8,b:12.3,x:16.0}};
+function chartData(){
+  const any=PAIRS.some(p=>filled(p.id,'s')||filled(p.id,'b'));
+  const src=any?null:EX;
+  const get=(p,k)=>src?src[p][k]:val(p,k);
+  return {example:!any,get};
+}
+function setupCanvas(c){
+  const dpr=window.devicePixelRatio||1, w=c.clientWidth, h=c.clientHeight;
+  if(!w) return null;
+  c.width=Math.round(w*dpr); c.height=Math.round(h*dpr);
+  const ctx=c.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w,h};
+}
+function niceMax(v){if(v<=0)return 10;const p=Math.pow(10,Math.floor(Math.log10(v)));const n=v/p;return (n<=2?2:n<=5?5:10)*p;}
+function drawCharts(){
+  if($('#v-lab').hidden) return;
+  const {example,get}=chartData();
+  $('#ex1').hidden=!example; $('#ex2').hidden=!example;
+  const ink=css('--ink'),muted=css('--muted'),line=css('--line'),acc=css('--accent'),ind=css('--indigo'),warn=css('--warn');
+  const font='12px '+css('--f-body');
+  // bar
+  let c=setupCanvas($('#barChart'));
+  if(c){const {ctx,w,h}=c; ctx.clearRect(0,0,w,h);
+    const L=40,R=10,T=14,B=30,pw=w-L-R,ph=h-T-B;
+    let mx=0; PAIRS.forEach(p=>['s','b','x'].forEach(k=>{const v=get(p.id,k); if(v) mx=Math.max(mx,v);}));
+    mx=niceMax(mx*1.05);
+    ctx.font=font; ctx.textAlign='right'; ctx.textBaseline='middle';
+    for(let i=0;i<=5;i++){const v=mx*i/5,y=T+ph-ph*i/5; ctx.strokeStyle=line; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(L,y+.5); ctx.lineTo(w-R,y+.5); ctx.stroke(); ctx.fillStyle=muted; ctx.fillText(+v.toFixed(1),L-6,y);}
+    const gw=pw/PAIRS.length, bw=Math.min(28,gw/4.2), cols=[ind,acc,warn];
+    PAIRS.forEach((p,gi)=>{
+      const cx=L+gw*gi+gw/2;
+      ['s','b','x'].forEach((k,ki)=>{const v=get(p.id,k); if(!v) return; const x=cx+(ki-1)*(bw+4)-bw/2, bh=ph*v/mx;
+        ctx.fillStyle=cols[ki]; ctx.globalAlpha=example?.45:1; ctx.fillRect(x,T+ph-bh,bw,bh); ctx.globalAlpha=1;});
+      ctx.fillStyle=ink; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(p.label+(p.challenge?' (도전)':''),cx,T+ph+8);
+    });
+    ctx.save(); ctx.translate(11,T+ph/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center'; ctx.fillStyle=muted; ctx.fillText('거리 (cm)',0,0); ctx.restore();
+  }
+  // scatter
+  c=setupCanvas($('#scatter'));
+  if(c){const {ctx,w,h}=c; ctx.clearRect(0,0,w,h);
+    const L=40,R=14,T=14,B=34,pw=w-L-R,ph=h-T-B;
+    const pts=[]; PAIRS.forEach(p=>{const s=get(p.id,'s'),b=get(p.id,'b'); if(s&&b) pts.push({x:s,y:b-s,l:p.label});});
+    const mxX=niceMax(Math.max(1,...pts.map(q=>q.x))*1.1), mxY=niceMax(Math.max(1,...pts.map(q=>Math.max(q.y,0)))*1.15);
+    ctx.font=font;
+    for(let i=0;i<=4;i++){const y=T+ph-ph*i/4; ctx.strokeStyle=line; ctx.beginPath(); ctx.moveTo(L,y+.5); ctx.lineTo(w-R,y+.5); ctx.stroke(); ctx.fillStyle=muted; ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText(+(mxY*i/4).toFixed(1),L-6,y);
+      const x=L+pw*i/4; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(+(mxX*i/4).toFixed(1),x,T+ph+6);}
+    // fit through origin
+    const sxx=pts.reduce((a,q)=>a+q.x*q.x,0), sxy=pts.reduce((a,q)=>a+q.x*q.y,0);
+    if(pts.length>=2&&sxx>0){const k=sxy/sxx; ctx.strokeStyle=muted; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(L,T+ph);
+      let xe=mxX, ye=k*xe; if(ye>mxY){ye=mxY;xe=mxY/k;} ctx.lineTo(L+pw*xe/mxX,T+ph-ph*ye/mxY); ctx.stroke(); ctx.setLineDash([]);}
+    pts.forEach(q=>{const x=L+pw*q.x/mxX,y=T+ph-ph*Math.max(q.y,0)/mxY; ctx.fillStyle=acc; ctx.globalAlpha=example?.5:1; ctx.beginPath(); ctx.arc(x,y,6,0,7); ctx.fill(); ctx.globalAlpha=1;
+      ctx.fillStyle=ink; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText(q.l,Math.min(x+8,w-R-34),y-4);});
+    ctx.fillStyle=muted; ctx.textAlign='right'; ctx.textBaseline='bottom'; ctx.fillText('처음 거리 (cm)',w-R,h-1);
+    ctx.save(); ctx.translate(11,T+ph/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('늘어난 거리 (cm)',0,0); ctx.restore();
+  }
+}
+
+/* ---------- seeded galaxies ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const R=rng(20261027);
+const GAL=[{x:0,y:0,r:3.2,h:45,type:1,name:'우리은하'}];
+while(GAL.length<54){const x=R()*2.4-1.2,y=R()*1.8-.9; if(GAL.some(g=>Math.hypot(g.x-x,g.y-y)<.13)) continue;
+  GAL.push({x,y,r:1.6+R()*2.4,h:[200,45,320,180,30][Math.floor(R()*5)],type:R()<.6?1:0,rot:R()*Math.PI,name:''});}
+function drawGalaxy(ctx,x,y,g,alpha,size){
+  const r=(size||1)*g.r;
+  const grd=ctx.createRadialGradient(x,y,0,x,y,r*3);
+  grd.addColorStop(0,`hsla(${g.h},90%,92%,${alpha})`); grd.addColorStop(.35,`hsla(${g.h},80%,70%,${alpha*.55})`); grd.addColorStop(1,`hsla(${g.h},80%,60%,0)`);
+  ctx.fillStyle=grd; ctx.save(); ctx.translate(x,y); ctx.rotate(g.rot||0); ctx.scale(1,g.type?.55:1); ctx.beginPath(); ctx.arc(0,0,r*3,0,7); ctx.fill(); ctx.restore();
+}
+
+/* hero canvas */
+(function hero(){
+  const c=$('#heroCanvas'); let t0=performance.now();
+  function frame(now){
+    const s=setupCanvas(c); if(!s){requestAnimationFrame(frame);return;}
+    const {ctx,w,h}=s; ctx.fillStyle='#0d0c24'; ctx.fillRect(0,0,w,h);
+    const t=reduce?0.6:((now-t0)/9000)%1; const a=.35+t*.9;
+    const sc=Math.min(w,h)*.5;
+    GAL.forEach(g=>{const x=w/2+g.x*a*sc,y=h/2+g.y*a*sc; if(x<-20||x>w+20||y<-20||y>h+20) return; drawGalaxy(ctx,x,y,g,t>.9?(1-(t-.9)*10):1);});
+    ctx.fillStyle='rgba(232,231,255,.75)'; ctx.font='13px '+css('--f-body'); ctx.textAlign='left'; ctx.fillText('은하들 사이의 거리가 점점 멀어진다',14,h-14);
+    if(!reduce && !$('#v-open').hidden) requestAnimationFrame(frame); else if(!reduce) setTimeout(()=>requestAnimationFrame(frame),400);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- simulator ---------- */
+const sim=$('#sim'); let simCtx=null,SW=0,SH=0;
+let obs=0, A=null, B=null, scale=1, playing=0, showArrows=true, lastT=0, rate=0;
+const RATE=0.18; // 1초당 크기 변화 비율
+function resizeSim(){const s=setupCanvas(sim); if(s){simCtx=s.ctx;SW=s.w;SH=s.h;}}
+function pickAB(){
+  const o=GAL[obs]; const d=GAL.map((g,i)=>({i,d:Math.hypot(g.x-o.x,g.y-o.y)})).filter(q=>q.i!==obs).sort((p,q)=>p.d-q.d);
+  A=d[1].i; B=d.find(q=>q.d>d[1].d*2.6&&q.d<.95)?.i ?? d[Math.min(d.length-1,12)].i;
+}
+pickAB();
+function view(){return Math.min(SW,SH)*.62;}
+function proj(g){const o=GAL[obs],v=view();return {x:SW/2+(g.x-o.x)*scale*v,y:SH/2+(g.y-o.y)*scale*v};}
+function drawSim(){
+  if(!simCtx) return; const ctx=simCtx; ctx.fillStyle='#0d0c24'; ctx.fillRect(0,0,SW,SH);
+  // faint background stars (fixed, not part of the universe model)
+  const v=view();
+  // big bang glow
+  if(scale<.12){const k=1-scale/.12; const grd=ctx.createRadialGradient(SW/2,SH/2,0,SW/2,SH/2,Math.min(SW,SH)*.5); grd.addColorStop(0,`rgba(255,240,200,${.9*k})`); grd.addColorStop(.3,`rgba(255,170,90,${.5*k})`); grd.addColorStop(1,'rgba(255,120,60,0)'); ctx.fillStyle=grd; ctx.fillRect(0,0,SW,SH);}
+  const dens=Math.min(1,scale*2.5);
+  GAL.forEach((g,i)=>{
+    const p=proj(g); if(p.x<-30||p.x>SW+30||p.y<-30||p.y>SH+30) return;
+    drawGalaxy(ctx,p.x,p.y,g,dens);
+    if(showArrows&&i!==obs&&scale>.12){
+      const o=GAL[obs]; const dx=(g.x-o.x)*v*scale, dy=(g.y-o.y)*v*scale; const k=.22;
+      const ex=p.x+dx*k, ey=p.y+dy*k; ctx.strokeStyle=(i===A||i===B)?'rgba(255,111,159,.95)':'rgba(170,175,255,.45)'; ctx.lineWidth=(i===A||i===B)?2:1.2;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(ex,ey); ctx.stroke();
+      const ang=Math.atan2(ey-p.y,ex-p.x); ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex-6*Math.cos(ang-.45),ey-6*Math.sin(ang-.45)); ctx.lineTo(ex-6*Math.cos(ang+.45),ey-6*Math.sin(ang+.45)); ctx.closePath(); ctx.fillStyle=ctx.strokeStyle; ctx.fill();
+    }
+  });
+  // labels
+  ctx.font='600 13px '+css('--f-body'); ctx.textBaseline='bottom';
+  const lab=(i,t,col)=>{const p=proj(GAL[i]); if(p.x<0||p.x>SW||p.y<0||p.y>SH) return; ctx.fillStyle=col; ctx.textAlign='center'; ctx.fillText(t,p.x,p.y-12);};
+  if(scale>.12){ lab(A,'은하 A','#ff9fbf'); lab(B,'은하 B','#ff9fbf'); }
+  const po=proj(GAL[obs]); ctx.strokeStyle='#ffd27a'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(po.x,po.y,13,0,7); ctx.stroke();
+  ctx.fillStyle='#ffd27a'; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(obs===0?'관측자 · 우리은하':'관측자 은하',po.x,po.y+16);
+  if(scale<.12){ctx.fillStyle='#fff5e0'; ctx.font='16px '+css('--f-body'); ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText('약 138억 년 전, 우주는 아주 작은 한 점에서 시작되었다',SW/2,SH-16);}
+  ctx.fillStyle='rgba(232,231,255,.6)'; ctx.font='12px '+css('--f-body'); ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('은하를 누르면 관측자가 바뀝니다',12,10);
+  updateReadout();
+}
+function updateReadout(){
+  const o=GAL[obs]; const U=100;
+  const dA=Math.hypot(GAL[A].x-o.x,GAL[A].y-o.y)*scale*U, dB=Math.hypot(GAL[B].x-o.x,GAL[B].y-o.y)*scale*U;
+  const r=rate; const vA=dA*r, vB=dB*r;
+  const ratio=dB/dA;
+  const tile=(l,v,n)=>`<div class="read"><div class="lab">${l}</div><div class="val">${v}</div>${n?`<div class="note">${n}</div>`:''}</div>`;
+  $('#readout').innerHTML=
+    tile('관측자 → 은하 A 거리',dA.toFixed(1),'임의 단위')+
+    tile('관측자 → 은하 B 거리',dB.toFixed(1),`A보다 ${ratio.toFixed(2)}배 멀다`)+
+    tile('멀어지는 속도 A · B',r? `${vA.toFixed(1)} · ${vB.toFixed(1)}`:'정지', r? `B가 A보다 ${(vB/vA).toFixed(2)}배 빠르다` : '▶ 팽창을 누르면 측정')+
+    tile('속도 ÷ 거리 (A · B)',r? `${(vA/dA).toFixed(2)} · ${(vB/dB).toFixed(2)}`:'–', r? (r>0?'두 값이 같다!':'수축 중에도 두 값이 같다') : '팽창 중에 비교해 보자');
+}
+function setScale(s){scale=Math.max(.02,Math.min(1.6,s)); $('#scale').value=Math.round(scale*100);
+  $('#scaleLabel').textContent='우주 크기 ×'+scale.toFixed(2)+(Math.abs(scale-1)<.005?' (현재)':scale<1?' (과거)':' (미래)');}
+function loop(now){
+  if(!playing){rate=0;drawSim();return;}
+  const dt=Math.min(.05,(now-lastT)/1000); lastT=now;
+  const ns=scale*(1+playing*RATE*dt); rate=playing*RATE;
+  if(ns>=1.6||ns<=.02){setScale(ns);stop();return;}
+  setScale(ns); drawSim(); requestAnimationFrame(loop);
+}
+function start(dir){playing=dir; lastT=performance.now(); $('#play').classList.toggle('on',dir>0); $('#rewind').classList.toggle('on',dir<0);
+  $('#play').textContent=dir>0?'❚❚ 멈춤':'▶ 팽창'; $('#rewind').textContent=dir<0?'❚❚ 멈춤':'◀ 시간 되돌리기'; requestAnimationFrame(loop);}
+function stop(){playing=0;rate=0;$('#play').classList.remove('on');$('#rewind').classList.remove('on');$('#play').textContent='▶ 팽창';$('#rewind').textContent='◀ 시간 되돌리기';drawSim();}
+$('#play').addEventListener('click',()=>{ if(playing>0) stop(); else { if(scale>=1.59) setScale(.6); start(1);} });
+$('#rewind').addEventListener('click',()=>{ if(playing<0) stop(); else { if(scale<=.03) setScale(1); start(-1);} });
+$('#arrows').addEventListener('click',e=>{showArrows=!showArrows;e.currentTarget.classList.toggle('on',showArrows);e.currentTarget.setAttribute('aria-pressed',showArrows);drawSim();});
+$('#scale').addEventListener('input',e=>{stop();setScale(e.target.value/100);drawSim();});
+sim.addEventListener('click',e=>{
+  const rc=sim.getBoundingClientRect(),mx=e.clientX-rc.left,my=e.clientY-rc.top; let best=-1,bd=26;
+  GAL.forEach((g,i)=>{const p=proj(g);const d=Math.hypot(p.x-mx,p.y-my); if(d<bd){bd=d;best=i;}});
+  if(best>=0&&best!==obs){obs=best;pickAB();drawSim();toast(best===0?'관측자: 우리은하':'관측자 은하를 바꿨어요');}
+});
+$('#simNote').value=S.notes.sim||''; $('#simNote').addEventListener('input',e=>{S.notes.sim=e.target.value;save();markDone();});
+
+/* ---------- talk ---------- */
+['t1','t2','t3','t4'].forEach(k=>{const el=$('#'+k);el.value=S.notes[k]||'';el.addEventListener('input',()=>{S.notes[k]=el.value;save();markDone();});});
+$('#revealKey').addEventListener('click',()=>{const b=$('#keyBox');b.hidden=!b.hidden;$('#revealKey').textContent=b.hidden?'핵심 정리 보기':'핵심 정리 닫기';});
+function renderMyData(){
+  const s12=val('12','s'),b12=val('12','b'),s13=val('13','s'),b13=val('13','b');
+  $('#myData').innerHTML=`<div><b>1~2 거리</b><span class="num">${f1(s12)} → ${f1(b12)} cm</span>${s12&&b12?` <span class="note">(+${f1(b12-s12)}, ${f2(b12/s12)}배)</span>`:''}</div>
+  <div><b>1~3 거리</b><span class="num">${f1(s13)} → ${f1(b13)} cm</span>${s13&&b13?` <span class="note">(+${f1(b13-s13)}, ${f2(b13/s13)}배)</span>`:''}</div>
+  <div><b>우리 모둠 예측</b>${S.pred?PRED_TEXT[S.pred]:'<span class="note">아직 고르지 않음</span>'}</div>`;
+}
+
+/* ---------- timeline ---------- */
+function drawTimeline(){
+  const s=setupCanvas($('#timeline')); if(!s) return; const {ctx,w,h}=s;
+  const grd=ctx.createLinearGradient(0,0,w,0); grd.addColorStop(0,'#0d0c24'); grd.addColorStop(1,'#1f2a5a'); ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
+  const x0=34, y=h/2-8; const g2=ctx.createRadialGradient(x0,y,0,x0,y,18); g2.addColorStop(0,'#fff6d8'); g2.addColorStop(.4,'#ffb35c'); g2.addColorStop(1,'rgba(255,140,60,0)'); ctx.fillStyle=g2; ctx.beginPath(); ctx.arc(x0,y,18,0,7); ctx.fill();
+  const n=4, maxR=Math.min(h*.36,w*.1);
+  for(let i=0;i<n;i++){const t=(i+1)/n; const r=maxR*(.25+.75*t); const x=x0+40+(w-x0-60-maxR)*Math.pow(t,1.05);
+    const sg=ctx.createRadialGradient(x-r*.3,y-r*.3,r*.1,x,y,r); sg.addColorStop(0,'#5a6fc2'); sg.addColorStop(1,'#1a1f4d'); ctx.fillStyle=sg; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+    const rr=rng(7+i); for(let k=0;k<6+i*3;k++){const a=rr()*6.28,d=Math.sqrt(rr())*r*.8; ctx.fillStyle=`hsla(${[200,45,320][k%3]},80%,85%,.9)`; ctx.beginPath(); ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,1.4,0,7); ctx.fill();}}
+  ctx.strokeStyle='#8fc4f2'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0,h-26); ctx.lineTo(w-20,h-26); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w-20,h-26); ctx.lineTo(w-28,h-31); ctx.lineTo(w-28,h-21); ctx.closePath(); ctx.fillStyle='#8fc4f2'; ctx.fill();
+  ctx.font='13px '+css('--f-body'); ctx.fillStyle='#e8e7ff'; ctx.textBaseline='top'; ctx.textAlign='left'; ctx.fillText('약 138억 년 전',x0-20,h-20); ctx.textAlign='right'; ctx.fillText('현재',w-20,h-20);
+  ctx.textAlign='center'; ctx.fillText('시간의 흐름',w/2,h-20);
+}
+
+/* ---------- quiz ---------- */
+const QUIZ=[
+ {q:'허블이 우리은하 밖의 외부 은하를 관측하여 알아낸 사실로 옳은 것은?',o:['외부 은하들은 우리은하 쪽으로 다가오고 있다','외부 은하들 사이의 거리가 점점 멀어지고 있다','외부 은하들은 제자리에 멈춰 있다','외부 은하는 모두 우리은하 안에 있다'],a:1,e:'허블은 외부 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈습니다.'},
+ {q:'풍선 모형에서 붙임딱지와 풍선 표면이 비유하는 것을 바르게 짝지은 것은?',o:['붙임딱지 – 별, 풍선 표면 – 은하','붙임딱지 – 은하, 풍선 표면 – 우주 공간','붙임딱지 – 행성, 풍선 표면 – 태양계','붙임딱지 – 우주, 풍선 표면 – 은하'],a:1,e:'붙임딱지는 은하, 풍선 표면은 우주 공간에 해당합니다.'},
+ {q:'풍선을 더 크게 불었을 때, 처음에 1번 딱지에서 더 멀리 있던 딱지는 어떻게 되는가?',o:['더 적게 멀어진다','가까운 딱지와 똑같은 길이만큼 멀어진다','더 많이 멀어진다','오히려 가까워진다'],a:2,e:'풍선 전체가 같은 비율로 늘어나므로, 처음 거리가 먼 딱지일수록 늘어나는 길이가 큽니다. 우주에서도 멀리 있는 은하일수록 더 빨리 멀어집니다.'},
+ {q:'관측된 외부 은하들 사이의 거리가 멀어지는 까닭으로 가장 알맞은 것은?',o:['은하들이 엔진처럼 스스로 움직이기 때문','우주 공간이 팽창하고 있기 때문','은하들이 점점 커지고 있기 때문','우리은하가 다른 은하를 밀어내기 때문'],a:1,e:'은하 사이의 우주 공간 자체가 팽창하기 때문에 거리가 멀어집니다. 붙임딱지가 커지지 않았듯 은하 자체가 커지는 것은 아닙니다.'},
+ {q:'팽창하는 우주에 대한 설명으로 옳은 것은?',o:['우리은하가 우주의 중심이다','우주의 중심에서 가까운 은하만 멀어진다','팽창하는 우주에는 중심이 없다','다른 은하에서 관측하면 은하들이 가까워진다'],a:2,e:'팽창하는 풍선 표면에 중심이 없는 것처럼 팽창하는 우주에도 중심이 없습니다. 어느 은하에서 보아도 다른 은하들은 멀어집니다.'},
+ {q:'팽창하는 우주의 시간을 과거로 되돌린다면 어떻게 될까?',o:['우주의 크기가 점점 커진다','우주의 크기가 점점 작아진다','우주의 크기는 변하지 않는다','은하 사이의 거리가 점점 멀어진다'],a:1,e:'시간을 되돌리면 우주는 점점 작아집니다. 이를 바탕으로 과학자들은 우주가 약 138억 년 전에 탄생하여 팽창해 왔다고 설명합니다.'}
+];
+function renderQuiz(){
+  const box=$('#quiz'); box.innerHTML='';
+  QUIZ.forEach((it,qi)=>{
+    const d=document.createElement('div'); d.className='qz';
+    d.innerHTML=`<b>${qi+1}. ${it.q}</b><div class="opts">${it.o.map((o,oi)=>`<button class="opt" data-q="${qi}" data-o="${oi}">${'①②③④'[oi]} ${o}</button>`).join('')}</div><div class="fb" aria-live="polite"></div>`;
+    box.appendChild(d);
+    const ans=S.quiz[qi]; if(ans!==undefined) paintQ(d,qi,ans);
+  });
+  box.querySelectorAll('button.opt').forEach(b=>b.addEventListener('click',()=>{
+    const qi=+b.dataset.q, oi=+b.dataset.o; if(S.quiz[qi]!==undefined) return;
+    S.quiz[qi]=oi; save(); paintQ(b.closest('.qz'),qi,oi); score(); markDone();
+  }));
+  score();
+}
+function paintQ(d,qi,oi){const it=QUIZ[qi];
+  d.querySelectorAll('button.opt').forEach((b,i)=>{b.disabled=true; if(i===it.a) b.classList.add('right'); else if(i===oi) b.classList.add('wrong');});
+  d.querySelector('.fb').innerHTML=(oi===it.a?'<b style="color:var(--good)">정답!</b> ':'<b style="color:var(--accent)">다시 생각해 봐요.</b> ')+it.e;}
+function score(){const n=QUIZ.filter((it,i)=>S.quiz[i]===it.a).length; $('#score').textContent=`${n} / ${QUIZ.length}`; return n;}
+renderQuiz();
+
+/* ---------- report ---------- */
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function reportText(){
+  const rows=PAIRS.map(p=>{const s=val(p.id,'s'),b=val(p.id,'b'),x=val(p.id,'x'); if(!s&&!b&&!x) return null;
+    return `${p.label}: ${f1(s)} → ${f1(b)} cm${s&&b?` (+${f1(b-s)}, ${f2(b/s)}배)`:''}${x?` / 더 크게 ${f1(x)} cm (${s?f2(x/s)+'배':'–'})`:''}`;}).filter(Boolean);
+  const answered=Object.keys(S.quiz).length;
+  return [
+`[팽창하는 우주 탐구 · 모둠 결과]`,
+`반/모둠: ${S.cls||'?'}반 ${S.grp||'?'}모둠`,
+`모둠원: ${S.members||'-'}`,
+`역할: 풍선 ${S.roles[0]||'-'} · 측정 ${S.roles[1]||'-'} · 기록 ${S.roles[2]||'-'} · 발표 ${S.roles[3]||'-'}`,
+``,`■ 예측: ${S.pred?PRED_TEXT[S.pred]:'-'}`,`  까닭: ${S.predWhy||'-'}`,
+``,`■ 측정 결과 (cm)`,...(rows.length?rows.map(r=>'  '+r):['  -']),
+``,`■ 시뮬레이터에서 발견한 것`,`  ${S.notes.sim||'-'}`,
+``,`■ 토의 1 (거리 비교)`,`  ${S.notes.t1||'-'}`,
+`■ 토의 2 (은하 사이 거리)`,`  ${S.notes.t2||'-'}`,
+`■ 토의 3 (우주의 중심)`,`  ${S.notes.t3||'-'}`,
+`■ 토의 4 (모형의 한계)`,`  ${S.notes.t4||'-'}`,
+``,`■ 개념 확인: ${score()} / ${QUIZ.length} (푼 문제 ${answered}개)`
+  ].join('\n');
+}
+function renderReport(){
+  const miss=[]; if(!S.cls||!S.grp) miss.push('반·모둠'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!(S.notes.t1||'').trim()||!(S.notes.t2||'').trim()) miss.push('토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제');
+  const rows=PAIRS.map(p=>{const s=val(p.id,'s'),b=val(p.id,'b'); return s||b?`${p.label}: ${f1(s)} → ${f1(b)} cm${s&&b?` (${f2(b/s)}배)`:''}`:null;}).filter(Boolean).join('\n')||'-';
+  $('#reportCard').innerHTML=`<div class="row" style="justify-content:space-between"><h3>${esc(S.cls||'?')}반 ${esc(S.grp||'?')}모둠</h3><span class="score">${score()} / ${QUIZ.length}</span></div>
+  <dl><dt>모둠원</dt><dd>${esc(S.members||'-')}</dd><dt>예측</dt><dd>${S.pred?PRED_TEXT[S.pred]:'-'}</dd><dt>측정</dt><dd class="num">${esc(rows)}</dd>
+  <dt>발견</dt><dd>${esc(S.notes.sim||'-')}</dd><dt>토의 2</dt><dd>${esc(S.notes.t2||'-')}</dd><dt>우주의 중심</dt><dd>${esc(S.notes.t3||'-')}</dd></dl>
+  ${miss.length?`<div class="callout warn">아직 비어 있는 곳: ${miss.join(', ')}</div>`:'<div class="callout good">모든 활동을 마쳤어요. 결과를 복사해 제출하세요.</div>'}`;
+  $('#copyText').textContent=reportText();
+}
+$('#copyBtn').addEventListener('click',()=>{
+  const t=reportText(); $('#copyText').textContent=t;
+  const sel=()=>{const r=document.createRange();r.selectNodeContents($('#copyText'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('텍스트를 선택했어요. 길게 눌러 복사하세요');};
+  try{navigator.clipboard.writeText(t).then(()=>toast('결과를 복사했어요'),sel);}catch(e){sel();}
+});
+$('#resetAll').addEventListener('click',()=>{$('#resetConfirm').hidden=false;});
+$('#resetNo').addEventListener('click',()=>{$('#resetConfirm').hidden=true;});
+$('#resetYes').addEventListener('click',()=>{try{localStorage.removeItem(KEY);}catch(e){} location.hash='open'; location.reload();});
+
+/* ---------- theme / resize ---------- */
+let rt; window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{drawCharts(); if(!$('#v-sim').hidden){resizeSim();drawSim();} if(!$('#v-check').hidden) drawTimeline();},120);});
+const redraw=()=>{drawCharts(); if(!$('#v-sim').hidden) drawSim(); if(!$('#v-check').hidden) drawTimeline();};
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+$('#sendNow').hidden=!GAS;
+if(GAS) $('#reportLead').innerHTML='지금까지 입력한 내용이 한 장에 모였습니다. 입력할 때마다 선생님 구글 시트에 <b>자동으로 저장</b>되고, 오른쪽 위 표시가 ‘선생님께 전송됨 ✓’이면 끝입니다. 결과를 따로 내야 할 때는 <b>결과 복사</b>를 쓰세요.';
+$('#sendNow').addEventListener('click',()=>{ if(!S.cls||!S.grp){toast('맨 위에서 반과 모둠을 먼저 골라 주세요');return;} S.unsent=true; push().then(()=>toast(S.unsent?'전송하지 못했어요. 인터넷 연결을 확인해 주세요':'선생님께 보냈어요')); });
+if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp) pill('ok','선생님께 전송됨 ✓'); else pill('wait','반·모둠을 고르면 선생님께 저장돼요'); }
+
+/* ---------- 선생님 화면 ---------- */
+let TROWS=[],tTimer=null,openRow=null;
+function seoulToday(){const d=new Date(Date.now()+9*3600e3);return d.toISOString().slice(0,10);}
+function teacherOpen(){
+  if(!$('#tDay').value) $('#tDay').value=seoulToday();
+  try{const p=sessionStorage.getItem('eu-pin'); if(p&&!$('#tPin').value) $('#tPin').value=p;}catch(e){}
+  if(!GAS){$('#tOut').innerHTML='<div class="callout warn">구글 시트가 아직 연결되지 않았어요. index.html 위쪽 CONFIG의 GAS_URL에 Apps Script 웹 앱 주소를 넣어 주세요.</div>';return;}
+  if($('#tPin').value) tLoad();
+}
+async function tLoad(){
+  const pin=$('#tPin').value.trim(); if(!pin){$('#tStatus').textContent='PIN을 입력해 주세요';return;}
+  try{sessionStorage.setItem('eu-pin',pin);}catch(e){}
+  $('#tStatus').textContent='불러오는 중…';
+  try{
+    const r=await fetch(`${GAS}?pin=${encodeURIComponent(pin)}&day=${encodeURIComponent($('#tDay').value)}&t=${Date.now()}`,{cache:'no-store'});
+    const j=await r.json();
+    if(!j.ok){$('#tStatus').textContent=j.error==='PIN'?'PIN이 맞지 않아요':'불러오지 못했어요: '+(j.error||'');return;}
+    TROWS=j.rows||[]; const t=new Date(); $('#tStatus').textContent=`${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')} 기준`;
+    tRender();
+  }catch(e){$('#tStatus').textContent='연결 실패 · Apps Script 배포 권한(모든 사용자)을 확인해 주세요';}
+}
+function num(x){const v=parseFloat(String(x||'').replace(',','.'));return isFinite(v)&&v>0?v:null;}
+function tRender(){
+  const cf=$('#tCls').value;
+  const rows=TROWS.filter(r=>!cf||r.cls===cf).sort((a,b)=>a.cls.localeCompare(b.cls)||(+a.grp)-(+b.grp));
+  if(!rows.length){$('#tOut').innerHTML='<div class="callout info">이 날짜'+(cf?'·반':'')+'에 저장된 모둠 기록이 아직 없어요.</div>';return;}
+  const measured=r=>num(r.d12s)&&num(r.d12b)&&num(r.d13s)&&num(r.d13b);
+  const talked=r=>['t1','t2','t3','t4'].filter(k=>(r[k]||'').trim()).length;
+  const done=rows.filter(r=>+r.answered>=QUIZ.length);
+  const avg=done.length?(done.reduce((a,r)=>a+(+r.score),0)/done.length).toFixed(1):'–';
+  const preds=Object.values(PRED_TEXT).map(t=>({t,n:rows.filter(r=>r.pred===t).length}));
+  const pmax=Math.max(1,...preds.map(p=>p.n));
+  let h=`<div class="tiles">
+    <div class="tile"><div class="lab">기록한 모둠</div><div class="val">${rows.length}</div></div>
+    <div class="tile"><div class="lab">측정 완료</div><div class="val">${rows.filter(measured).length}</div></div>
+    <div class="tile"><div class="lab">토의 1·2 작성</div><div class="val">${rows.filter(r=>(r.t1||'').trim()&&(r.t2||'').trim()).length}</div></div>
+    <div class="tile"><div class="lab">퀴즈 평균 (${QUIZ.length}점)</div><div class="val">${avg}</div></div></div>
+  <div class="grid2">
+    <div class="panel stack"><h3>실험 전 예측</h3>${preds.map(p=>`<div class="pbar"><span>${p.t}</span><span class="bar"><i style="width:${p.n/pmax*100}%"></i></span><span class="num">${p.n}</span></div>`).join('')}
+      <p class="note">예측을 고르지 않은 모둠: ${rows.filter(r=>!r.pred).length}</p></div>
+    <div class="panel stack"><h3>반 전체 측정 결과</h3>
+      <div class="legend"><span><i style="background:var(--indigo);border-radius:50%"></i>1~2</span><span><i style="background:var(--accent);border-radius:50%"></i>1~3</span><span><i style="background:var(--warn);border-radius:50%"></i>2~3</span></div>
+      <div class="chartbox"><canvas id="tScatter"></canvas></div>
+      <p class="note">점마다 모둠 번호가 붙어 있어요. 처음 거리가 먼 쌍일수록 위쪽에 있으면 ‘멀리 있을수록 더 많이 멀어진다’는 결과입니다.</p></div>
+  </div>
+  <div class="panel stack"><h3>모둠별 진행</h3><p class="note">줄을 누르면 모둠의 답을 볼 수 있어요.</p>
+  <div class="tablewrap"><table class="tlist"><thead><tr><th>반</th><th>모둠</th><th>모둠원</th><th>예측</th><th>측정 (1~2 / 1~3 배율)</th><th>토의</th><th>퀴즈</th><th>저장</th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{
+    const id=r.cls+'|'+r.grp;
+    const r12=num(r.d12s)&&num(r.d12b)?(num(r.d12b)/num(r.d12s)).toFixed(2):'–', r13=num(r.d13s)&&num(r.d13b)?(num(r.d13b)/num(r.d13s)).toFixed(2):'–';
+    h+=`<tr class="g" data-id="${esc(id)}"><td>${esc(r.cls)}</td><td>${esc(r.grp)}</td><td>${esc(r.members||'-')}</td><td>${r.pred?'<span class="chip y">함</span>':'<span class="chip n">안 함</span>'}</td>
+      <td>${measured(r)?`<span class="chip y">완료</span> <span class="num">${r12} / ${r13}배</span>`:'<span class="chip n">미완료</span>'}</td>
+      <td><span class="num">${talked(r)}/4</span></td><td><span class="num">${+r.answered?r.score+'/'+QUIZ.length:'–'}</span></td><td class="num">${esc((r.updated||'').slice(11,16))}</td></tr>`;
+    if(openRow===id){
+      const D=(p,k)=>esc(r['d'+p+k]||'–');
+      h+=`<tr><td colspan="8" class="det"><dl>
+        <dt>역할</dt><dd>${esc(r.roles||'-')}</dd><dt>예측</dt><dd>${esc(r.pred||'-')}\n까닭: ${esc(r.predWhy||'-')}</dd>
+        <dt>측정 (cm)</dt><dd class="num">1~2: ${D('12','s')} → ${D('12','b')} → ${D('12','x')}\n1~3: ${D('13','s')} → ${D('13','b')} → ${D('13','x')}\n2~3: ${D('23','s')} → ${D('23','b')} → ${D('23','x')}</dd>
+        <dt>시뮬레이터</dt><dd>${esc(r.sim||'-')}</dd><dt>토의 1</dt><dd>${esc(r.t1||'-')}</dd><dt>토의 2</dt><dd>${esc(r.t2||'-')}</dd><dt>토의 3</dt><dd>${esc(r.t3||'-')}</dd><dt>토의 4</dt><dd>${esc(r.t4||'-')}</dd></dl></td></tr>`;
+    }
+  });
+  h+='</tbody></table></div></div>';
+  $('#tOut').innerHTML=h;
+  $$('#tOut tr.g').forEach(tr=>tr.addEventListener('click',()=>{openRow=(openRow===tr.dataset.id)?null:tr.dataset.id;tRender();}));
+  tScatter(rows);
+}
+function tScatter(rows){
+  const c=$('#tScatter'); if(!c) return; const s=setupCanvas(c); if(!s) return; const {ctx,w,h}=s;
+  const muted=css('--muted'),line=css('--line'),ink=css('--ink'); const col={'12':css('--indigo'),'13':css('--accent'),'23':css('--warn')};
+  const pts=[]; rows.forEach(r=>['12','13','23'].forEach(p=>{const a=num(r['d'+p+'s']),b=num(r['d'+p+'b']); if(a&&b) pts.push({x:a,y:b-a,p,g:r.grp});}));
+  ctx.clearRect(0,0,w,h); ctx.font='12px '+css('--f-body');
+  if(!pts.length){ctx.fillStyle=muted;ctx.textAlign='center';ctx.fillText('아직 측정값이 없어요',w/2,h/2);return;}
+  const L=40,R=14,T=14,B=34,pw=w-L-R,ph=h-T-B;
+  const mxX=niceMax(Math.max(...pts.map(q=>q.x))*1.1), mxY=niceMax(Math.max(1,...pts.map(q=>Math.max(q.y,0)))*1.15);
+  for(let i=0;i<=4;i++){const y=T+ph-ph*i/4; ctx.strokeStyle=line; ctx.beginPath(); ctx.moveTo(L,y+.5); ctx.lineTo(w-R,y+.5); ctx.stroke(); ctx.fillStyle=muted; ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText(+(mxY*i/4).toFixed(1),L-6,y);
+    ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(+(mxX*i/4).toFixed(1),L+pw*i/4,T+ph+6);}
+  pts.forEach(q=>{const x=L+pw*q.x/mxX,y=T+ph-ph*Math.max(q.y,0)/mxY; ctx.fillStyle=col[q.p]; ctx.beginPath(); ctx.arc(x,y,5,0,7); ctx.fill();
+    ctx.fillStyle=ink; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText(q.g,x+6,y-3);});
+  ctx.fillStyle=muted; ctx.textAlign='right'; ctx.textBaseline='bottom'; ctx.fillText('처음 거리 (cm)',w-R,h-1);
+  ctx.save(); ctx.translate(11,T+ph/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('늘어난 거리 (cm)',0,0); ctx.restore();
+}
+$('#tLoad').addEventListener('click',tLoad);
+$('#tCls').addEventListener('change',()=>{ if(TROWS.length) tRender(); });
+$('#tDay').addEventListener('change',()=>{ if($('#tPin').value) tLoad(); });
+$('#tPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tLoad(); });
+$('#tAuto').addEventListener('change',e=>{ clearInterval(tTimer); if(e.target.checked) tTimer=setInterval(()=>{ if(!$('#v-teacher').hidden) tLoad(); },20000); });
+
+updateLab(); show();
+})();
+</script>
+
+</body>
+</html>
