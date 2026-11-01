@@ -317,7 +317,7 @@ body{margin:0}
     <button class="tab" role="tab" data-tab="dex" aria-selected="false"><span class="lg">천체 </span>도감<span class="n" id="nDex"></span></button>
     <button class="tab" role="tab" data-tab="note" aria-selected="false">탐험 노트<span class="n" id="nNote"></span></button>
     <button class="tab" role="tab" data-tab="quiz" aria-selected="false"><span class="lg">최종 </span>퀴즈<span class="n" id="nQuiz"></span></button>
-    <button class="tab" role="tab" data-tab="expand" aria-selected="false">우주팽창</button>
+    <button class="tab" role="tab" data-tab="expand" aria-selected="false">우주팽창<span class="n" id="nExpand"></span></button>
   </nav>
 
   <section id="tab-galaxy">
@@ -350,8 +350,9 @@ body{margin:0}
   </section>
 
   <section id="tab-expand" hidden>
+    <div class="gintro"><h2>우주 팽창 탐험</h2><p>우리은하 밖으로 나가 볼 차례예요. 수많은 외부 은하들은 서로 점점 멀어지고 있어요. 풍선 실험과 시뮬레이터로 그 까닭을 찾아보세요.</p></div>
     <p class="lockmsg" id="expandLock" hidden>위에서 <b>번호</b>를 먼저 골라 주세요. 반·모둠·번호가 우주팽창 기록에도 그대로 쓰여요.</p>
-    <iframe id="expandFrame" title="팽창하는 우주 탐구실" style="width:100%;border:0;display:block;min-height:600px;border-radius:12px;background:#110f26"></iframe>
+    <iframe id="expandFrame" title="팽창하는 우주 탐구실" style="width:100%;border:0;display:block;min-height:600px;background:var(--sky)"></iframe>
   </section>
 
   <section id="tab-quiz" hidden>
@@ -371,6 +372,7 @@ body{margin:0}
       <select id="dCls" aria-label="반"></select>
       <button class="ghost" id="dRefresh">새로고침</button>
       <span class="sync" id="dStatus"></span>
+      <a class="ghost" href="../expanding-universe/#teacher" style="text-decoration:none">우주팽창 기록 →</a>
       <button class="ghost" id="dClose">닫기</button>
     </div></div>
   <div class="legend"><span>★ 관찰 점수 · 숫자는 걸린 시간</span><span style="color:#ffb3c0">빨간 칸: 30초 미만 (확인 필요)</span><span style="color:var(--warn)">점선 칸: 관측 메모가 짧음</span><span>칸을 누르면 관측 메모가 보여요</span></div>
@@ -754,8 +756,10 @@ const QUIZ=[
  {q:'여름철 은하수가 겨울철보다 두껍고 밝게 보이는 까닭은?',o:['여름 하늘이 더 맑아서','여름 밤에는 우리은하 중심 쪽을 보게 되어서','여름에 지구가 은하 중심에 가까워져서','여름에 별들이 더 밝아져서'],a:1,e:'지구가 공전하면서 밤하늘이 향하는 방향이 바뀌어요. 여름 밤에는 별이 많이 모인 은하 중심 쪽을 봐요.'},
  {q:'우리은하를 옆에서 보면 어떤 모양일까?',o:['완전한 공 모양','중심부가 볼록한 원반 모양','가운데가 빈 고리 모양','길쭉한 막대 모양'],a:1,e:'옆에서 보면 중심부가 볼록한 원반, 위에서 보면 막대 구조와 나선팔이 있어요.'},
  {q:'수만~수십만 개의 별이 공 모양으로 빽빽하게 모여 있는 것은?',o:['산개 성단','구상 성단','반사 성운','암흑 성운'],a:1,e:'구상 성단은 붉은색의 늙은 별이 많고 은하 중심부와 원반을 둘러싼 공간에 있어요.'},
- {q:'말머리 성운이 검게 보이는 까닭은?',o:['스스로 검은빛을 내서','별빛을 반사해서','뒤에서 오는 별빛을 가려서','별이 모두 사라져서'],a:2,e:'암흑 성운은 가스와 먼지가 뒤쪽 빛을 가려서 검은 그림자처럼 보여요.'},
+ {q:'말머리 성운이 검게 보이는 까닭은?',o:['스스로 검은빛을 내서','별빛을 반사해서','뒤에서 오는 별빛을 가려서','별이 모두 사라져서'],a:2,e:'암흑 성운은 가스와 먼지가 뒤쪽 빛을 가려서 검은 그림자처럼 보여요. 어둡게 보여도 빈 공간이 아니라 물질이 모여 있는 곳이에요.'},
  {q:'반사 성운이 파랗게 보이는 까닭은?',o:['주변 별빛을 반사해서','온도가 매우 낮아서','스스로 파란빛을 내서','물이 많아서'],a:0,e:'반사 성운은 스스로 빛을 내지 못하고 근처 별빛을 반사해요.'},
+ {q:'우리은하를 나타낸 그림 세 장이 있다. A는 막대와 나선팔을 위에서 본 그림, B는 가운데가 볼록한 원반을 옆에서 본 그림, C는 밤하늘을 가로지르는 별빛의 띠다. 지구에서 하늘을 올려다볼 때 실제로 보이는 모습은?',o:['A: 나선팔 전체의 모습','B: 볼록한 원반의 옆모습','C: 원반 안에서 바라본 은하수','셋 다 우리은하가 아닌 외부 은하의 모습'],a:2,e:'A와 B는 우리은하를 바깥에서 본 모형이라 지구에서는 볼 수 없어요. 태양계는 원반 안에 있어서, 우리가 보는 우리은하의 모습은 하늘을 가로지르는 띠, 은하수예요.'},
+ {q:'관측 기록 A는 넓게 퍼진 기체와 먼지 구름이고, B는 많은 별이 모인 무리다. A와 B를 나누는 가장 기본적인 기준은?',o:['사진의 색깔','사진에서 차지하는 넓이','기체·먼지로 되어 있는지, 별들이 모인 것인지','얼마나 흐릿하게 보이는지'],a:2,e:'멀리서 보면 성운도 성단도 흐릿하게 보여요. 그래서 무엇으로 이루어졌는지로 나눠요. 기체와 먼지 구름이면 성운(A), 별들의 무리면 성단(B)이에요.'},
  {q:'산개 성단은 성운과 함께 자주 보이지만, 구상 성단은 그렇지 않은 까닭은?',o:['구상 성단은 너무 어두워서','산개 성단과 성운은 주로 나선팔에, 구상 성단은 중심부와 원반 바깥 공간에 있어서','성운이 구상 성단을 피해 다녀서','구상 성단에는 별이 적어서'],a:1,e:'분포하는 장소가 달라요. 젊은 별이 태어나는 나선팔에는 성운과 산개 성단이 함께 있어요.'}
 ];
 function renderQuiz(){
@@ -869,7 +873,7 @@ const GSTEPS=[
       {q:'구상 성단(주황 점)은 주로 어디에 있나요?',o:['나선팔','은하 중심부와 원반을 둘러싼 구형 공간','태양계 바로 옆'],a:1,e:'구상 성단은 은하 중심부와 원반을 둘러싼 둥근 공간에 많이 있어요.'},
       {q:'산개 성단(파란 고리)은 주로 어디에 있나요?',o:['나선팔(원반)','원반 바깥 구형 공간'],a:0,e:'산개 성단은 젊은 별들의 무리라서 별이 태어나는 나선팔에 많아요.'}]},
  {id:'g3',title:'은하수는 왜 띠 모양일까?',lead:'옆에서 본 우리은하에서 태양계(★)에 서서 <b>바라보는 방향을 돌려 보세요.</b> 방향마다 보이는 별의 수가 어떻게 달라질까?',
-  qs:[{q:'별이 가장 많이 보인 방향은?',o:['은하 중심 방향','원반에 수직인 방향(위, 아래)','어느 방향이나 같다'],a:0,e:'원반 면을 따라, 특히 중심 쪽을 보면 별이 엄청나게 겹쳐 보여요.'},
+  qs:[{q:'별이 가장 많이 보인 방향은?',o:['은하 중심 방향','원반에 수직인 방향(위, 아래)','어느 방향이나 같다'],a:0,e:'원반 면을 따라, 특히 중심 쪽을 보면 별이 엄청나게 겹쳐 보여요. 다만 중심 쪽에는 먼지도 많아서 은하수 중간중간이 어둡게 가려져 보이기도 해요.'},
       {q:'원반에 수직인 방향(위, 아래)을 보면?',o:['별이 적어서 은하수가 거의 보이지 않는다','별이 가장 많이 보인다'],a:0,e:'원반이 납작해서 위아래로는 별이 적어요.'},
       {q:'은하수가 띠 모양으로 보이는 까닭은?',o:['우리은하의 별들이 대부분 원반 면에 분포하고, 우리는 그 원반 안에서 보기 때문','은하수가 실제로 길쭉한 띠 모양의 천체이기 때문','지구의 대기가 빛을 길게 퍼뜨리기 때문'],a:0,e:'납작한 원반 안에서 원반 면을 따라 보면 별들이 하늘을 가로지르는 띠처럼 보여요.'}]},
  {id:'g4',title:'여름과 겨울의 은하수',lead:'달을 바꾸며 <b>지구가 공전하는 위치</b>와 <b>밤하늘이 향하는 방향</b>을 확인해 보세요. 밤에는 태양 반대쪽 하늘이 보여요.',
@@ -1056,11 +1060,18 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   if(t.dataset.tab==='note')renderNote();
   if(t.dataset.tab==='dex'){renderDex();showTeamStat();loadTeam()}});
 /* ---------- 우주팽창 탭: 팽창하는 우주 탐구실을 그대로 불러옴 ---------- */
+function huntToast(m){let t=$('#huntToast');if(!t){t=document.createElement('div');t.id='huntToast';t.setAttribute('role','status');
+  t.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-size:17px;padding:8px 20px;border-radius:999px;z-index:60';document.body.appendChild(t)}
+  t.textContent=m;t.hidden=false;clearTimeout(huntToast._t);huntToast._t=setTimeout(()=>t.hidden=true,1900)}
+window.addEventListener('message',e=>{if(e.origin!==location.origin||!e.data)return;
+  if(e.data.type==='eu-toast')huntToast(e.data.msg);
+  if(e.data.type==='eu-progress')$('#nExpand').textContent=e.data.done?`${e.data.done}/${e.data.total}`:'';});
+(()=>{try{const v=JSON.parse(localStorage.getItem('expanding-universe-lab-v1')||'{}');const n=[!!v.pred,!!(v.data&&v.data['12']&&v.data['12'].b),!!(v.notes&&v.notes.sim),!!(v.notes&&v.notes.t1&&v.notes.t2),Object.keys(v.quiz||{}).length>=6].filter(Boolean).length;if(n)$('#nExpand').textContent=n+'/5'}catch(e){}})();
 let expandSrc='',expandRO=null;
 function openExpand(){
   const f=$('#expandFrame');
   $('#expandLock').hidden=!!S.num; f.hidden=!S.num; if(!S.num)return;
-  const src=`../expanding-universe/?embed=1&theme=dark&cls=${encodeURIComponent(S.cls)}&grp=${encodeURIComponent(S.teamNo)}&num=${encodeURIComponent(S.num)}`;
+  const src=`../expanding-universe/?embed=1&theme=hunt&cls=${encodeURIComponent(S.cls)}&grp=${encodeURIComponent(S.teamNo)}&num=${encodeURIComponent(S.num)}`;
   if(src!==expandSrc){expandSrc=src;f.src=src+'#open';}
 }
 $('#expandFrame').addEventListener('load',()=>{
@@ -1085,7 +1096,7 @@ $('#teacherBtn').onclick=async()=>{
    <div id="pinErr" style="color:var(--emis)"></div><button class="cta" style="margin-top:0">탐사 현황 열기</button></form>`;
   bindClose();openSheet();$('#pinIn').focus();
   $('#pinForm').onsubmit=async e=>{e.preventDefault();PIN=$('#pinIn').value.trim();$('#pinErr').textContent='확인 중...';
-    const ok=await loadDash();if(ok){closeSheet();enterTeacher();openDash()}else{$('#pinErr').textContent=dashErr}};
+    const ok=await loadDash();if(ok){try{sessionStorage.setItem('eu-pin',PIN)}catch(_){};closeSheet();enterTeacher();openDash()}else{$('#pinErr').textContent=dashErr}};
 };
 let dashErr='';
 async function loadDash(){

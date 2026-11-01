@@ -7,7 +7,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 html{-webkit-text-size-adjust:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -19,7 +19,7 @@ img{max-width:100%}
   --bg:#f2f1f8; --surface:#ffffff; --surface-2:#f8f7fc; --ink:#1d1b3a; --muted:#5d5a7a; --line:#dcd9ec;
   --accent:#d93a6f; --accent-soft:#fce4ec; --indigo:#3b3a8f; --indigo-soft:#e7e6f7;
   --good:#1d7f53; --good-soft:#e2f4ea; --warn:#9a6212; --warn-soft:#fbf0dc;
-  --space:#0d0c24; --space-ink:#e8e7ff;
+  --space:#0d0c24; --space-ink:#e8e7ff; --on-accent:#ffffff; --bad:#d93a6f; --bad-soft:#fce4ec;
   --f-display:"Do Hyeon","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -27,12 +27,18 @@ img{max-width:100%}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#110f26; --surface:#1b1a38; --surface-2:#22204a; --ink:#ecebf8; --muted:#a6a3c8; --line:#34315c;
   --accent:#ff6f9f; --accent-soft:#3d1a30; --indigo:#a3a1ff; --indigo-soft:#2a2860;
-  --good:#52c993; --good-soft:#163527; --warn:#e9b44f; --warn-soft:#3a2c12; color-scheme:dark}}
+  --good:#52c993; --good-soft:#163527; --warn:#e9b44f; --warn-soft:#3a2c12; --on-accent:#1a0b14; --bad:#ff6f9f; --bad-soft:#3d1a30; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#110f26; --surface:#1b1a38; --surface-2:#22204a; --ink:#ecebf8; --muted:#a6a3c8; --line:#34315c;
   --accent:#ff6f9f; --accent-soft:#3d1a30; --indigo:#a3a1ff; --indigo-soft:#2a2860;
-  --good:#52c993; --good-soft:#163527; --warn:#e9b44f; --warn-soft:#3a2c12; color-scheme:dark}
+  --good:#52c993; --good-soft:#163527; --warn:#e9b44f; --warn-soft:#3a2c12; --on-accent:#1a0b14; --bad:#ff6f9f; --bad-soft:#3d1a30; color-scheme:dark}
 
+/* 탐험대 앱 안에서 열릴 때(?theme=hunt): 탐험대와 같은 색과 글꼴 */
+:root[data-theme="hunt"]{
+  --bg:#0a0c18; --surface:#12162b; --surface-2:#191e38; --ink:#ebe9f7; --muted:#9a9dc2; --line:#2a3058;
+  --accent:#f2c14e; --accent-soft:#3a2f12; --on-accent:#1a1405; --indigo:#7fb1ff; --indigo-soft:#1c2a4d;
+  --good:#6fdc9a; --good-soft:#15352a; --warn:#ffb46e; --warn-soft:#3a2a14; --bad:#ff6f86; --bad-soft:#3d1a24;
+  --space:#03040a; --f-body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.65}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
@@ -61,7 +67,7 @@ nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs a{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 11px;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent;font-weight:500;font-size:15px}
 nav.tabs a .n{font-family:var(--f-mono);font-size:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line)}
 nav.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
-nav.tabs a[aria-current="page"] .n{background:var(--accent);border-color:var(--accent);color:#fff}
+nav.tabs a[aria-current="page"] .n{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 nav.tabs a.done .n{background:var(--good-soft);border-color:var(--good);color:var(--good)}
 
 main{padding-block:28px 64px}
@@ -75,7 +81,7 @@ section.view{display:flex;flex-direction:column;gap:22px}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .btn{border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:999px;cursor:pointer;font-weight:500}
 .btn:hover{border-color:var(--indigo)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.primary:hover{filter:brightness(1.07)}
 .btn.small{padding:6px 12px;font-size:14px}
 .next{align-self:flex-end}
@@ -101,7 +107,7 @@ section.view{display:flex;flex-direction:column;gap:22px}
 /* lab */
 .steps{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .steps li{display:flex;gap:12px;align-items:flex-start}
-.steps .k{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--f-mono);font-size:14px;margin-top:1px}
+.steps .k{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-family:var(--f-mono);font-size:14px;margin-top:1px}
 .steps label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
 .steps input{accent-color:var(--good);width:18px;height:18px;margin-top:4px}
 .steps input:checked+span{color:var(--muted);text-decoration:line-through}
@@ -133,9 +139,9 @@ table.data input:focus{border-color:var(--accent)}
 .simwrap canvas{width:100%;height:min(62vh,520px);min-height:320px;display:block;cursor:crosshair;touch-action:manipulation}
 .simbar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;padding:14px 16px;border-top:1px solid rgba(255,255,255,.1)}
 .simbar .btn{background:transparent;color:var(--space-ink);border-color:rgba(255,255,255,.25)}
-.simbar .btn.on{background:#ff6f9f;border-color:#ff6f9f;color:#1a0b14}
+.simbar .btn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .slider{display:flex;align-items:center;gap:10px;flex:1 1 260px;font-size:13px}
-.slider input{flex:1;accent-color:#ff6f9f}
+.slider input{flex:1;accent-color:var(--accent)}
 .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
 .read{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
 .read .lab{font-size:13px;color:var(--muted)}
@@ -169,7 +175,7 @@ details.hint div{margin-top:6px;padding:10px 12px;background:var(--indigo-soft);
 .qz button.opt{text-align:left;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 12px;cursor:pointer}
 .qz button.opt:hover{border-color:var(--indigo)}
 .qz button.opt.right{background:var(--good-soft);border-color:var(--good)}
-.qz button.opt.wrong{background:var(--accent-soft);border-color:var(--accent)}
+.qz button.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
 .qz .fb{font-size:14.5px}
 .score{font-family:var(--f-display);font-size:24px}
 
@@ -211,7 +217,13 @@ table.tlist tr.g:hover td{background:var(--surface-2)}
 .det dt{color:var(--muted)} .det dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
 footer.foot{padding-block:0 32px}
 html.embed .brand>div:first-child,html.embed footer.foot{display:none}
-html.embed .top .wrap{padding-block:12px}
+html.embed .top .wrap{padding-block:0 8px}
+html.embed header.top{background:transparent;border:0}
+html.embed .team>*:not(#sync){display:none}
+html.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+html.embed nav.tabs{position:static;background:transparent}
+html.embed body::before{display:none}
+html.embed .toast{display:none}
 html.embed .simwrap canvas{height:440px}
 html.embed .team select:disabled{opacity:1;color:var(--ink)}
 footer.foot a{color:var(--muted);font-size:13px}
@@ -555,7 +567,7 @@ try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}c
 /* star-hunt 등 다른 앱 안에 넣을 때: ?embed=1&cls=2-3&grp=2&num=7 */
 const QP=new URLSearchParams(location.search);
 const EMBED=QP.get('embed')==='1';
-if(EMBED){ document.documentElement.classList.add('embed'); if(QP.get('theme')==='dark') document.documentElement.setAttribute('data-theme','dark'); }
+if(EMBED){ document.documentElement.classList.add('embed'); const th=QP.get('theme'); if(th==='dark'||th==='hunt') document.documentElement.setAttribute('data-theme',th); }
 if(QP.get('cls')||QP.get('grp')||QP.get('num')){
   const nc=QP.get('cls')||'',ng=QP.get('grp')||'',nn=QP.get('num')||'';
   if(S.num&&nn&&S.num!==nn){ S={cls:'',grp:'',members:'',pred:'',predWhy:'',roles:['','','',''],steps:[false,false,false,false],data:{},notes:{},quiz:{},unsent:false,num:''}; }
@@ -596,7 +608,7 @@ async function push(){
 }
 setInterval(()=>{ if(S.unsent) push(); },15000);
 window.addEventListener('online',()=>{ if(S.unsent) push(); });
-function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,1800);}
+function toast(m){ if(window.parent!==window){ try{window.parent.postMessage({type:'eu-toast',msg:m},location.origin);}catch(e){} } const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,1800);}
 
 /* ---------- routing ---------- */
 const VIEWS=['open','lab','sim','talk','check','report','teacher'];
@@ -621,6 +633,7 @@ function markDone(){
   const d={open:!!S.pred,lab:filled('12','s')&&filled('12','b')&&filled('13','s')&&filled('13','b'),sim:!!(S.notes.sim||'').trim(),
     talk:['t1','t2'].every(k=>(S.notes[k]||'').trim()),check:Object.keys(S.quiz).length>=QUIZ.length,report:false};
   $$('#tabs a').forEach(a=>a.classList.toggle('done',!!d[a.dataset.v]&&a.getAttribute('aria-current')!=='page'));
+  if(window.parent!==window){ try{window.parent.postMessage({type:'eu-progress',done:['open','lab','sim','talk','check'].filter(k=>d[k]).length,total:5},location.origin);}catch(e){} }
 }
 
 /* ---------- header team info ---------- */
@@ -931,7 +944,7 @@ function renderQuiz(){
 }
 function paintQ(d,qi,oi){const it=QUIZ[qi];
   d.querySelectorAll('button.opt').forEach((b,i)=>{b.disabled=true; if(i===it.a) b.classList.add('right'); else if(i===oi) b.classList.add('wrong');});
-  d.querySelector('.fb').innerHTML=(oi===it.a?'<b style="color:var(--good)">정답!</b> ':'<b style="color:var(--accent)">다시 생각해 봐요.</b> ')+it.e;}
+  d.querySelector('.fb').innerHTML=(oi===it.a?'<b style="color:var(--good)">정답!</b> ':'<b style="color:var(--bad)">다시 생각해 봐요.</b> ')+it.e;}
 function score(){const n=QUIZ.filter((it,i)=>S.quiz[i]===it.a).length; $('#score').textContent=`${n} / ${QUIZ.length}`; return n;}
 renderQuiz();
 
