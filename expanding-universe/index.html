@@ -210,6 +210,10 @@ table.tlist tr.g:hover td{background:var(--surface-2)}
 .det dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:0}
 .det dt{color:var(--muted)} .det dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
 footer.foot{padding-block:0 32px}
+html.embed .brand>div:first-child,html.embed footer.foot{display:none}
+html.embed .top .wrap{padding-block:12px}
+html.embed .simwrap canvas{height:440px}
+html.embed .team select:disabled{opacity:1;color:var(--ink)}
 footer.foot a{color:var(--muted);font-size:13px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -229,6 +233,8 @@ footer.foot a{color:var(--muted);font-size:13px}
         <select id="cls"><option value="">선택</option><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select>
         <label for="grp">모둠</label>
         <select id="grp"><option value="">선택</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+        <label for="num">번호</label>
+        <select id="num"><option value="">선택</option></select>
         <input id="members" placeholder="모둠원 이름 (예: 3 김하늘, 7 이별)" aria-label="모둠원 이름">
         <span class="sync off" id="sync" hidden></span>
       </div>
@@ -448,7 +454,7 @@ footer.foot a{color:var(--muted);font-size:13px}
 <section class="view" id="v-report" hidden>
   <div class="stack">
     <div class="eyebrow">마무리</div>
-    <h2>모둠 결과 카드</h2>
+    <h2>나의 결과 카드</h2>
     <p class="lead" id="reportLead">지금까지 입력한 내용이 한 장에 모였습니다. 빠진 곳이 없는지 확인한 뒤 <b>결과 복사</b>를 눌러 선생님이 안내한 곳(하이러닝, 패들렛 등)에 붙여 넣으세요.</p>
   </div>
   <div class="report" id="reportCard"></div>
@@ -465,7 +471,7 @@ footer.foot a{color:var(--muted);font-size:13px}
   <div class="stack">
     <div class="eyebrow">선생님 화면</div>
     <h2>모둠 기록 모아 보기</h2>
-    <p class="lead">구글 시트에 모인 모둠 기록을 날짜와 반별로 봅니다. 학생 화면에는 이 메뉴가 탭으로 보이지 않아요.</p>
+    <p class="lead">구글 시트에 모인 학생 기록을 날짜와 반별로 봅니다. 학생 화면에는 이 메뉴가 탭으로 보이지 않아요.</p>
   </div>
   <div class="panel tctl">
     <label for="tPin">PIN<input id="tPin" type="password" inputmode="numeric" autocomplete="off" style="width:110px"></label>
@@ -501,8 +507,17 @@ const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- state ---------- */
 const PAIRS=[{id:'12',a:1,b:2,label:'1 ~ 2'},{id:'13',a:1,b:3,label:'1 ~ 3'},{id:'23',a:2,b:3,label:'2 ~ 3',challenge:true}];
-let S={cls:'',grp:'',members:'',pred:'',predWhy:'',roles:['','','',''],steps:[false,false,false,false],data:{},notes:{},quiz:{},unsent:false};
+let S={cls:'',grp:'',members:'',pred:'',predWhy:'',roles:['','','',''],steps:[false,false,false,false],data:{},notes:{},quiz:{},unsent:false,num:''};
 try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+/* star-hunt 등 다른 앱 안에 넣을 때: ?embed=1&cls=2-3&grp=2&num=7 */
+const QP=new URLSearchParams(location.search);
+const EMBED=QP.get('embed')==='1';
+if(EMBED){ document.documentElement.classList.add('embed'); if(QP.get('theme')==='dark') document.documentElement.setAttribute('data-theme','dark'); }
+if(QP.get('cls')||QP.get('grp')||QP.get('num')){
+  const nc=QP.get('cls')||'',ng=QP.get('grp')||'',nn=QP.get('num')||'';
+  if(S.num&&nn&&S.num!==nn){ S={cls:'',grp:'',members:'',pred:'',predWhy:'',roles:['','','',''],steps:[false,false,false,false],data:{},notes:{},quiz:{},unsent:false,num:''}; }
+  S.cls=nc; S.grp=ng; S.num=nn;
+}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function save(){S.unsent=true;persist();queueSend();}
 
@@ -514,7 +529,7 @@ let sending=false,sendTimer=null;
 function pill(kind,text){const p=$('#sync'); if(!p) return; p.hidden=!GAS; p.className='sync '+kind; p.textContent=text;}
 function payload(){
   const d={}; ['12','13','23'].forEach(p=>['s','b','x'].forEach(k=>{d['d'+p+k]=((S.data[p]||{})[k]||'').toString().trim();}));
-  return Object.assign({cls:S.cls,grp:S.grp,members:S.members,
+  return Object.assign({cls:S.cls,grp:S.grp,num:S.num,members:S.members,
     roles:['풍선 ','측정 ','기록 ','발표 '].map((r,i)=>r+(S.roles[i]||'-')).join(' / '),
     pred:S.pred?PRED_TEXT[S.pred]:'',predWhy:S.predWhy,sim:S.notes.sim||'',
     t1:S.notes.t1||'',t2:S.notes.t2||'',t3:S.notes.t3||'',t4:S.notes.t4||'',
@@ -522,12 +537,12 @@ function payload(){
 }
 function queueSend(){
   if(!GAS) return;
-  if(!S.cls||!S.grp){pill('wait','반·모둠을 고르면 선생님께 저장돼요');return;}
+  if(!S.cls||!S.grp||!S.num){pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요');return;}
   pill('wait','저장 대기'); clearTimeout(sendTimer); sendTimer=setTimeout(push,2500);
 }
 async function push(){
   if(!GAS||sending||!S.unsent) return;
-  if(!S.cls||!S.grp){pill('wait','반·모둠을 고르면 선생님께 저장돼요');return;}
+  if(!S.cls||!S.grp||!S.num){pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요');return;}
   sending=true; S.unsent=false; persist(); pill('wait','전송 중');
   try{
     const r=await fetch(GAS,{method:'POST',body:JSON.stringify(payload())});
@@ -566,7 +581,9 @@ function markDone(){
 }
 
 /* ---------- header team info ---------- */
-['cls','grp','members'].forEach(id=>{const el=$('#'+id); el.value=S[id]||''; el.addEventListener('input',()=>{S[id]=el.value;save();});});
+$('#num').innerHTML='<option value="">선택</option>'+Array.from({length:23},(_,i)=>`<option>${i+1}</option>`).join('');
+if(EMBED&&QP.get('cls')) ['cls','grp','num'].forEach(id=>{$('#'+id).disabled=true;});
+['cls','grp','num','members'].forEach(id=>{const el=$('#'+id); el.value=S[id]||''; el.addEventListener('input',()=>{S[id]=el.value;save();});});
 
 /* ---------- predict ---------- */
 $$('#predict input').forEach(r=>{ r.checked=(r.value===S.pred); r.addEventListener('change',()=>{S.pred=r.value;save();paintPred();markDone();}); });
@@ -854,7 +871,7 @@ function reportText(){
   const answered=Object.keys(S.quiz).length;
   return [
 `[팽창하는 우주 탐구 · 모둠 결과]`,
-`반/모둠: ${S.cls||'?'}반 ${S.grp||'?'}모둠`,
+`반/모둠/번호: ${S.cls||'?'}반 ${S.grp||'?'}모둠 ${S.num||'?'}번`,
 `모둠원: ${S.members||'-'}`,
 `역할: 풍선 ${S.roles[0]||'-'} · 측정 ${S.roles[1]||'-'} · 기록 ${S.roles[2]||'-'} · 발표 ${S.roles[3]||'-'}`,
 ``,`■ 예측: ${S.pred?PRED_TEXT[S.pred]:'-'}`,`  까닭: ${S.predWhy||'-'}`,
@@ -868,9 +885,9 @@ function reportText(){
   ].join('\n');
 }
 function renderReport(){
-  const miss=[]; if(!S.cls||!S.grp) miss.push('반·모둠'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!(S.notes.t1||'').trim()||!(S.notes.t2||'').trim()) miss.push('토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제');
+  const miss=[]; if(!S.cls||!S.grp||!S.num) miss.push('반·모둠·번호'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!(S.notes.t1||'').trim()||!(S.notes.t2||'').trim()) miss.push('토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제');
   const rows=PAIRS.map(p=>{const s=val(p.id,'s'),b=val(p.id,'b'); return s||b?`${p.label}: ${f1(s)} → ${f1(b)} cm${s&&b?` (${f2(b/s)}배)`:''}`:null;}).filter(Boolean).join('\n')||'-';
-  $('#reportCard').innerHTML=`<div class="row" style="justify-content:space-between"><h3>${esc(S.cls||'?')}반 ${esc(S.grp||'?')}모둠</h3><span class="score">${score()} / ${QUIZ.length}</span></div>
+  $('#reportCard').innerHTML=`<div class="row" style="justify-content:space-between"><h3>${esc(S.cls||'?')}반 ${esc(S.grp||'?')}모둠 ${esc(S.num||'?')}번</h3><span class="score">${score()} / ${QUIZ.length}</span></div>
   <dl><dt>모둠원</dt><dd>${esc(S.members||'-')}</dd><dt>예측</dt><dd>${S.pred?PRED_TEXT[S.pred]:'-'}</dd><dt>측정</dt><dd class="num">${esc(rows)}</dd>
   <dt>발견</dt><dd>${esc(S.notes.sim||'-')}</dd><dt>토의 2</dt><dd>${esc(S.notes.t2||'-')}</dd><dt>우주의 중심</dt><dd>${esc(S.notes.t3||'-')}</dd></dl>
   ${miss.length?`<div class="callout warn">아직 비어 있는 곳: ${miss.join(', ')}</div>`:'<div class="callout good">모든 활동을 마쳤어요. 결과를 복사해 제출하세요.</div>'}`;
@@ -893,8 +910,8 @@ new MutationObserver(redraw).observe(document.documentElement,{attributes:true,a
 
 $('#sendNow').hidden=!GAS;
 if(GAS) $('#reportLead').innerHTML='지금까지 입력한 내용이 한 장에 모였습니다. 입력할 때마다 선생님 구글 시트에 <b>자동으로 저장</b>되고, 오른쪽 위 표시가 ‘선생님께 전송됨 ✓’이면 끝입니다. 결과를 따로 내야 할 때는 <b>결과 복사</b>를 쓰세요.';
-$('#sendNow').addEventListener('click',()=>{ if(!S.cls||!S.grp){toast('맨 위에서 반과 모둠을 먼저 골라 주세요');return;} S.unsent=true; push().then(()=>toast(S.unsent?'전송하지 못했어요. 인터넷 연결을 확인해 주세요':'선생님께 보냈어요')); });
-if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp) pill('ok','선생님께 전송됨 ✓'); else pill('wait','반·모둠을 고르면 선생님께 저장돼요'); }
+$('#sendNow').addEventListener('click',()=>{ if(!S.cls||!S.grp||!S.num){toast('맨 위에서 반·모둠·번호를 먼저 골라 주세요');return;} S.unsent=true; push().then(()=>toast(S.unsent?'전송하지 못했어요. 인터넷 연결을 확인해 주세요':'선생님께 보냈어요')); });
+if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp&&S.num) pill('ok','선생님께 전송됨 ✓'); else pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요'); }
 
 /* ---------- 선생님 화면 ---------- */
 let TROWS=[],tTimer=null,openRow=null;
@@ -920,8 +937,8 @@ async function tLoad(){
 function num(x){const v=parseFloat(String(x||'').replace(',','.'));return isFinite(v)&&v>0?v:null;}
 function tRender(){
   const cf=$('#tCls').value;
-  const rows=TROWS.filter(r=>!cf||r.cls===cf).sort((a,b)=>a.cls.localeCompare(b.cls)||(+a.grp)-(+b.grp));
-  if(!rows.length){$('#tOut').innerHTML='<div class="callout info">이 날짜'+(cf?'·반':'')+'에 저장된 모둠 기록이 아직 없어요.</div>';return;}
+  const rows=TROWS.filter(r=>!cf||r.cls===cf).sort((a,b)=>a.cls.localeCompare(b.cls)||(+a.grp)-(+b.grp)||(+a.num||0)-(+b.num||0));
+  if(!rows.length){$('#tOut').innerHTML='<div class="callout info">이 날짜'+(cf?'·반':'')+'에 저장된 기록이 아직 없어요.</div>';return;}
   const measured=r=>num(r.d12s)&&num(r.d12b)&&num(r.d13s)&&num(r.d13b);
   const talked=r=>['t1','t2','t3','t4'].filter(k=>(r[k]||'').trim()).length;
   const done=rows.filter(r=>+r.answered>=QUIZ.length);
@@ -929,30 +946,30 @@ function tRender(){
   const preds=Object.values(PRED_TEXT).map(t=>({t,n:rows.filter(r=>r.pred===t).length}));
   const pmax=Math.max(1,...preds.map(p=>p.n));
   let h=`<div class="tiles">
-    <div class="tile"><div class="lab">기록한 모둠</div><div class="val">${rows.length}</div></div>
+    <div class="tile"><div class="lab">기록한 학생 (모둠)</div><div class="val">${rows.length} <span style="font-size:15px">(${new Set(rows.map(r=>r.cls+r.grp)).size})</span></div></div>
     <div class="tile"><div class="lab">측정 완료</div><div class="val">${rows.filter(measured).length}</div></div>
     <div class="tile"><div class="lab">토의 1·2 작성</div><div class="val">${rows.filter(r=>(r.t1||'').trim()&&(r.t2||'').trim()).length}</div></div>
     <div class="tile"><div class="lab">퀴즈 평균 (${QUIZ.length}점)</div><div class="val">${avg}</div></div></div>
   <div class="grid2">
     <div class="panel stack"><h3>실험 전 예측</h3>${preds.map(p=>`<div class="pbar"><span>${p.t}</span><span class="bar"><i style="width:${p.n/pmax*100}%"></i></span><span class="num">${p.n}</span></div>`).join('')}
-      <p class="note">예측을 고르지 않은 모둠: ${rows.filter(r=>!r.pred).length}</p></div>
+      <p class="note">예측을 고르지 않은 학생: ${rows.filter(r=>!r.pred).length}</p></div>
     <div class="panel stack"><h3>반 전체 측정 결과</h3>
       <div class="legend"><span><i style="background:var(--indigo);border-radius:50%"></i>1~2</span><span><i style="background:var(--accent);border-radius:50%"></i>1~3</span><span><i style="background:var(--warn);border-radius:50%"></i>2~3</span></div>
       <div class="chartbox"><canvas id="tScatter"></canvas></div>
-      <p class="note">점마다 모둠 번호가 붙어 있어요. 처음 거리가 먼 쌍일수록 위쪽에 있으면 ‘멀리 있을수록 더 많이 멀어진다’는 결과입니다.</p></div>
+      <p class="note">점마다 모둠 번호가 붙어 있어요. 같은 모둠은 같은 풍선을 재므로 점이 겹칠 수 있어요. 처음 거리가 먼 쌍일수록 위쪽에 있으면 ‘멀리 있을수록 더 많이 멀어진다’는 결과입니다.</p></div>
   </div>
-  <div class="panel stack"><h3>모둠별 진행</h3><p class="note">줄을 누르면 모둠의 답을 볼 수 있어요.</p>
-  <div class="tablewrap"><table class="tlist"><thead><tr><th>반</th><th>모둠</th><th>모둠원</th><th>예측</th><th>측정 (1~2 / 1~3 배율)</th><th>토의</th><th>퀴즈</th><th>저장</th></tr></thead><tbody>`;
+  <div class="panel stack"><h3>학생별 진행</h3><p class="note">모둠별로 묶여 있어요. 줄을 누르면 그 학생의 답을 볼 수 있어요.</p>
+  <div class="tablewrap"><table class="tlist"><thead><tr><th>반</th><th>모둠</th><th>번호</th><th>예측</th><th>측정 (1~2 / 1~3 배율)</th><th>토의</th><th>퀴즈</th><th>저장</th></tr></thead><tbody>`;
   rows.forEach((r,i)=>{
-    const id=r.cls+'|'+r.grp;
+    const id=r.cls+'|'+r.grp+'|'+(r.num||'');
     const r12=num(r.d12s)&&num(r.d12b)?(num(r.d12b)/num(r.d12s)).toFixed(2):'–', r13=num(r.d13s)&&num(r.d13b)?(num(r.d13b)/num(r.d13s)).toFixed(2):'–';
-    h+=`<tr class="g" data-id="${esc(id)}"><td>${esc(r.cls)}</td><td>${esc(r.grp)}</td><td>${esc(r.members||'-')}</td><td>${r.pred?'<span class="chip y">함</span>':'<span class="chip n">안 함</span>'}</td>
+    h+=`<tr class="g" data-id="${esc(id)}"><td>${esc(r.cls)}</td><td>${esc(r.grp)}</td><td>${esc(r.num||'-')}</td><td>${r.pred?'<span class="chip y">함</span>':'<span class="chip n">안 함</span>'}</td>
       <td>${measured(r)?`<span class="chip y">완료</span> <span class="num">${r12} / ${r13}배</span>`:'<span class="chip n">미완료</span>'}</td>
       <td><span class="num">${talked(r)}/4</span></td><td><span class="num">${+r.answered?r.score+'/'+QUIZ.length:'–'}</span></td><td class="num">${esc((r.updated||'').slice(11,16))}</td></tr>`;
     if(openRow===id){
       const D=(p,k)=>esc(r['d'+p+k]||'–');
       h+=`<tr><td colspan="8" class="det"><dl>
-        <dt>역할</dt><dd>${esc(r.roles||'-')}</dd><dt>예측</dt><dd>${esc(r.pred||'-')}\n까닭: ${esc(r.predWhy||'-')}</dd>
+        <dt>모둠원</dt><dd>${esc(r.members||'-')}</dd><dt>역할</dt><dd>${esc(r.roles||'-')}</dd><dt>예측</dt><dd>${esc(r.pred||'-')}\n까닭: ${esc(r.predWhy||'-')}</dd>
         <dt>측정 (cm)</dt><dd class="num">1~2: ${D('12','s')} → ${D('12','b')} → ${D('12','x')}\n1~3: ${D('13','s')} → ${D('13','b')} → ${D('13','x')}\n2~3: ${D('23','s')} → ${D('23','b')} → ${D('23','x')}</dd>
         <dt>시뮬레이터</dt><dd>${esc(r.sim||'-')}</dd><dt>토의 1</dt><dd>${esc(r.t1||'-')}</dd><dt>토의 2</dt><dd>${esc(r.t2||'-')}</dd><dt>토의 3</dt><dd>${esc(r.t3||'-')}</dd><dt>토의 4</dt><dd>${esc(r.t4||'-')}</dd></dl></td></tr>`;
     }
