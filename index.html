@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>우주 탐사 기획단 | 카드 미션</title>
+<title>우주 탐사 기획단</title>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -186,6 +186,206 @@ footer .rule b{color:var(--flame)}
 .unitnav a:hover{border-color:#9BA8CE}
 .unitnav a[aria-current="page"]{background:#FFD166;color:#1a1200;border-color:#FFD166}
 @media (max-width:480px){.unitnav .lbl{display:none}.unitnav a{font-size:15px;padding:3px 10px}.unitnav .in{gap:6px}}
+
+[hidden]{display:none!important}
+/* ================= 수행평가 화면 ================= */
+body.compact header{padding:22px 0 4px}
+body.compact header .sub,body.compact header .badge{display:none}
+.idbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:12px 0 0;font-size:.9rem}
+.idbar label{color:var(--mut);font-size:.8rem}
+.idbar select{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 8px;font:inherit}
+.sync{font-size:.76rem;border-radius:999px;padding:3px 12px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+.sync.ok{border-color:var(--ok);color:var(--ok);background:rgba(123,224,173,.08)}
+.sync.wait{border-color:var(--flame);color:var(--flame);background:rgba(255,159,69,.08)}
+.mtabs{position:sticky;top:0;z-index:20;background:rgba(7,11,30,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin:16px 0 0}
+.mtabs .in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.mtabs a{flex:0 0 auto;padding:12px 14px 10px;color:var(--mut);text-decoration:none;font-family:'Do Hyeon',sans-serif;font-size:1.12rem;border-bottom:3px solid transparent;display:flex;gap:7px;align-items:center}
+.mtabs a small{font-family:'Noto Sans KR',sans-serif;font-size:.7rem;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.mtabs a:hover{color:var(--ink)}
+.mtabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--flame)}
+.mtabs a[aria-current="page"] small{border-color:var(--flame);color:var(--flame)}
+.mtabs a.done::after{content:"✓";color:var(--ok);font-family:'Noto Sans KR',sans-serif;font-size:.85rem}
+.view{padding:24px 0 40px;display:flex;flex-direction:column;gap:18px}
+#v-cards{padding-top:0;display:block}
+.vhead{display:flex;flex-direction:column;gap:4px}
+.vhead .eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--flame);font-weight:700}
+.vhead h2{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:clamp(1.5rem,4vw,2.05rem);line-height:1.3;text-wrap:balance}
+.vhead p{color:var(--mut);font-size:.93rem;max-width:64ch}
+.vhead p b{color:var(--gold)}
+.subnav{display:flex;flex-wrap:wrap;gap:7px}
+.subnav button{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel2);color:var(--mut);border-radius:999px;padding:6px 14px 6px 6px;cursor:pointer;font:inherit;font-size:.88rem;font-weight:500}
+.subnav button:hover{border-color:var(--ion)}
+.subnav .sn{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);font-size:.75rem;font-weight:700}
+.subnav button[aria-selected="true"]{color:var(--ink);border-color:var(--flame);background:rgba(255,159,69,.1)}
+.subnav button[aria-selected="true"] .sn{background:var(--flame);border-color:var(--flame);color:#1a1200}
+.subnav button.done .sn{background:rgba(123,224,173,.15);border-color:var(--ok);color:var(--ok)}
+.pt{display:inline-block;font-family:'Noto Sans KR',sans-serif;font-size:.72rem;font-weight:700;color:#1a1200;background:var(--gold);border-radius:999px;padding:1px 8px;vertical-align:middle;margin-left:4px}
+.pt.big{font-size:.85rem;padding:2px 12px}
+.pane{display:flex;flex-direction:column;gap:16px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 20px}
+.box h3{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.3rem;line-height:1.3;margin-bottom:6px}
+.box .hint,.hint{font-size:.84rem;color:var(--mut)}
+.fld{display:flex;flex-direction:column;gap:8px}
+.fld>span{font-size:.92rem;font-weight:700;margin-top:6px}
+.fld>span small{font-weight:400;color:var(--mut);margin-left:6px}
+.view textarea,.view input.t,.idbar input.t,.tctl input.t{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:inherit;font-size:.95rem;padding:10px 12px;line-height:1.6}
+.view textarea{min-height:96px;resize:vertical}
+.view textarea.short{min-height:62px}
+.view textarea:focus,.view input.t:focus,.idbar input.t:focus{outline:none;border-color:var(--flame)}
+.idbar input.t{padding:6px 10px;width:auto}
+.tw{overflow-x:auto}
+.mt{width:100%;border-collapse:collapse;min-width:540px}
+.mt th{background:#1A2550;color:var(--ink);font-size:.8rem;font-weight:700;padding:8px 10px;text-align:left}
+.mt td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.9rem}
+.mt td:first-child{color:var(--mut)}
+.mt input.t,.mt textarea{padding:7px 9px;font-size:.88rem}
+.mt textarea.short{min-height:44px}
+.opts{display:flex;flex-wrap:wrap;gap:7px}
+.opts button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:7px 15px;font:inherit;font-size:.88rem;cursor:pointer}
+.opts button:hover{border-color:var(--ion)}
+.opts button[aria-pressed="true"]{background:rgba(255,159,69,.15);border-color:var(--flame);color:var(--flame);font-weight:700}
+.chkl{display:grid;gap:6px}
+.chkl.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.chkl label{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.chkl input{accent-color:var(--ok);width:18px;height:18px;margin-top:2px;flex:0 0 auto}
+.chkl label:has(input:checked){border-color:var(--ok)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:10px 20px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--ion)}
+.btn.pri{background:var(--flame);border-color:var(--flame);color:#1a1200}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.sm{padding:6px 14px;font-size:.82rem;font-weight:500}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.nextb{align-self:flex-end}
+.rowb{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.starter{display:flex;flex-wrap:wrap;gap:6px}
+.starter button{border:1px dashed var(--ion);background:transparent;color:var(--ion);border-radius:999px;padding:4px 12px;font:inherit;font-size:.8rem;cursor:pointer}
+.starter button:hover{background:rgba(111,183,255,.1)}
+.warn{font-size:.84rem;color:var(--gold);background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.3);border-radius:10px;padding:8px 12px}
+.copywarn{font-size:.8rem;color:var(--flame);margin-top:-4px}
+.rule{background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.3);border-radius:14px;padding:12px 16px;font-size:.9rem}
+.rule b{color:var(--gold);margin-right:6px}
+
+/* 카드 고르기 */
+.pickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px;margin-top:12px}
+.pk{background:var(--panel2);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;text-align:left;color:var(--ink);font:inherit;cursor:pointer;padding:0}
+.pk:hover{border-color:var(--ion)}
+.pk .pim{height:96px;background:linear-gradient(140deg,#1B2650,#0D1329);position:relative;display:grid;place-items:center;font-size:2.2rem}
+.pk .pim img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pk .pb{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.pk .pb b{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.12rem}
+.pk .pb span{font-size:.8rem;color:var(--mut)}
+.pk[aria-pressed="true"]{border-color:var(--flame);box-shadow:0 0 0 3px rgba(255,159,69,.25)}
+.pk[aria-pressed="true"] .pb b::after{content:" · 우리 모둠 카드";font-family:'Noto Sans KR',sans-serif;font-size:.72rem;color:var(--flame);font-weight:700}
+.chalcard{display:flex;flex-direction:column;gap:6px;background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.3);border-radius:12px;padding:12px 14px}
+.chalcard b{color:var(--gold);font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.15rem}
+.chalcard p{font-size:.88rem}
+.chalcard .cq2{color:var(--flame)}
+details.swap{margin-top:12px}
+details.swap summary,details.mydraft summary{cursor:pointer;color:var(--ion);font-size:.88rem}
+details.swap[open]{display:flex;flex-direction:column;gap:8px}
+.cardref{display:flex;gap:14px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:14px;padding:14px 16px}
+.cardref .ci{flex:0 0 auto;width:72px;height:72px;border-radius:10px;overflow:hidden;background:#1B2650;display:grid;place-items:center;font-size:2rem;position:relative}
+.cardref .ci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cardref .cx{min-width:0;display:flex;flex-direction:column;gap:6px}
+.cardref .cx b{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.2rem}
+.cardref .cx p{font-size:.86rem;color:var(--mut)}
+.cardref .cx p em{font-style:normal;color:var(--gold)}
+.empty{font-size:.9rem;color:var(--flame);border:1px dashed var(--flame);border-radius:12px;padding:12px 14px}
+
+/* 질문 만들기 */
+.qtabs{display:flex;gap:6px;margin:10px 0}
+.qtabs button{border:1px solid var(--line);background:var(--panel2);color:var(--mut);border-radius:10px 10px 0 0;padding:7px 16px;font:inherit;font-size:.9rem;cursor:pointer}
+.qtabs button[aria-pressed="true"]{color:var(--ink);border-color:var(--flame);border-bottom-color:transparent;background:var(--panel)}
+.builder{border:1px dashed var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.builder .tsel{display:flex;flex-wrap:wrap;gap:6px}
+.builder .tsel button{border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:8px;padding:5px 10px;font:inherit;font-size:.8rem;cursor:pointer;text-align:left}
+.builder .tsel button[aria-pressed="true"]{border-color:var(--ion);color:var(--ion)}
+.builder .bs{font-size:1.02rem;line-height:2.4}
+.builder .bs input,.builder .bs select{display:inline-block;width:auto;min-width:7em;max-width:100%;background:var(--panel2);border:0;border-bottom:2px solid var(--ion);border-radius:6px 6px 0 0;color:var(--ink);font:inherit;padding:2px 8px;margin:0 3px}
+.builder .bs input:focus{outline:none;border-bottom-color:var(--flame)}
+.builder .prev{font-size:.88rem;color:var(--mut)}
+.builder .prev b{color:var(--ink)}
+.seeds2{display:flex;flex-direction:column;gap:4px;font-size:.84rem;color:var(--mut);margin-top:8px}
+.seeds2 b{color:var(--ion);font-size:.8rem}
+.chkt td:not(:first-child),.chkt th:not(:first-child){text-align:center;width:6.5em}
+.chkt input{accent-color:var(--ok);width:20px;height:20px}
+.mate{display:grid;grid-template-columns:4.5em minmax(0,1fr) minmax(0,.7fr);gap:10px;align-items:start;border-bottom:1px solid var(--line);padding:10px 0}
+.mate .mn{font-family:'Do Hyeon',sans-serif;font-size:1.1rem;color:var(--gold)}
+.mate .mq{font-size:.88rem;display:flex;flex-direction:column;gap:4px}
+.mate .mq span::before{content:"Q ";color:var(--ion);font-weight:700}
+.mate input.t{padding:6px 10px;font-size:.85rem}
+@media (max-width:640px){.mate{grid-template-columns:1fr}}
+
+/* 2차시 연결 사슬 */
+.chainbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.chainbar span{border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.82rem;color:var(--mut)}
+.chainbar span.on{border-color:var(--ok);color:var(--ok);background:rgba(123,224,173,.08)}
+.chainbar i{color:var(--mut);font-style:normal}
+.picked{font-size:.9rem;color:var(--gold)}
+.mdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:8px}
+.mdict div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2);font-size:.84rem}
+.mdict b{display:block;color:var(--flame);font-size:.9rem}
+.mdict em{font-style:normal;color:var(--mut)}
+.tipcard:empty{display:none}
+.tipcard{background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.3);border-radius:14px;padding:12px 16px;font-size:.88rem;display:flex;flex-direction:column;gap:4px}
+.tipcard b{color:var(--gold)}
+.linkf{display:flex;flex-direction:column;gap:6px;font-size:1.02rem;line-height:2.1;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.linkf input.t{display:inline-block;width:auto;min-width:9em;max-width:100%;padding:3px 10px;border-width:0 0 2px;border-color:var(--ion);border-radius:6px 6px 0 0}
+.linkf .lq{color:var(--gold)}
+
+/* 3차시 */
+.timer{display:flex;gap:12px;align-items:center;margin-top:12px}
+.tnum{font-family:'Do Hyeon',sans-serif;font-size:1.8rem;font-variant-numeric:tabular-nums;color:var(--gold)}
+.tnum.over{color:var(--danger)}
+.peer{border:1px solid var(--line);border-radius:12px;background:var(--panel2);margin-top:10px}
+.peer summary{cursor:pointer;padding:10px 14px;display:flex;gap:10px;align-items:center;font-size:.92rem}
+.peer summary b{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.1rem;color:var(--gold);flex:0 0 auto}
+.peer summary span{color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.peer .pin{padding:0 14px 14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
+.peer.filled{border-color:rgba(123,224,173,.5)}
+.tokens{display:flex;flex-wrap:wrap;gap:8px}
+.tokens button{width:62px;height:62px;border-radius:50%;border:2px dashed var(--line);background:var(--panel2);color:var(--ink);font-family:'Do Hyeon',sans-serif;font-size:1.05rem;cursor:pointer}
+.tokens button:hover{border-color:var(--gold)}
+.tokens button[aria-pressed="true"]{border:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#ffe59a,#d9a520);color:#1a1200}
+.tokens button:disabled{opacity:.3;cursor:not-allowed}
+
+/* 개인 최종 */
+details.mydraft{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+#draftBody{display:grid;gap:8px;margin-top:10px;font-size:.85rem}
+#draftBody div{border-left:3px solid var(--line);padding-left:10px}
+#draftBody b{color:var(--ion);font-size:.8rem;display:block}
+.missl{font-size:.86rem;color:var(--flame)}
+.submitted{color:var(--ok);font-weight:700}
+
+/* 선생님 */
+.tctl{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.tctl label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--mut)}
+.tctl select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px;font:inherit}
+.obs{width:100%;border-collapse:collapse;min-width:760px;font-size:.86rem}
+.obs th{background:#1A2550;padding:8px 6px;font-size:.76rem;text-align:center}
+.obs td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:center}
+.obs td.l{text-align:left}
+.obs tr.r{cursor:pointer}
+.obs tr.r:hover td{background:rgba(111,183,255,.06)}
+.obs tr.r.sel td{background:rgba(255,159,69,.1)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--line)}
+.dot.y{background:var(--ok);border-color:var(--ok)}
+.tsum{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin:14px 0}
+.grq{font-size:.86rem;display:grid;gap:6px}
+.grq div{border-left:3px solid var(--gold);padding-left:10px}
+.grq b{color:var(--gold)}
+.det{background:var(--panel);border:1px solid var(--flame);border-radius:16px;padding:18px;margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.det h3{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.35rem}
+.rb{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.rb h4{font-size:.95rem;display:flex;justify-content:space-between;gap:10px}
+.rb .ans{font-size:.88rem;background:var(--panel2);border-radius:8px;padding:8px 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.rb .ans i{font-style:normal;color:var(--ion);font-size:.78rem;display:block}
+.lv{display:grid;gap:6px}
+.lv button{text-align:left;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:10px;padding:8px 12px;font:inherit;font-size:.84rem;cursor:pointer;display:flex;gap:10px}
+.lv button b{flex:0 0 auto;width:1.6em;color:var(--gold)}
+.lv button[aria-pressed="true"]{border-color:var(--flame);background:rgba(255,159,69,.12)}
+.ttotal{font-family:'Do Hyeon',sans-serif;font-size:1.5rem;color:var(--gold)}
+.toast2{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--gold);color:#1a1200;font-weight:700;padding:9px 20px;border-radius:999px;z-index:80;font-size:.9rem}
 </style>
 </head>
 <body>
@@ -199,6 +399,24 @@ footer .rule b{color:var(--flame)}
   <p class="sub">여러분은 성공한 탐사를 소개하는 사람이 아니라,<br>그 탐사가 남긴 <b>다음 질문</b>을 찾아 새로운 임무를 제안하는 사람입니다.</p>
 </header>
 
+<div class="idbar" id="idbar">
+  <label for="idCls">반</label><select id="idCls"><option value="">선택</option><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select>
+  <label for="idGrp">모둠</label><select id="idGrp"><option value="">선택</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+  <label for="idNum">번호</label><select id="idNum"><option value="">선택</option></select>
+  <label for="idName">이름</label><input id="idName" class="t" style="width:7.5em" autocomplete="off">
+  <span class="sync" id="sync">기록은 이 기기에 저장돼요</span>
+</div>
+
+<nav class="mtabs" aria-label="수행평가 단계"><div class="in" id="mtabs">
+  <a href="#cards" data-v="cards">미션 카드</a>
+  <a href="#s1" data-v="s1">1차시 <small>질문 찾기</small></a>
+  <a href="#s2" data-v="s2">2차시 <small>탐사 계획</small></a>
+  <a href="#s3" data-v="s3">3차시 <small>탐사위원회</small></a>
+  <a href="#final" data-v="final">개인 최종 <small>수행평가 10점</small></a>
+</div></nav>
+
+
+<section class="view" id="v-cards">
 <section class="hook">
   <h2 class="disp"><span class="q">"우주 탐사? 나랑 무슨 상관인데…"</span></h2>
   <p class="lead">그럴까? 오늘 하루를 돌아보자. 아래에서 오늘 해당하는 것을 눌러 봐.</p>
@@ -227,6 +445,395 @@ footer .rule b{color:var(--flame)}
   <p>교환 원칙: 다른 도전카드가 대표 질문과 더 잘 맞는 이유를 한 문장으로 설명하면 1회 교환할 수 있어요.</p>
   <p style="margin-top:10px">사진: NASA · ESA · Wikimedia Commons (Public Domain/CC) | 영상: NASA · KARI 공식 채널</p>
 </footer>
+</section>
+<!-- ========== 1차시 ========== -->
+<section class="view" id="v-s1" hidden>
+  <div class="vhead"><span class="eyebrow">1차시 · 성과에서 다음 질문 찾기</span><h2>기존 탐사는 무엇을 밝혔고, 어떤 질문을 남겼을까?</h2>
+    <p>개인 작성 → 모둠 공유 → 대표 질문 선정 순서로 진행해요.</p></div>
+  <div class="subnav" role="tablist">
+    <button data-p="a" aria-selected="true"><span class="sn">1</span>탐사의 가치</button>
+    <button data-p="b"><span class="sn">2</span>모둠 카드</button>
+    <button data-p="c"><span class="sn">3</span>카드 읽기</button>
+    <button data-p="d"><span class="sn">4</span>나의 질문</button>
+    <button data-p="e"><span class="sn">5</span>대표 질문</button>
+  </div>
+
+  <div class="pane" data-p="a">
+    <div class="box fld">
+      <h3>공통 도입에서 발견한 우주 탐사의 가치</h3>
+      <span>우주 탐사가 새롭게 알게 해 준 것, 또는 우리 생활·과학에 준 도움 <small>한 가지 이상</small></span>
+      <div class="starter" data-for="s1.value"><button>일기예보의 구름 사진은</button><button>지도 앱의 내 위치는</button><button>재난 문자와 산불 감시는</button><button>병원 검사 기술 일부는</button></div>
+      <textarea data-k="s1.value" placeholder="예) 기상위성 덕분에 태풍을 미리 알 수 있어서…"></textarea>
+      <p class="hint">미션 카드 탭 맨 위의 ‘오늘 해당하는 것’을 눌러 보면 떠올리기 쉬워요.</p>
+    </div>
+    <button class="btn pri nextb pnext">다음: 모둠 카드 고르기 →</button>
+  </div>
+
+  <div class="pane" data-p="b" hidden>
+    <div class="box">
+      <h3>우리 모둠의 기본카드 고르기</h3>
+      <p class="hint">앞면만 보고 비교해서 모둠이 가장 탐구하고 싶은 카드 1장을 고르세요. 고른 다음에 자세히 읽어요.</p>
+      <div class="pickgrid" id="pickgrid"></div>
+    </div>
+    <div class="box" id="chalBox" hidden>
+      <h3>짝 도전카드</h3>
+      <div id="chalInfo"></div>
+      <details class="swap"><summary>도전카드를 바꾸고 싶다면 (1회 교환)</summary>
+        <p class="hint">다른 도전카드가 우리 대표 질문과 더 잘 맞는 이유를 한 문장으로 쓰고 선생님께 말씀드려요. 카드 종류와 교환 여부는 평가하지 않아요.</p>
+        <div class="opts" id="chalOpts"></div>
+        <textarea data-k="s1.swapWhy" class="short" placeholder="이 도전카드가 더 알맞은 이유 한 문장"></textarea>
+      </details>
+    </div>
+    <button class="btn pri nextb pnext">다음: 카드 자세히 읽기 →</button>
+  </div>
+
+  <div class="pane" data-p="c" hidden>
+    <div class="cardref" id="cardRef1"></div>
+    <div class="box fld">
+      <h3>기본카드를 자세히 읽기</h3>
+      <p class="warn">카드의 문장을 그대로 옮기는 것이 목표가 아니에요. 내 말로 짧게 바꿔 써요.</p>
+      <span>① 이 탐사는 어디에서 무엇을 알아보려고 했는가?</span>
+      <textarea data-k="s1.read.a" data-copy="story" class="short"></textarea>
+      <span>② 탐사 결과 새롭게 알게 된 사실이나 가능해진 일은 무엇인가?</span>
+      <textarea data-k="s1.read.b" data-copy="meaning" class="short"></textarea>
+      <span>③ 이 성과만으로 아직 알 수 없거나 더 확인해야 할 것은 무엇인가?</span>
+      <textarea data-k="s1.read.c" data-copy="remain" class="short"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 나의 질문 만들기 →</button>
+  </div>
+
+  <div class="pane" data-p="d" hidden>
+    <div class="box">
+      <h3>나의 탐사 질문 만들기</h3>
+      <p class="hint">좋은 질문은 이미 알려진 답을 묻지 않고, 탐사 자료로 답할 수 있어야 해요. 질문 틀을 골라 빈칸을 채우면 문장이 만들어져요.</p>
+      <div class="qtabs"><button data-q="0" aria-pressed="true">나의 질문 1</button><button data-q="1" aria-pressed="false">나의 질문 2</button></div>
+      <div class="builder" id="builder"></div>
+      <div class="fld"><span id="qLabel">나의 질문 1</span><textarea id="qText" class="short"></textarea></div>
+      <div id="seedBox"></div>
+    </div>
+    <div class="box">
+      <h3>질문 점검하기</h3>
+      <div class="tw"><table class="mt chkt" id="qCheck"></table></div>
+    </div>
+    <button class="btn pri nextb pnext">다음: 모둠 대표 질문 →</button>
+  </div>
+
+  <div class="pane" data-p="e" hidden>
+    <div class="box">
+      <div class="rowb"><h3>모둠원의 질문 모으기</h3><button class="btn sm" id="teamReload">모둠원 질문 불러오기</button></div>
+      <p class="hint">같은 반·같은 모둠 친구들이 저장한 질문이 나와요. 좋다고 생각한 점을 짧게 적어 보세요.</p>
+      <div id="teamQs"></div>
+    </div>
+    <div class="box fld">
+      <h3>모둠 대표 질문</h3>
+      <span>대표 질문 <small>한 문장으로 분명하게</small></span>
+      <textarea data-k="s1.rep" class="short"></textarea>
+      <span>이 질문을 선택한 이유 <small>두 가지 이상 고르고 설명해요</small></span>
+      <div class="opts" data-multi="s1.repTags"><button data-v="성과와의 관련성">성과와의 관련성</button><button data-v="탐사 가능성">탐사 가능성</button><button data-v="과학·인류에게 의미">과학·인류에게 의미</button></div>
+      <textarea data-k="s1.repWhy" class="short" placeholder="예) 화성 로버의 성과에서 바로 이어지고, 지하 얼음은 레이더로 측정할 수 있어서…"></textarea>
+    </div>
+    <a class="btn pri nextb" href="#s2">2차시로 →</a>
+  </div>
+</section>
+
+<!-- ========== 2차시 ========== -->
+<section class="view" id="v-s2" hidden>
+  <div class="vhead"><span class="eyebrow">2차시 · 질문에 답하는 탐사 계획</span><h2>장비부터 고르지 말고, 필요한 자료부터 정하세요</h2>
+    <p>좋은 계획은 장비가 화려한 계획이 아니라, <b>질문 - 필요한 자료 - 탐사 방법 - 임무</b>가 서로 연결된 계획이에요.</p></div>
+  <div class="chainbar" id="chainbar"></div>
+  <div class="subnav" role="tablist">
+    <button data-p="a" aria-selected="true"><span class="sn">1</span>질문 확인</button>
+    <button data-p="b"><span class="sn">2</span>필요한 자료</button>
+    <button data-p="c"><span class="sn">3</span>대상·장소</button>
+    <button data-p="d"><span class="sn">4</span>탐사 방법</button>
+    <button data-p="e"><span class="sn">5</span>장비·임무</button>
+    <button data-p="f"><span class="sn">6</span>결과·가치·책임</button>
+    <button data-p="g"><span class="sn">7</span>연결 문장</button>
+  </div>
+
+  <div class="pane" data-p="a">
+    <div class="box fld">
+      <h3>질문과 성과 연결 확인</h3>
+      <span>선택한 기본카드와 핵심 성과</span>
+      <div class="picked" id="pickedCard"></div>
+      <textarea data-k="s2.cardSum" class="short" placeholder="핵심 성과를 한두 문장으로"></textarea>
+      <span>우리 모둠 대표 질문</span>
+      <textarea data-k="s1.rep" class="short"></textarea>
+      <div class="chkl"><label><input type="checkbox" data-k="s2.chk.0">성과에서 이어진다</label><label><input type="checkbox" data-k="s2.chk.1">탐사 자료로 답할 수 있다</label><label><input type="checkbox" data-k="s2.chk.2">질문의 범위가 적절하다</label></div>
+    </div>
+    <button class="btn pri nextb pnext">다음: 필요한 자료 →</button>
+  </div>
+
+  <div class="pane" data-p="b" hidden>
+    <div class="box">
+      <h3>질문에 답하려면 어떤 자료가 필요한가?</h3>
+      <p class="hint">관측·측정·촬영·채취·분석할 것을 써요. 3줄을 다 채울 필요는 없어요.</p>
+      <div class="tw"><table class="mt"><thead><tr><th>필요한 자료</th><th>자료를 얻는 방법</th><th>이 자료로 판단할 수 있는 것</th></tr></thead><tbody>
+        <tr><td><input class="t" data-k="s2.data.0.d" placeholder="예) 지하 얼음의 깊이"></td><td><input class="t" data-k="s2.data.0.how" placeholder="예) 레이더로 측정"></td><td><input class="t" data-k="s2.data.0.j" placeholder="예) 물이 얼마나 남았는지"></td></tr>
+        <tr><td><input class="t" data-k="s2.data.1.d"></td><td><input class="t" data-k="s2.data.1.how"></td><td><input class="t" data-k="s2.data.1.j"></td></tr>
+        <tr><td><input class="t" data-k="s2.data.2.d"></td><td><input class="t" data-k="s2.data.2.how"></td><td><input class="t" data-k="s2.data.2.j"></td></tr>
+      </tbody></table></div>
+    </div>
+    <button class="btn pri nextb pnext">다음: 대상과 장소 →</button>
+  </div>
+
+  <div class="pane" data-p="c" hidden>
+    <div class="box">
+      <h3>탐사 대상과 장소</h3>
+      <p class="hint">‘달·화성’처럼 크게 쓰지 말고 구체적인 장소로 좁혀요.</p>
+      <div class="tw"><table class="mt"><tbody>
+        <tr><th style="width:34%">탐사할 천체</th><td><input class="t" data-k="s2.target.body" placeholder="예) 화성"></td></tr>
+        <tr><th>구체적인 장소·범위</th><td><input class="t" data-k="s2.target.place" placeholder="예) 북위 40도 부근의 충돌구 가장자리"></td></tr>
+        <tr><th>이 장소를 선택한 과학적 이유</th><td><textarea data-k="s2.target.why" class="short"></textarea></td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="tipcard" data-chaltip="3"></div>
+    <button class="btn pri nextb pnext">다음: 탐사 방법 →</button>
+  </div>
+
+  <div class="pane" data-p="d" hidden>
+    <div class="box fld">
+      <h3>탐사 방법 선택</h3>
+      <p class="hint">누르면 그 방법의 장점과 생각할 점이 나와요. 여러 개를 골라도 돼요.</p>
+      <div class="opts" data-multi="s2.methods" id="methodOpts"></div>
+      <div class="mdict" id="mdict"></div>
+      <span>이 방법이 질문에 알맞은 이유</span>
+      <textarea data-k="s2.methodWhy"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 장비와 임무 →</button>
+  </div>
+
+  <div class="pane" data-p="e" hidden>
+    <div class="box">
+      <h3>장비와 임무 연결하기 <small class="hint">최대 3개</small></h3>
+      <p class="hint">대표 질문에 답하는 데 꼭 필요한 임무만 남겨요. 마지막 칸에는 대표 질문의 어느 부분에 답하는지 써요.</p>
+      <div class="tw"><table class="mt"><thead><tr><th>장비의 이름 또는 기능</th><th>장비가 할 일</th><th>얻을 자료</th><th>질문의 어느 부분에 답하나?</th></tr></thead><tbody>
+        <tr><td><input class="t" data-k="s2.gear.0.g" placeholder="예) 지하 탐사 레이더"></td><td><input class="t" data-k="s2.gear.0.job"></td><td><input class="t" data-k="s2.gear.0.data"></td><td><input class="t" data-k="s2.gear.0.part"></td></tr>
+        <tr><td><input class="t" data-k="s2.gear.1.g"></td><td><input class="t" data-k="s2.gear.1.job"></td><td><input class="t" data-k="s2.gear.1.data"></td><td><input class="t" data-k="s2.gear.1.part"></td></tr>
+        <tr><td><input class="t" data-k="s2.gear.2.g"></td><td><input class="t" data-k="s2.gear.2.job"></td><td><input class="t" data-k="s2.gear.2.data"></td><td><input class="t" data-k="s2.gear.2.part"></td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="tipcard" data-chaltip="2,4,6"></div>
+    <button class="btn pri nextb pnext">다음: 결과·가치·책임 →</button>
+  </div>
+
+  <div class="pane" data-p="f" hidden>
+    <div class="box fld">
+      <h3>결과 예상하기</h3>
+      <p class="hint">탐사는 예상을 확인하는 일이 아니라 검증하는 일이에요.</p>
+      <span>우리가 예상하는 결과와 그 까닭</span>
+      <textarea data-k="s2.expect" class="short"></textarea>
+      <span>어떤 자료가 나오거나 무엇이 발견되지 않으면, 예상과 다른 결론을 내릴 것인가?</span>
+      <textarea data-k="s2.alt" class="short"></textarea>
+    </div>
+    <div class="box fld">
+      <h3>탐사의 의의와 유용성</h3>
+      <span>예상되는 결과가 과학의 발전이나 인류에게 주는 도움 <small>누가, 어떻게 도움을 받는지</small></span>
+      <div class="starter" data-for="s2.value"><button>이 결과는 ___에게</button><button>___ 문제를 해결하는 데 쓰이고</button><button>그 효과는 ___로 확인할 수 있다</button></div>
+      <textarea data-k="s2.value"></textarea>
+    </div>
+    <div class="box fld">
+      <h3>책임 있는 탐사: 임무가 끝난 뒤까지</h3>
+      <div class="opts" data-multi="s2.debris"><button data-v="분리 부품 최소화">분리 부품 최소화</button><button data-v="회수·재사용">회수·재사용</button><button data-v="대기권 재진입 유도">대기권 재진입 유도</button><button data-v="안전 궤도로 이동">안전 궤도로 이동</button><button data-v="고장·충돌 예방">고장·충돌 예방</button><button data-v="기타">기타</button></div>
+      <span>우주 쓰레기를 줄이기 위한 우리 탐사의 실천 방안 <small>탐사 대상과 방법에 맞게</small></span>
+      <textarea data-k="s2.debrisPlan" placeholder="예) 착륙 후 낙하산과 하강 장치를…"></textarea>
+    </div>
+    <div class="tipcard" data-chaltip="1,5"></div>
+    <button class="btn pri nextb pnext">다음: 나의 연결 문장 →</button>
+  </div>
+
+  <div class="pane" data-p="g" hidden>
+    <div class="box">
+      <h3>나의 핵심 연결 문장</h3>
+      <p class="hint">모둠 협의를 참고하되, 위의 표를 보지 않고 자신의 말로 써요.</p>
+      <div class="linkf">
+        <p>우리의 대표 질문 “<span class="lq" id="linkQ"></span>”에 답하려면</p>
+        <p><input class="t" data-k="s2.link.d" placeholder="필요한 자료"> 자료가 필요하다.</p>
+        <p>이 자료는 <input class="t" data-k="s2.link.m" placeholder="탐사 방법">(으)로 얻으며,</p>
+        <p><input class="t" data-k="s2.link.g" placeholder="장비">이(가) <input class="t" data-k="s2.link.j" placeholder="임무">을(를) 하여 모은다.</p>
+      </div>
+    </div>
+    <a class="btn pri nextb" href="#s3">3차시로 →</a>
+  </div>
+</section>
+
+<!-- ========== 3차시 ========== -->
+<section class="view" id="v-s3" hidden>
+  <div class="vhead"><span class="eyebrow">3차시 · 우주탐사위원회</span><h2>어떤 탐사가 가치 있고 책임 있는 계획일까?</h2>
+    <p>발표는 점수 경쟁이 아니라 계획을 검증하고 보완하는 과정이에요.</p></div>
+  <div class="subnav" role="tablist">
+    <button data-p="a" aria-selected="true"><span class="sn">1</span>2분 브리핑</button>
+    <button data-p="b"><span class="sn">2</span>발표 전 점검</button>
+    <button data-p="c"><span class="sn">3</span>위원 기록</button>
+    <button data-p="d"><span class="sn">4</span>투자 토큰</button>
+    <button data-p="e"><span class="sn">5</span>최종 수정</button>
+  </div>
+
+  <div class="pane" data-p="a">
+    <div class="box">
+      <div class="rowb"><h3>우리 모둠 2분 브리핑</h3><button class="btn sm" id="briefFill">내 계획에서 핵심 문장 가져오기</button></div>
+      <div class="tw"><table class="mt"><thead><tr><th>순서</th><th>말할 내용</th><th style="width:5.5em">담당 번호</th><th>핵심 문장</th></tr></thead><tbody>
+        <tr><td>1</td><td>기존 탐사 성과 → 대표 질문</td><td><input class="t" data-k="s3.brief.0.who"></td><td><textarea class="short" data-k="s3.brief.0.line"></textarea></td></tr>
+        <tr><td>2</td><td>필요한 자료 → 탐사 방법</td><td><input class="t" data-k="s3.brief.1.who"></td><td><textarea class="short" data-k="s3.brief.1.line"></textarea></td></tr>
+        <tr><td>3</td><td>대상·장소 → 장비·임무</td><td><input class="t" data-k="s3.brief.2.who"></td><td><textarea class="short" data-k="s3.brief.2.line"></textarea></td></tr>
+        <tr><td>4</td><td>예상 결과 → 가치·책임</td><td><input class="t" data-k="s3.brief.3.who"></td><td><textarea class="short" data-k="s3.brief.3.line"></textarea></td></tr>
+      </tbody></table></div>
+      <div class="timer"><button class="btn sm" id="tStart">2분 연습 타이머</button><span class="tnum" id="tNum">2:00</span></div>
+    </div>
+    <button class="btn pri nextb pnext">다음: 발표 전 점검 →</button>
+  </div>
+
+  <div class="pane" data-p="b" hidden>
+    <div class="box fld">
+      <h3>발표 전 최종 점검</h3>
+      <div class="chkl">
+        <label><input type="checkbox" data-k="s3.check.0">대표 질문에 답하기 위해 필요한 자료가 분명하다.</label>
+        <label><input type="checkbox" data-k="s3.check.1">선택한 탐사 방법으로 그 자료를 실제로 얻을 수 있다.</label>
+        <label><input type="checkbox" data-k="s3.check.2">대상·장소·장비·임무가 서로 연결되어 있다.</label>
+        <label><input type="checkbox" data-k="s3.check.3">예상과 다른 자료가 나올 경우의 결론을 생각했다.</label>
+        <label><input type="checkbox" data-k="s3.check.4">탐사의 가치와 우주 쓰레기 저감 방안이 구체적이다.</label>
+      </div>
+      <span>발표 전 보완할 한 가지</span>
+      <textarea data-k="s3.fix" class="short"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 위원 기록 →</button>
+  </div>
+
+  <div class="pane" data-p="c" hidden>
+    <div class="rule"><b>위원의 약속</b> 사람이 아니라 계획을 검토해요. “이건 틀렸어.” 대신 “이 자료로 질문에 답할 수 있는 이유가 무엇인가요?”처럼 근거를 물어요.</div>
+    <div class="box">
+      <div class="rowb"><h3>우주탐사위원회 기록</h3><button class="btn sm" id="classReload">다른 모둠 대표 질문 불러오기</button></div>
+      <p class="hint">다른 모둠의 발표를 들으며 기록해요. 대표 질문은 불러오기로 채울 수 있어요.</p>
+      <div id="peerList"></div>
+    </div>
+    <button class="btn pri nextb pnext">다음: 투자 토큰 →</button>
+  </div>
+
+  <div class="pane" data-p="d" hidden>
+    <div class="box fld">
+      <h3>투자 토큰 <small class="hint">예산이 한 탐사에만 주어진다면? (우리 모둠 제외)</small></h3>
+      <div class="tokens" id="tokenPick"></div>
+      <span>선택 근거</span>
+      <div class="opts" data-multi="s3.token.why"><button data-v="과학적 가치">과학적 가치</button><button data-v="인류에게 주는 도움">인류에게 주는 도움</button><button data-v="계획의 타당성">계획의 타당성</button><button data-v="책임 있는 탐사">책임 있는 탐사</button></div>
+      <span>선택한 이유를 한 문장으로</span>
+      <textarea data-k="s3.token.text" class="short"></textarea>
+    </div>
+    <div class="box fld">
+      <h3>다른 의견을 듣고 새롭게 생각한 점</h3>
+      <span>탐사의 가치나 계획의 타당성에 대해 새롭게 생각한 점은?</span>
+      <textarea data-k="s3.newThought"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 최종 수정 →</button>
+  </div>
+
+  <div class="pane" data-p="e" hidden>
+    <div class="box fld">
+      <h3>우리 모둠 최종 수정</h3>
+      <span>우리 모둠이 받은 위원 질문 또는 보완 의견</span>
+      <textarea data-k="s3.got"></textarea>
+      <span>그 의견을 반영하여 수정한 내용</span>
+      <textarea data-k="s3.revised"></textarea>
+    </div>
+    <a class="btn pri nextb" href="#final">개인 최종 수행평가로 →</a>
+  </div>
+</section>
+
+<!-- ========== 개인 최종 ========== -->
+<section class="view" id="v-final" hidden>
+  <div class="vhead"><span class="eyebrow">개인 최종 수행평가 활동지</span><h2>우주 탐사 성과를 바탕으로 탐사 계획 세우기 <span class="pt big">10점</span></h2></div>
+  <div class="rule"><b>작성 원칙</b> 모둠에서 논의한 내용을 참고할 수 있지만, 아래 답은 각자 <b>자신의 말</b>로 써요. 전문적인 장비 이름보다 <b>질문과 자료·방법·임무의 연결</b>이 중요해요.</div>
+  <details class="mydraft" id="myDraft"><summary>참고: 내가 1~3차시에 쓴 기록 보기</summary><div id="draftBody"></div></details>
+
+  <div class="subnav" role="tablist">
+    <button data-p="a" aria-selected="true"><span class="sn">1</span>질문 설정 <span class="pt">3</span></button>
+    <button data-p="b"><span class="sn">2</span>자료·방법 <span class="pt">2</span></button>
+    <button data-p="c"><span class="sn">3</span>대상·장비·임무 <span class="pt">2</span></button>
+    <button data-p="d"><span class="sn">4</span>가치·책임 <span class="pt">3</span></button>
+    <button data-p="e"><span class="sn">5</span>점검·제출</button>
+  </div>
+
+  <div class="pane" data-p="a">
+    <div class="box fld">
+      <h3>1. 탐사 성과를 이해하고 탐사 질문 설정하기 <span class="pt">3점</span></h3>
+      <span>선택한 기존 우주 탐사의 목적과 주요 성과 <small>무엇을 알아냈는지 구체적으로</small></span>
+      <textarea data-k="fin.a1"></textarea>
+      <span>그 성과에서 이어지는 새로운 탐사 질문 <small>탐사를 통해 답할 수 있는 질문</small></span>
+      <textarea data-k="fin.a2" class="short"></textarea>
+      <span>성과와 질문이 어떻게 연결되는가?</span>
+      <textarea data-k="fin.a3"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음 →</button>
+  </div>
+  <div class="pane" data-p="b" hidden>
+    <div class="box fld">
+      <h3>2. 필요한 자료와 탐사 방법 설계하기 <span class="pt">2점</span></h3>
+      <span>질문에 답하기 위해 필요한 자료 <small>관측·측정·촬영·채취·분석할 것</small></span>
+      <textarea data-k="fin.b1"></textarea>
+      <span>자료를 얻을 탐사 방법과 그 방법을 선택한 이유</span>
+      <textarea data-k="fin.b2"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음 →</button>
+  </div>
+  <div class="pane" data-p="c" hidden>
+    <div class="box fld">
+      <h3>3. 탐사 대상·장비·임무 구성하기 <span class="pt">2점</span></h3>
+      <div class="tw"><table class="mt"><thead><tr><th>탐사 대상과 구체적인 장소</th><th>장비의 이름 또는 기능</th><th>장비가 할 임무와 얻을 자료</th></tr></thead><tbody>
+        <tr><td><input class="t" data-k="fin.c.0.t"></td><td><input class="t" data-k="fin.c.0.g"></td><td><input class="t" data-k="fin.c.0.j"></td></tr>
+        <tr><td><input class="t" data-k="fin.c.1.t"></td><td><input class="t" data-k="fin.c.1.g"></td><td><input class="t" data-k="fin.c.1.j"></td></tr>
+        <tr><td><input class="t" data-k="fin.c.2.t"></td><td><input class="t" data-k="fin.c.2.g"></td><td><input class="t" data-k="fin.c.2.j"></td></tr>
+      </tbody></table></div>
+      <span>대상·장소·장비·임무가 대표 질문과 연결되는 까닭</span>
+      <textarea data-k="fin.c2"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음 →</button>
+  </div>
+  <div class="pane" data-p="d" hidden>
+    <div class="box fld">
+      <h3>4. 탐사의 의의·유용성과 책임 있는 탐사 방안 설명하기 <span class="pt">3점</span></h3>
+      <span>예상되는 탐사 결과</span>
+      <textarea data-k="fin.d1"></textarea>
+      <span>그 결과가 과학의 발전이나 인류에게 주는 도움 <small>구체적으로</small></span>
+      <textarea data-k="fin.d2"></textarea>
+      <span>우주 쓰레기를 줄이기 위한 실천 가능한 방안 <small>임무 종료 후까지 고려</small></span>
+      <textarea data-k="fin.d3"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 점검·제출 →</button>
+  </div>
+  <div class="pane" data-p="e" hidden>
+    <div class="box fld">
+      <h3>제출 전 자기 점검</h3>
+      <div class="chkl two">
+        <label><input type="checkbox" data-k="fin.self.0">성과 → 질문 연결</label>
+        <label><input type="checkbox" data-k="fin.self.1">질문 → 자료 연결</label>
+        <label><input type="checkbox" data-k="fin.self.2">자료 → 방법 연결</label>
+        <label><input type="checkbox" data-k="fin.self.3">대상·장비·임무 연결</label>
+        <label><input type="checkbox" data-k="fin.self.4">유용성 구체화</label>
+        <label><input type="checkbox" data-k="fin.self.5">우주 쓰레기 방안</label>
+      </div>
+      <div id="finMiss"></div>
+      <div class="rowb"><button class="btn pri" id="submitFin">최종 제출하기</button><span id="submitState" class="hint"></span></div>
+      <p class="hint">제출한 뒤에도 선생님이 마감하기 전까지는 고칠 수 있어요. 고치면 다시 제출해 주세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 선생님 ========== -->
+<section class="view" id="v-teacher" hidden>
+  <div class="vhead"><span class="eyebrow">선생님 화면</span><h2>과정 관찰과 채점</h2>
+    <p>모둠 활동은 학습 과정이고, 개인 최종 활동지가 주요 채점 근거예요. 학생을 누르면 최종 활동지와 채점표가 열려요.</p></div>
+  <div class="box tctl">
+    <label for="tPin">PIN<input id="tPin" class="t" type="password" inputmode="numeric" autocomplete="off" style="width:7em"></label>
+    <label for="tCls">반<select id="tCls"><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select></label>
+    <button class="btn pri" id="tLoad">불러오기</button>
+    <button class="btn sm" id="tCopy">점수표 복사</button>
+    <span class="hint" id="tStatus"></span>
+  </div>
+  <div id="tOut"></div>
+  <a class="btn nextb" href="#cards">학생 화면으로</a>
+</section>
+
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a></p>
+
 
 </div>
 <div class="ov" id="ov"><button class="close" onclick="closeOv()">✕</button><div class="sheet" id="sheet"></div></div>
@@ -499,6 +1106,282 @@ function openOv(i){
 function closeOv(){ov.classList.remove('show');document.body.style.overflow='';}
 ov.addEventListener('click',e=>{if(e.target===ov)closeOv();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOv();});
+
+</script>
+<script>
+/* ===== 설정: 구글 Apps Script 웹 앱 주소 (탐험대·탐구실과 같은 주소) ===== */
+window.CONFIG={ GAS_URL: "https://script.google.com/macros/s/AKfycbxAkxx9Eml3Xye1GdUK02uTK9rWTiW9kyZ4iFs_dF4tfvsnk0qoAYVc2l2DQRTHE7_j/exec" };
+</script>
+<script>
+/* ===================== 수행평가: 우주 탐사 기획단 ===================== */
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CFG=window.CONFIG||{}; const GAS=String(CFG.GAS_URL||'').replace(/[“”‘’"']/g,'').trim();
+const KEY='space-mission-pa-v1';
+function blank(){return {cls:'',grp:'',num:'',name:'',s1:{read:{},q:['',''],qb:[{t:0},{t:0}],qc:[[],[]],likes:{},repTags:[]},s2:{chk:[],data:[{},{},{}],target:{},methods:[],gear:[{},{},{}],debris:[],link:{}},s3:{brief:[{},{},{},{}],check:[],peer:{},token:{why:[]}},fin:{c:[{},{},{}],self:[]},unsent:false};}
+let S=blank();
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(blank(),JSON.parse(r));}catch(e){}
+if(!S.cls&&!S.num){ try{ const h=JSON.parse(localStorage.getItem('mw-hunt-v3')||'{}'); if(h.cls) S.cls=String(h.cls); if(h.teamNo) S.grp=String(h.teamNo); if(h.num) S.num=String(h.num);}catch(e){} }
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function save(){S.unsent=true;persist();queue();refreshDone();}
+function toast(m){let t=$('#toast2');if(!t){t=document.createElement('div');t.id='toast2';t.className='toast2';t.setAttribute('role','status');document.body.appendChild(t);}t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2000);}
+
+/* ---------- 경로로 값 읽고 쓰기 ---------- */
+function getP(path){return path.split('.').reduce((o,k)=>o==null?undefined:o[k],S);}
+function setP(path,v){const ks=path.split('.');let o=S;ks.slice(0,-1).forEach((k,i)=>{if(o[k]==null)o[k]=/^\d+$/.test(ks[i+1])?[]:{};o=o[k];});o[ks[ks.length-1]]=v;}
+function bindAll(root){
+  (root||document).querySelectorAll('[data-k]').forEach(el=>{
+    if(el._b) return; el._b=1; const k=el.dataset.k;
+    if(el.type==='checkbox'){ el.checked=!!getP(k); el.addEventListener('change',()=>{setP(k,el.checked);save();}); }
+    else { el.value=getP(k)||''; el.addEventListener('input',()=>{setP(k,el.value);save(); syncSame(el); if(el.dataset.copy) copyCheck(el);}); }
+  });
+  (root||document).querySelectorAll('[data-multi]').forEach(box=>{
+    if(box._b) return; box._b=1; const k=box.dataset.multi;
+    const paint=()=>{const a=getP(k)||[]; box.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',a.includes(b.dataset.v)));};
+    box.addEventListener('click',e=>{const b=e.target.closest('button[data-v]'); if(!b) return; let a=(getP(k)||[]).slice(); a=a.includes(b.dataset.v)?a.filter(x=>x!==b.dataset.v):a.concat(b.dataset.v); setP(k,a); paint(); save(); if(box.id==='methodOpts') renderDict();});
+    paint(); box._paint=paint;
+  });
+  (root||document).querySelectorAll('.starter[data-for]').forEach(box=>{
+    if(box._b) return; box._b=1;
+    box.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return; const ta=document.querySelector(`textarea[data-k="${box.dataset.for}"]`); const v=ta.value.trim(); ta.value=(v?v+' ':'')+b.textContent.replace(/___/g,'').trim()+' '; ta.focus(); ta.dispatchEvent(new Event('input'));});
+  });
+}
+// 같은 값을 쓰는 다른 칸(예: 대표 질문)을 함께 갱신
+function syncSame(src){ $$(`[data-k="${src.dataset.k}"]`).forEach(el=>{ if(el!==src&&el.type!=='checkbox') el.value=src.value; }); if(src.dataset.k==='s1.rep') $('#linkQ').textContent=S.s1.rep||'(1차시 대표 질문)'; }
+
+/* ---------- 신원 ---------- */
+$('#idNum').innerHTML='<option value="">선택</option>'+Array.from({length:23},(_,i)=>`<option>${i+1}</option>`).join('');
+[['idCls','cls'],['idGrp','grp'],['idNum','num'],['idName','name']].forEach(([id,k])=>{const el=$('#'+id); el.value=S[k]||''; el.addEventListener('input',()=>{S[k]=el.value.trim();save(); if(k==='grp'){renderPeers();renderTokens();}});});
+
+/* ---------- 구글 시트 저장 ---------- */
+let sending=false,timer=null;
+function pill(kind,t){const p=$('#sync'); p.className='sync '+kind; p.textContent=t;}
+function card(){return S.s1.card!=null?CARDS[S.s1.card]:null;}
+function chalNo(){const c=card(); return S.s1.chal||(c?c.chal:null);}
+function finText(){const f=S.fin||{}; const rows=(f.c||[]).filter(r=>r&&(r.t||r.g||r.j)).map(r=>`${r.t||'-'} / ${r.g||'-'} / ${r.j||'-'}`).join('\n');
+  return {f1:`[목적·성과] ${f.a1||''}\n[질문] ${f.a2||''}\n[연결] ${f.a3||''}`,f2:`[자료] ${f.b1||''}\n[방법·이유] ${f.b2||''}`,f3:`${rows}\n[연결 까닭] ${f.c2||''}`,f4:`[예상 결과] ${f.d1||''}\n[도움] ${f.d2||''}\n[우주 쓰레기] ${f.d3||''}`};}
+function payload(){const c=card(),ch=chalNo(); const d=Object.assign({},S); delete d.unsent;
+  return Object.assign({app:'mission',cls:S.cls,grp:S.grp,num:S.num,name:S.name,card:c?c.title:'',chal:ch?CHAL[ch].name:'',rep:S.s1.rep||'',submitted:S.fin.submitted||'',data:JSON.stringify(d)},finText());}
+function queue(){ if(!GAS){pill('','기록은 이 기기에 저장돼요');return;} if(!S.cls||!S.grp||!S.num){pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요');return;} pill('wait','저장 대기'); clearTimeout(timer); timer=setTimeout(push,2500); }
+async function push(){ if(!GAS||sending||!S.unsent||!S.cls||!S.grp||!S.num) return; sending=true; S.unsent=false; persist(); pill('wait','전송 중');
+  try{const r=await fetch(GAS,{method:'POST',body:JSON.stringify(payload())}); const j=await r.json(); if(!j.ok) throw 0; pill('ok','선생님께 저장됨 ✓');}
+  catch(e){S.unsent=true;persist();pill('wait','전송 대기 · 자동으로 다시 보냄');} sending=false; }
+setInterval(()=>{if(S.unsent)push();},15000); window.addEventListener('online',()=>{if(S.unsent)push();});
+
+/* ---------- 화면 전환 ---------- */
+const VIEWS=['cards','s1','s2','s3','final','teacher']; const SUB={};
+function show(){
+  let v=(location.hash||'').slice(1); if(!VIEWS.includes(v)) v='cards';
+  VIEWS.forEach(x=>{const el=$('#v-'+x); if(el) el.hidden=(x!==v);});
+  $$('#mtabs a').forEach(a=>{if(a.dataset.v===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  document.body.classList.toggle('compact',v!=='cards');
+  $('#idbar').hidden=(v==='teacher'); $('.mtabs').hidden=(v==='teacher');
+  const sec=$('#v-'+v); if(sec&&sec._go) sec._go(SUB[sec.id]||sec.querySelector('.pane').dataset.p,false);
+  if(v==='teacher') teacherOpen();
+  refreshDone();
+}
+window.addEventListener('hashchange',()=>{show();window.scrollTo(0,0);});
+function onPane(sec,p){
+  if(sec==='v-s1'){ if(p==='b') renderPick(); if(p==='c') renderRef('#cardRef1'); if(p==='d') renderBuilder(); if(p==='e') loadTeam(); }
+  if(sec==='v-s2'){ renderChain(); renderPicked(); renderTips(); if(p==='d') renderDict(); if(p==='g') $('#linkQ').textContent=S.s1.rep||'(1차시 대표 질문)'; }
+  if(sec==='v-s3'){ if(p==='c'){renderPeers();} if(p==='d') renderTokens(); }
+  if(sec==='v-final'){ renderDraft(); if(p==='e') renderMiss(); }
+}
+function initSubs(){
+  $$('section.view').forEach(sec=>{ const nav=sec.querySelector('.subnav'); if(!nav) return;
+    const panes=Array.from(sec.querySelectorAll(':scope > .pane'));
+    const go=(p,scroll)=>{SUB[sec.id]=p; nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===p)); panes.forEach(x=>x.hidden=x.dataset.p!==p); onPane(sec.id,p); refreshDone(); if(scroll) window.scrollTo({top:Math.max(0,sec.offsetTop-60),behavior:'smooth'});};
+    nav.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.p,false)));
+    panes.forEach((pn,i)=>pn.querySelectorAll('.pnext').forEach(b=>b.addEventListener('click',()=>go(panes[i+1].dataset.p,true))));
+    sec._go=go; });
+}
+const has=v=>!!String(v||'').trim();
+function paneDone(sec,p){const s1=S.s1,s2=S.s2,s3=S.s3,f=S.fin;
+  const M={'v-s1':{a:has(s1.value),b:s1.card!=null,c:has(s1.read.a)&&has(s1.read.b)&&has(s1.read.c),d:has(s1.q[0])&&has(s1.q[1]),e:has(s1.rep)&&has(s1.repWhy)},
+   'v-s2':{a:has(s2.cardSum)&&has(s1.rep),b:s2.data.some(r=>r&&has(r.d)&&has(r.how)),c:has(s2.target.body)&&has(s2.target.place)&&has(s2.target.why),d:s2.methods.length>0&&has(s2.methodWhy),e:s2.gear.some(r=>r&&has(r.g)&&has(r.job)),f:has(s2.expect)&&has(s2.value)&&has(s2.debrisPlan),g:has(s2.link.d)&&has(s2.link.m)&&has(s2.link.g)&&has(s2.link.j)},
+   'v-s3':{a:s3.brief.some(r=>r&&has(r.line)),b:s3.check.filter(Boolean).length>=5,c:Object.values(s3.peer||{}).some(r=>r&&(has(r.best)||has(r.ask))),d:!!s3.token.grp&&has(s3.token.text),e:has(s3.revised)},
+   'v-final':{a:has(f.a1)&&has(f.a2)&&has(f.a3),b:has(f.b1)&&has(f.b2),c:f.c.some(r=>r&&has(r.t)&&has(r.g))&&has(f.c2),d:has(f.d1)&&has(f.d2)&&has(f.d3),e:!!f.submitted}};
+  return !!(M[sec]&&M[sec][p]);}
+function refreshDone(){
+  $$('section.view').forEach(sec=>sec.querySelectorAll('.subnav button').forEach(b=>b.classList.toggle('done',paneDone(sec.id,b.dataset.p)&&b.getAttribute('aria-selected')!=='true')));
+  const tab={s1:paneDone('v-s1','e'),s2:paneDone('v-s2','g'),s3:paneDone('v-s3','e'),final:!!S.fin.submitted};
+  $$('#mtabs a').forEach(a=>a.classList.toggle('done',!!tab[a.dataset.v]));
+}
+
+/* ---------- 1차시: 카드 고르기 ---------- */
+function renderPick(){
+  $('#pickgrid').innerHTML=CARDS.map((c,i)=>`<button class="pk" data-i="${i}" aria-pressed="${S.s1.card===i}"><span class="pim">${c.em}${c.img?`<img src="${c.img}" alt="" onerror="this.remove()">`:''}</span><span class="pb"><b>${esc(c.title)}</b><span>${esc(c.one)}</span><span>${esc(c.meta)}</span></span></button>`).join('');
+  $$('#pickgrid .pk').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.i; if(S.s1.card!==i){S.s1.card=i; S.s1.chal=null;} save(); renderPick();}));
+  const c=card(); $('#chalBox').hidden=!c; if(!c) return;
+  const n=chalNo(),ch=CHAL[n];
+  $('#chalInfo').innerHTML=`<div class="chalcard"><b>${ch.em} ${esc(ch.name)}</b><p>${esc(ch.front)}</p><p class="cq2">우리 모둠에게: ${esc(ch.q)}</p>${n!==c.chal?'<p class="hint">권장 짝에서 바꾼 도전카드예요.</p>':'<p class="hint">기본카드의 권장 짝이에요.</p>'}</div>
+    <div class="rowb" style="margin-top:10px"><button class="btn sm" id="openCard">기본카드와 도전카드 자세히 읽기</button></div>`;
+  $('#openCard').addEventListener('click',()=>openOv(S.s1.card));
+  $('#chalOpts').innerHTML=Object.keys(CHAL).map(k=>`<button data-c="${k}" aria-pressed="${+k===n}">${CHAL[k].em} ${esc(CHAL[k].name.split(':')[0])}</button>`).join('');
+  $$('#chalOpts button').forEach(b=>b.addEventListener('click',()=>{S.s1.chal=+b.dataset.c===c.chal?null:+b.dataset.c; save(); renderPick();}));
+}
+function renderRef(sel){
+  const c=card(), box=$(sel);
+  if(!c){box.innerHTML='<div class="empty">먼저 ‘모둠 카드’ 단계에서 기본카드를 골라 주세요.</div>';return;}
+  box.innerHTML=`<div class="cardref"><span class="ci">${c.em}${c.img?`<img src="${c.img}" alt="" onerror="this.remove()">`:''}</span><div class="cx"><b>${esc(c.title)}</b><p><em>아직 남은 점</em> ${esc(c.remain)}</p><div><button class="btn sm" data-open>카드 전체 다시 읽기</button></div></div></div>`;
+  box.querySelector('[data-open]').addEventListener('click',()=>openOv(S.s1.card));
+}
+// 카드 문장을 거의 그대로 옮겼는지 살펴봄 (두 글자 묶음이 얼마나 겹치는지)
+function grams(s){s=String(s||'').replace(/\s+/g,'');const g=new Set();for(let i=0;i<s.length-1;i++)g.add(s.slice(i,i+2));return g;}
+function copyCheck(el){
+  const c=card(); let w=el.nextElementSibling; if(!w||!w.classList.contains('copywarn')){w=document.createElement('p');w.className='copywarn';el.after(w);}
+  const v=el.value.replace(/\s+/g,''); if(!c||v.length<25){w.textContent='';return;}
+  const A=grams(v),B=grams(c[el.dataset.copy]); let n=0; A.forEach(x=>{if(B.has(x))n++;});
+  w.textContent=n/A.size>0.7?'카드 문장과 거의 같아요. 핵심만 골라 내 말로 바꿔 써 볼까요?':'';
+}
+
+/* ---------- 1차시: 나의 질문 ---------- */
+let QI=0;
+// 받침에 맞춰 조사를 고름 (을/를, 은/는)
+function jo(w,a,b){const c=String(w||'').trim().slice(-1).charCodeAt(0); if(!(c>=0xAC00&&c<=0xD7A3)) return a+'('+b+')'; return (c-0xAC00)%28?a:b;}
+const TPL=[{name:'○○에서 △△를 관측·측정·분석하면 □□를 알 수 있을까?',f:b=>`${b.a||'○○'}에서 ${b.b||'△△'}${b.b?jo(b.b,'을','를'):'를'} ${b.v||'관측'}하면 ${b.c||'□□'}${b.c?jo(b.c,'을','를'):'를'} 알 수 있을까?`},
+           {name:'○○의 △△는 장소나 시간에 따라 어떻게 달라질까?',f:b=>`${b.a||'○○'}의 ${b.b||'△△'}${b.b?jo(b.b,'은','는'):'는'} ${b.v||'장소'}에 따라 어떻게 달라질까?`}];
+function renderBuilder(){
+  $$('.qtabs button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.q===QI));
+  const qb=S.s1.qb[QI]||(S.s1.qb[QI]={t:0}); const t=qb.t||0;
+  const sel0=['관측','측정','분석','촬영','채취해 분석'], sel1=['장소','시간','계절','깊이'];
+  $('#builder').innerHTML=`<div class="tsel">${TPL.map((T,i)=>`<button data-t="${i}" aria-pressed="${i===t}">틀 ${i+1}: ${esc(T.name)}</button>`).join('')}</div>
+    <div class="bs">${t===0?`<input id="bA" placeholder="장소" value="${esc(qb.a||'')}">에서 <input id="bB" placeholder="대상" value="${esc(qb.b||'')}">을(를) <select id="bV">${sel0.map(x=>`<option ${qb.v===x?'selected':''}>${x}</option>`).join('')}</select>하면 <input id="bC" placeholder="알고 싶은 것" value="${esc(qb.c||'')}">을(를) 알 수 있을까?`
+      :`<input id="bA" placeholder="천체·장소" value="${esc(qb.a||'')}">의 <input id="bB" placeholder="대상" value="${esc(qb.b||'')}">은(는) <select id="bV">${sel1.map(x=>`<option ${qb.v===x?'selected':''}>${x}</option>`).join('')}</select>에 따라 어떻게 달라질까?`}</div>
+    <div class="rowb"><span class="prev">만들어진 문장: <b id="bPrev"></b></span><button class="btn sm pri" id="bUse">이 문장을 나의 질문 ${QI+1}로</button></div>`;
+  const upd=()=>{qb.a=$('#bA').value;qb.b=$('#bB').value;qb.v=$('#bV').value;if($('#bC'))qb.c=$('#bC').value;$('#bPrev').textContent=TPL[t].f(qb);persist();};
+  ['#bA','#bB','#bV','#bC'].forEach(s=>{const e=$(s); if(e) e.addEventListener('input',upd);}); upd();
+  $$('#builder .tsel button').forEach(b=>b.addEventListener('click',()=>{qb.t=+b.dataset.t; qb.v=''; save(); renderBuilder();}));
+  $('#bUse').addEventListener('click',()=>{S.s1.q[QI]=TPL[t].f(qb); $('#qText').value=S.s1.q[QI]; save(); renderCheck(); toast('나의 질문 '+(QI+1)+'에 넣었어요. 더 다듬어도 좋아요.');});
+  $('#qLabel').textContent='나의 질문 '+(QI+1); $('#qText').value=S.s1.q[QI]||'';
+  const c=card(); $('#seedBox').innerHTML=c?`<div class="seeds2"><b>질문 씨앗 (그대로 쓰지 말고 우리 질문으로 바꿔 보기)</b>${c.seeds.map(s=>`<span>· ${esc(s)}</span>`).join('')}</div>`:'';
+  renderCheck();
+}
+$('#qText').addEventListener('input',e=>{S.s1.q[QI]=e.target.value;save();});
+$$('.qtabs button').forEach(b=>b.addEventListener('click',()=>{QI=+b.dataset.q;renderBuilder();}));
+const QCOND=['선택한 탐사 성과에서 자연스럽게 이어진다.','우주 탐사로 자료를 모아 답할 수 있다.','답을 알게 되면 과학이나 인류에게 의미가 있다.','너무 크거나 막연하지 않고 관측·측정할 내용이 드러난다.'];
+function renderCheck(){
+  $('#qCheck').innerHTML='<thead><tr><th>좋은 질문의 조건</th><th>질문 1</th><th>질문 2</th></tr></thead><tbody>'+QCOND.map((t,k)=>`<tr><td>${t}</td>${[0,1].map(q=>`<td><input type="checkbox" aria-label="질문 ${q+1}: ${t}" data-q="${q}" data-c="${k}" ${S.s1.qc[q]&&S.s1.qc[q][k]?'checked':''}></td>`).join('')}</tr>`).join('')+'</tbody>';
+  $$('#qCheck input').forEach(i=>i.addEventListener('change',()=>{const q=+i.dataset.q;(S.s1.qc[q]=S.s1.qc[q]||[])[+i.dataset.c]=i.checked;save();}));
+}
+
+/* ---------- 1차시: 모둠원 질문 ---------- */
+let TEAM=[];
+async function loadTeam(){
+  const box=$('#teamQs'); const mine=`<div class="mate"><span class="mn">${esc(S.num||'?')}번 (나)</span><div class="mq">${[0,1].map(i=>S.s1.q[i]?`<span>${esc(S.s1.q[i])}</span>`:'').join('')||'<span class="hint">아직 질문을 쓰지 않았어요</span>'}</div><span></span></div>`;
+  if(!GAS||!S.cls||!S.grp){box.innerHTML=mine+'<p class="hint" style="margin-top:8px">반·모둠·번호를 고르면 모둠원의 질문을 함께 볼 수 있어요. 모둠원과 말로 나누어도 돼요.</p>';return;}
+  box.innerHTML=mine+'<p class="hint">불러오는 중…</p>';
+  try{const r=await fetch(`${GAS}?app=mission&mode=team&cls=${encodeURIComponent(S.cls)}&grp=${encodeURIComponent(S.grp)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json(); TEAM=(j.rows||[]).filter(x=>String(x.num)!==String(S.num));}catch(e){TEAM=null;}
+  box.innerHTML=mine+(TEAM===null?'<p class="hint">모둠원 기록을 불러오지 못했어요. 잠시 뒤 다시 눌러 주세요.</p>':TEAM.length?TEAM.map(m=>`<div class="mate"><span class="mn">${esc(m.num)}번${m.name?' '+esc(m.name):''}</span><div class="mq">${[m.q1,m.q2].filter(Boolean).map(q=>`<span>${esc(q)}</span>`).join('')||'<span class="hint">아직 질문이 없어요</span>'}</div><input class="t" placeholder="좋다고 생각한 점" data-like="${esc(m.num)}" value="${esc(S.s1.likes[m.num]||'')}"></div>`).join(''):'<p class="hint">아직 저장한 모둠원이 없어요.</p>');
+  $$('#teamQs [data-like]').forEach(i=>i.addEventListener('input',()=>{S.s1.likes[i.dataset.like]=i.value;save();}));
+}
+$('#teamReload').addEventListener('click',loadTeam);
+
+/* ---------- 2차시 ---------- */
+function renderChain(){
+  const s1=S.s1,s2=S.s2; const st=[['질문',has(s1.rep)],['필요한 자료',s2.data.some(r=>r&&has(r.d))],['탐사 방법',s2.methods.length>0],['대상·장소',has(s2.target.place)],['장비·임무',s2.gear.some(r=>r&&has(r.g))],['가치·책임',has(s2.value)&&has(s2.debrisPlan)]];
+  $('#chainbar').innerHTML=st.map(([t,o],i)=>(i?'<i>→</i>':'')+`<span class="${o?'on':''}">${t}</span>`).join('');
+}
+function renderPicked(){const c=card(),n=chalNo(); $('#pickedCard').textContent=c?`기본카드: ${c.title} · 도전카드: ${CHAL[n].name}`:'아직 1차시에서 카드를 고르지 않았어요.';}
+function renderTips(){const n=chalNo(); $$('.tipcard').forEach(t=>{const ok=n&&t.dataset.chaltip.split(',').map(Number).includes(n); t.innerHTML=ok?`<b>${CHAL[n].em} 도전카드 반영: ${esc(CHAL[n].name)}</b><span>${esc(CHAL[n].apply)}</span><span class="hint">점검: ${esc(CHAL[n].check)}</span>`:'';});}
+const METHODS=[['궤도 관측','넓은 지역을 반복 촬영·측정','표면에 직접 닿아 시료를 분석하기 어려움'],['착륙 탐사','한 장소를 자세히 측정·분석','안전한 착륙 지점과 제한된 이동 범위'],['이동 탐사(로버)','여러 장소를 이동하며 비교','지형, 전력, 통신 조건'],['시료 채취·귀환','지구의 정밀 기기로 분석','오염 방지와 안전한 귀환'],['우주망원경','대기 방해 없이 먼 천체와 여러 파장 관측','대상을 직접 만지거나 시료를 얻을 수 없음'],['유인 탐사','사람이 상황에 맞게 판단·수행','생명 유지, 방사선, 귀환 안전'],['기타','','']];
+$('#methodOpts').innerHTML=METHODS.map(m=>`<button data-v="${m[0]}">${m[0]}</button>`).join('');
+function renderDict(){const a=S.s2.methods; $('#mdict').innerHTML=METHODS.filter(m=>a.includes(m[0])&&m[1]).map(m=>`<div><b>${m[0]}</b>잘할 수 있는 일: ${m[1]}<br><em>생각할 점: ${m[2]}</em></div>`).join(''); renderChain();}
+
+/* ---------- 3차시 ---------- */
+$('#briefFill').addEventListener('click',()=>{const c=card(),s2=S.s2; const d=s2.data.filter(r=>r&&r.d).map(r=>r.d).join(', '), g=s2.gear.filter(r=>r&&r.g).map(r=>r.g+(r.job?'(으)로 '+r.job:'')).join(', ');
+  const L=[`${c?c.title+'의 성과에서 ':''}“${S.s1.rep||'대표 질문'}”이라는 질문을 세웠습니다.`,`이 질문에 답하려면 ${d||'○○'} 자료가 필요하고, ${s2.methods.join('·')||'○○'} 방법으로 얻습니다.`,`${s2.target.place||s2.target.body||'○○'}에서 ${g||'장비로 임무를'} 수행합니다.`,`예상 결과는 ${s2.expect||'○○'}이고, ${s2.value?'이 결과는 '+s2.value:''} 우주 쓰레기는 ${s2.debrisPlan||'○○'} 방법으로 줄입니다.`];
+  let n=0; L.forEach((t,i)=>{const r=S.s3.brief[i]||(S.s3.brief[i]={}); if(!has(r.line)){r.line=t;n++;}}); persist(); save();
+  $$('#v-s3 textarea[data-k^="s3.brief"]').forEach(el=>el.value=getP(el.dataset.k)||''); toast(n?'빈 칸에 핵심 문장 초안을 넣었어요. 말하기 좋게 다듬어 보세요.':'이미 모두 써 있어요.');});
+let tLeft=120,tInt=null; $('#tStart').addEventListener('click',()=>{ if(tInt){clearInterval(tInt);tInt=null;$('#tStart').textContent='2분 연습 타이머';return;} tLeft=120; $('#tStart').textContent='멈추기';
+  const draw=()=>{const a=Math.abs(tLeft);$('#tNum').textContent=(tLeft<0?'+':'')+Math.floor(a/60)+':'+String(a%60).padStart(2,'0');$('#tNum').classList.toggle('over',tLeft<0);}; draw(); tInt=setInterval(()=>{tLeft--;draw();},1000);});
+let CLASSQ={};
+function renderPeers(){
+  const box=$('#peerList'); if(!box) return; const g=[1,2,3,4,5,6,7,8].filter(x=>String(x)!==String(S.grp));
+  box.innerHTML=g.map(x=>{const r=S.s3.peer[x]||{}; const q=r.q||CLASSQ[x]||''; return `<details class="peer${has(r.best)||has(r.ask)?' filled':''}"><summary><b>${x}모둠</b><span>${esc(q)||'대표 질문을 적어요'}</span></summary><div class="pin">
+    <label>대표 질문<textarea class="short" data-k="s3.peer.${x}.q">${''}</textarea></label>
+    <label>가장 타당했던 연결<textarea class="short" data-k="s3.peer.${x}.best"></textarea></label>
+    <label>위원 질문 또는 보완점<textarea class="short" data-k="s3.peer.${x}.ask" placeholder="예) 이 자료로 질문에 답할 수 있는 이유가 무엇인가요?"></textarea></label></div></details>`;}).join('');
+  g.forEach(x=>{ if(!(S.s3.peer[x]&&S.s3.peer[x].q)&&CLASSQ[x]) setP(`s3.peer.${x}.q`,CLASSQ[x]); });
+  bindAll(box);
+}
+$('#classReload').addEventListener('click',async()=>{ if(!GAS||!S.cls){toast('반을 먼저 골라 주세요');return;}
+  try{const r=await fetch(`${GAS}?app=mission&mode=class&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json(); CLASSQ={}; (j.rows||[]).forEach(x=>CLASSQ[x.grp]=x.rep); renderPeers(); toast('다른 모둠 대표 질문을 불러왔어요');}catch(e){toast('불러오지 못했어요');}});
+function renderTokens(){const box=$('#tokenPick'); if(!box) return; box.innerHTML=[1,2,3,4,5,6,7,8].map(x=>`<button data-g="${x}" aria-pressed="${String(S.s3.token.grp)===String(x)}" ${String(x)===String(S.grp)?'disabled title="우리 모둠"':''}>${x}모둠</button>`).join('');
+  $$('#tokenPick button').forEach(b=>b.addEventListener('click',()=>{S.s3.token.grp=b.dataset.g;save();renderTokens();}));}
+
+/* ---------- 개인 최종 ---------- */
+function renderDraft(){const s1=S.s1,s2=S.s2,c=card(); const it=[['기본카드',c?c.title:''],['카드 읽기',[s1.read.a,s1.read.b,s1.read.c].filter(Boolean).join(' / ')],['나의 질문',s1.q.filter(Boolean).join(' / ')],['대표 질문',s1.rep],['필요한 자료',s2.data.filter(r=>r&&r.d).map(r=>`${r.d}(${r.how||''})`).join(', ')],['탐사 방법',s2.methods.join(', ')+(s2.methodWhy?' — '+s2.methodWhy:'')],['대상·장소',[s2.target.body,s2.target.place].filter(Boolean).join(' · ')],['장비·임무',s2.gear.filter(r=>r&&r.g).map(r=>`${r.g}: ${r.job||''}`).join(' / ')],['예상 결과',s2.expect],['가치',s2.value],['우주 쓰레기',s2.debrisPlan],['받은 의견과 수정',[S.s3.got,S.s3.revised].filter(Boolean).join(' → ')]];
+  $('#draftBody').innerHTML=it.filter(x=>has(x[1])).map(x=>`<div><b>${x[0]}</b>${esc(x[1])}</div>`).join('')||'<p class="hint">아직 1~3차시 기록이 없어요.</p>';}
+function renderMiss(){const m=[]; ['a','b','c','d'].forEach((p,i)=>{if(!paneDone('v-final',p))m.push(['1. 질문 설정','2. 자료·방법','3. 대상·장비·임무','4. 가치·책임'][i]);});
+  $('#finMiss').innerHTML=m.length?`<p class="missl">아직 덜 쓴 곳: ${m.join(', ')}</p>`:'<p class="submitted">네 부분을 모두 썼어요.</p>';
+  $('#submitState').innerHTML=S.fin.submitted?`<span class="submitted">제출함 · ${esc(S.fin.submitted)}</span>`:'아직 제출하지 않았어요';}
+$('#submitFin').addEventListener('click',()=>{ if(!S.cls||!S.grp||!S.num){toast('맨 위에서 반·모둠·번호를 먼저 골라 주세요');return;}
+  const d=new Date(); S.fin.submitted=`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; save(); push(); renderMiss(); toast(GAS?'최종 활동지를 제출했어요':'제출 표시를 했어요 (시트 연결 전이라 이 기기에만 저장돼요)');});
+
+/* ---------- 선생님 ---------- */
+const RUB=[{t:'탐사 성과에 근거한 탐사 질문 설정',max:3,lv:[[3,'목적·성과를 정확히 설명하고, 성과에서 이어지는 구체적인 탐사 질문을 설정함'],[2,'성과와 질문을 모두 제시했으나 연결이 부족하거나 질문이 구체적이지 않음'],[1,'성과와 질문 중 하나만 제시하거나 제시하지 못함']]},
+ {t:'필요한 자료와 탐사 방법의 설계',max:2,lv:[[2,'필요한 자료를 구체적으로 정하고, 그 자료를 얻을 수 있는 방법을 타당하게 제시함'],[1,'자료와 방법을 제시했으나 질문과의 연결 또는 구체성이 부족함'],[0,'필요한 자료와 탐사 방법을 제시하지 못함']]},
+ {t:'탐사 대상·장비·임무의 구성',max:2,lv:[[2,'대상과 장소, 장비 및 임무를 서로 타당하게 연결하여 구체적으로 계획함'],[1,'제시했으나 일부 내용의 연결이 부족하거나 구체적이지 않음'],[0,'제시하지 못하거나 서로 관련 없이 제시함']]},
+ {t:'탐사의 가치와 책임 설명',max:3,lv:[[3,'결과가 과학·인류에 주는 도움을 구체적으로 설명하고, 실천 가능한 우주 쓰레기 저감 방안을 제시함'],[2,'유용성과 책임 방안을 모두 제시했으나 한 내용이 부족하거나 구체적이지 않음'],[1,'둘 중 하나만 제시하거나 제시하지 못함']]}];
+let TROWS=[],TSEL=null,TPIN='';
+function teacherOpen(){ try{const p=sessionStorage.getItem('eu-pin'); if(p&&!$('#tPin').value) $('#tPin').value=p;}catch(e){} if(S.cls) $('#tCls').value=S.cls;
+  if(!GAS){$('#tOut').innerHTML='<div class="empty">구글 시트가 아직 연결되지 않았어요. index.html 위쪽 CONFIG의 GAS_URL을 확인해 주세요.</div>';return;} if($('#tPin').value) tLoad(); }
+async function tLoad(){ TPIN=$('#tPin').value.trim(); if(!TPIN){$('#tStatus').textContent='PIN을 입력해 주세요';return;} try{sessionStorage.setItem('eu-pin',TPIN);}catch(e){}
+  $('#tStatus').textContent='불러오는 중…';
+  try{const r=await fetch(`${GAS}?app=mission&pin=${encodeURIComponent(TPIN)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json();
+    if(!j.ok){$('#tStatus').textContent=j.error==='PIN'?'PIN이 맞지 않아요':'불러오지 못했어요';return;}
+    TROWS=(j.rows||[]).map(x=>{let d={};try{d=JSON.parse(x.data||'{}');}catch(e){} return Object.assign(x,{d});}); $('#tStatus').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준'; tRender();}
+  catch(e){$('#tStatus').textContent='연결 실패 · Apps Script 배포를 확인해 주세요';} }
+function obsOf(d){const s1=d.s1||{},s2=d.s2||{},s3=d.s3||{},f=d.fin||{}; const q=s1.q||[];
+  return [has(q[0])||has(q[1]),has((s1.read||{}).b)&&has(s1.rep),(s2.data||[]).some(r=>r&&has(r.d))&&(s2.methods||[]).length>0,(s2.gear||[]).some(r=>r&&has(r.g)&&has(r.job)),has(s3.revised),!!f.submitted];}
+function scoreOf(r){const s=[r.s1,r.s2,r.s3,r.s4].map(x=>x===''||x==null?null:+x); return {s,total:s.every(x=>x!=null)?s.reduce((a,b)=>a+b,0):null};}
+function tRender(){
+  const cls=$('#tCls').value; const rows=TROWS.filter(r=>r.cls===cls).sort((a,b)=>(+a.num)-(+b.num));
+  if(!rows.length){$('#tOut').innerHTML='<div class="empty">'+esc(cls)+'반 기록이 아직 없어요.</div>';return;}
+  const groups={}; rows.forEach(r=>{(groups[r.grp]=groups[r.grp]||[]).push(r);});
+  const tok={}; rows.forEach(r=>{const g=((r.d.s3||{}).token||{}).grp; if(g) tok[g]=(tok[g]||0)+1;});
+  let h=`<div class="tsum"><div class="box"><h3>모둠별 기본카드와 대표 질문</h3><div class="grq">${Object.keys(groups).sort((a,b)=>a-b).map(g=>{const rr=groups[g]; const rep=(rr.map(r=>r.rep).filter(Boolean).sort((a,b)=>b.length-a.length)[0])||'-'; const cd=rr.map(r=>r.card).find(Boolean)||'-'; return `<div><b>${g}모둠</b> · ${esc(cd)}${tok[g]?` · 투자 토큰 ${tok[g]}개`:''}<br>${esc(rep)}</div>`;}).join('')}</div></div>
+    <div class="box"><h3>읽는 법</h3><p class="hint">● 표시는 학생 기록에 해당 내용이 있는지 자동으로 확인한 것이에요. 수준 판단은 학생을 눌러 최종 활동지를 보며 해 주세요. 카드 종류·교환 여부, 투자 토큰 수는 평가하지 않아요. 미응시자(1점)는 직접 처리해 주세요.</p></div></div>
+    <div class="box"><div class="tw"><table class="obs"><thead><tr><th>번호</th><th>이름</th><th>모둠</th><th>개인 질문 작성</th><th>성과↔질문</th><th>자료↔방법</th><th>임무 연결</th><th>피드백 반영</th><th>개인 최종 기록</th><th>점수</th></tr></thead><tbody>`;
+  rows.forEach(r=>{const o=obsOf(r.d),sc=scoreOf(r); const k=r.key; h+=`<tr class="r${TSEL===k?' sel':''}" data-k="${esc(k)}"><td>${esc(r.num)}</td><td class="l">${esc(r.name||'')}</td><td>${esc(r.grp)}</td>${o.map(x=>`<td><span class="dot${x?' y':''}"></span></td>`).join('')}<td>${sc.total!=null?`<b>${sc.total}</b>/10`:'-'}</td></tr>`;});
+  h+='</tbody></table></div></div><div id="tDet"></div>';
+  $('#tOut').innerHTML=h;
+  $$('#tOut tr.r').forEach(tr=>tr.addEventListener('click',()=>{TSEL=tr.dataset.k; tRender(); setTimeout(()=>{const d=$('#tDet'); if(d) d.scrollIntoView({behavior:'smooth',block:'start'});},50);}));
+  if(TSEL){const r=rows.find(x=>x.key===TSEL); if(r) tDetail(r);}
+}
+function tDetail(r){
+  const f=r.d.fin||{}, sc=scoreOf(r);
+  const A=[[['목적·성과',f.a1],['새로운 탐사 질문',f.a2],['성과와 질문의 연결',f.a3]],[['필요한 자료',f.b1],['방법과 선택 이유',f.b2]],[['대상·장비·임무',(f.c||[]).filter(x=>x&&(x.t||x.g||x.j)).map(x=>`${x.t||'-'} | ${x.g||'-'} | ${x.j||'-'}`).join('\n')],['연결되는 까닭',f.c2]],[['예상 결과',f.d1],['과학·인류에 주는 도움',f.d2],['우주 쓰레기 저감 방안',f.d3]]];
+  $('#tDet').innerHTML=`<div class="det"><div class="rowb"><h3>${esc(r.num)}번 ${esc(r.name||'')} · ${esc(r.grp)}모둠 ${f.submitted?'<span class="pt">제출 '+esc(f.submitted)+'</span>':'<span class="hint">(아직 제출 전)</span>'}</h3><span class="ttotal" id="tTot">${sc.total!=null?sc.total+' / 10':'채점 전'}</span></div>
+    <p class="hint">기본카드: ${esc(r.card||'-')} · 도전카드: ${esc(r.chal||'-')} · 대표 질문: ${esc(r.rep||'-')}</p>
+    ${RUB.map((R,i)=>`<div class="rb"><h4><span>${i+1}. ${R.t}</span><span class="pt">${R.max}점</span></h4>${A[i].map(([l,v])=>`<div class="ans"><i>${l}</i>${esc(v||'(비어 있음)')}</div>`).join('')}
+      <div class="lv">${R.lv.map(([p,t])=>`<button data-e="${i}" data-p="${p}" aria-pressed="${sc.s[i]===p}"><b>${p}</b>${t}</button>`).join('')}</div></div>`).join('')}
+    <label class="fld"><span>교사 메모 <small>학생에게는 보이지 않아요</small></span><textarea id="tMemo" class="short">${esc(r.memo||'')}</textarea></label>
+    <div class="rowb"><span class="hint" id="tSave"></span><button class="btn pri" id="tSaveBtn">점수 저장</button></div></div>`;
+  const cur=sc.s.slice();
+  $$('#tDet .lv button').forEach(b=>b.addEventListener('click',()=>{const e=+b.dataset.e; cur[e]=+b.dataset.p; $$(`#tDet .lv button[data-e="${e}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b)); const t=cur.every(x=>x!=null)?cur.reduce((a,c)=>a+c,0):null; $('#tTot').textContent=t!=null?t+' / 10':'채점 중';}));
+  $('#tSaveBtn').addEventListener('click',async()=>{ $('#tSave').textContent='저장 중…';
+    try{const res=await fetch(GAS,{method:'POST',body:JSON.stringify({app:'missionScore',pin:TPIN,cls:r.cls,grp:r.grp,num:r.num,scores:cur.map(x=>x==null?'':x),memo:$('#tMemo').value})}); const j=await res.json(); if(!j.ok) throw new Error(j.error);
+      [r.s1,r.s2,r.s3,r.s4]=cur.map(x=>x==null?'':x); r.memo=$('#tMemo').value; tRender(); toast(r.num+'번 점수를 저장했어요');}
+    catch(e){$('#tSave').textContent='저장하지 못했어요. 다시 눌러 주세요.';} });
+}
+$('#tLoad').addEventListener('click',tLoad); $('#tCls').addEventListener('change',()=>{TSEL=null; if(TROWS.length) tRender();});
+$('#tPin').addEventListener('keydown',e=>{if(e.key==='Enter')tLoad();});
+$('#tCopy').addEventListener('click',()=>{ const cls=$('#tCls').value; const rows=TROWS.filter(r=>r.cls===cls).sort((a,b)=>(+a.num)-(+b.num)); if(!rows.length){toast('먼저 불러오기를 눌러 주세요');return;}
+  const t=['번호\t이름\t모둠\t질문설정(3)\t자료·방법(2)\t대상·장비·임무(2)\t가치·책임(3)\t합계'].concat(rows.map(r=>{const sc=scoreOf(r);return [r.num,r.name||'',r.grp,...sc.s.map(x=>x==null?'':x),sc.total==null?'':sc.total].join('\t');})).join('\n');
+  const done=()=>toast('점수표를 복사했어요. 엑셀에 붙여 넣으세요.');
+  try{navigator.clipboard.writeText(t).then(done,()=>fallback(t));}catch(e){fallback(t);}
+  function fallback(x){const ta=document.createElement('textarea');ta.value=x;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(_){toast('복사하지 못했어요');}ta.remove();} });
+
+/* ---------- 시작 ---------- */
+bindAll(); initSubs();
+$('#linkQ').textContent=S.s1.rep||'(1차시 대표 질문)';
+if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp&&S.num) pill('ok','선생님께 저장됨 ✓'); else pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요'); }
+show();
+})();
 
 </script>
 </body>
