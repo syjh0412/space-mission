@@ -254,6 +254,104 @@ table.ref th{color:var(--muted);font-weight:500;font-size:13px}
 :root[data-theme="hunt"] header.top{background:transparent;border-bottom:0}
 :root[data-theme="hunt"] nav.tabs{background:var(--bg)}
 :root[data-theme="hunt"] body::before{background:var(--bg)}
+/* ---- 하위 단계 탭 ---- */
+.subnav{display:flex;gap:8px;flex-wrap:wrap}
+.subnav button{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 16px 6px 7px;cursor:pointer;font-weight:500;color:var(--muted);font-size:15px}
+.subnav button:hover{border-color:var(--indigo)}
+.subnav .sn{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;border:1px solid var(--line)}
+.subnav button[aria-selected="true"]{color:var(--ink);border-color:var(--accent);background:var(--accent-soft)}
+.subnav button[aria-selected="true"] .sn{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.subnav button.done .sn{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.pane{display:flex;flex-direction:column;gap:20px}
+.qtitle{font-size:clamp(22px,3.4vw,28px)}
+.talkhow{margin-top:-6px}
+textarea.short{min-height:64px}
+.kit{display:flex;flex-wrap:wrap;gap:8px}
+.kit span{border:1px solid var(--line);border-radius:999px;padding:5px 14px;background:var(--surface-2);font-size:15px}
+.kit small{color:var(--muted)}
+
+/* ---- 키워드 카드 (눌러서 뜻 보기) ---- */
+.kwc{text-align:left;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface);cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:84px;transition:border-color .2s,background .2s}
+.kwc b{font-family:var(--f-display);font-weight:400;font-size:20px}
+.kwc span{font-size:14px;color:var(--muted);visibility:hidden}
+.kwc::after{content:"눌러서 뜻 보기";font-size:12px;color:var(--indigo)}
+.kwc.open{border-color:var(--accent);background:var(--accent-soft)}
+.kwc.open span{visibility:visible}
+.kwc.open::after{content:none}
+
+/* ---- 예측 그림 ---- */
+canvas.mini{width:100%;height:150px;display:block;border-radius:12px;background:var(--surface-2)}
+
+/* ---- 빈칸 비계 ---- */
+.frame{display:flex;flex-direction:column;gap:12px;min-width:0}
+.fl{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--indigo);border-radius:4px 14px 14px 4px;padding:12px 18px;display:flex;gap:14px;align-items:baseline}
+.fl.interp{border-left-color:var(--accent);background:var(--surface-2)}
+.ftag{font-family:var(--f-display);font-size:19px;color:var(--indigo);flex:0 0 auto;min-width:2.4em}
+.fl.interp .ftag{color:var(--accent)}
+.fl p{font-size:18px;line-height:2.3;min-width:0}
+.blank{position:relative;display:inline-block;border:0;border-bottom:2px solid var(--muted);background:transparent;padding:0 10px;margin:0 4px;cursor:pointer;min-width:5.5em;line-height:1.5;font-size:inherit;text-align:center;border-radius:6px 6px 0 0}
+.blank .bn{position:absolute;top:-9px;left:-8px;width:19px;height:19px;border-radius:50%;background:var(--indigo);color:var(--surface);font-size:11px;font-family:var(--f-mono);display:grid;place-items:center;line-height:1}
+.blank .bt{color:var(--muted)}
+.blank.act{border-bottom-color:var(--accent);background:var(--accent-soft)}
+.blank.act .bn{background:var(--accent);color:var(--on-accent)}
+.blank.ok{border-bottom-color:var(--good);cursor:default}
+.blank.ok .bt{color:var(--good);font-weight:700;display:inline-block}
+.blank.ok.pop .bt{animation:pop .35s ease-out}
+.blank.ok .bn{background:var(--good);color:var(--surface)}
+.bank{border:1px dashed var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.bank .bq{font-size:14px;color:var(--muted)}
+.bank .bq b{color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:9px 18px;cursor:pointer;font-size:16px}
+.chip:hover{border-color:var(--accent)}
+.chip.no{border-color:var(--bad);color:var(--bad);animation:shake .35s;cursor:not-allowed;text-decoration:line-through}
+.bank .hint{font-size:14.5px;color:var(--warn)}
+.lockmsg2{font-size:14.5px;color:var(--warn);border:1px dashed var(--warn);border-radius:10px;padding:10px 12px}
+.donebox{border:1px solid var(--good);background:var(--good-soft);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.donebox .dh{font-family:var(--f-display);font-size:19px;color:var(--good)}
+.donebox .sent{font-size:16px}
+.donebox textarea{min-height:60px;background:var(--surface)}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ---- 근거 자료 ---- */
+.evid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.evid .ev{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:2px}
+.evid .ev .lab{font-size:13px;color:var(--muted)}
+.evid .ev .v{font-family:var(--f-mono);font-size:20px;font-variant-numeric:tabular-nums}
+.evid .ev .d{font-size:14px;color:var(--muted)}
+.evid .ev.big{border-color:var(--accent)}
+.evid .ev.big .d b{color:var(--accent)}
+.evid .exn{grid-column:1/-1;font-size:13px;color:var(--warn)}
+.obsgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.obsgrid{grid-template-columns:1fr}}
+.obspic{position:relative}
+.obspic canvas{width:100%;aspect-ratio:4/3;display:block;border-radius:14px;background:var(--space);border:1px solid var(--line);cursor:pointer;max-width:100%}
+.obspic .cap{position:absolute;left:10px;bottom:8px;font-size:12.5px;color:#cfd3f2;font-family:var(--f-mono)}
+
+/* ---- 같다 / 다르다 분류 ---- */
+.sort{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.sc{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.sc p{font-size:16px}
+.sc .sb{display:flex;gap:8px;flex-wrap:wrap}
+.sc .sb button{flex:1 1 auto;border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:7px 12px;cursor:pointer;font-size:14.5px}
+.sc .sb button:hover{border-color:var(--indigo)}
+.sc.right{border-color:var(--good)}
+.sc.right .sb button.pick{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.sc.wrong .sb button.pick{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.sc .fbk{font-size:14px;color:var(--muted)}
+
+/* ---- 시뮬레이터 미션 / 말머리 ---- */
+.mchk{display:grid;gap:8px}
+.mchk button{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 14px;cursor:pointer;font-size:15px}
+.mchk .mk{flex:0 0 auto;width:20px;height:20px;border-radius:6px;border:2px solid var(--line);margin-top:2px;display:grid;place-items:center;font-size:13px}
+.mchk button.on{border-color:var(--good)}
+.mchk button.on .mk{background:var(--good);border-color:var(--good);color:var(--surface)}
+.mchk button.on .mk::after{content:"✓"}
+.starter{display:flex;flex-wrap:wrap;gap:6px}
+.starter button{border:1px dashed var(--indigo);background:transparent;color:var(--indigo);border-radius:999px;padding:4px 12px;font-size:14px;cursor:pointer}
+.starter button:hover{background:var(--indigo-soft)}
+details.more{font-size:15px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -296,108 +394,135 @@ table.ref th{color:var(--muted);font-weight:500;font-size:13px}
 
 <!-- 1 생각 열기 -->
 <section class="view" id="v-open">
-  <div class="hero">
+  <div class="subnav" role="tablist" aria-label="생각 열기 단계">
+    <button role="tab" data-p="q" aria-selected="true"><span class="sn">1</span>오늘의 질문</button>
+    <button role="tab" data-p="pred" aria-selected="false"><span class="sn">2</span>예측하기</button>
+  </div>
+
+  <div class="pane" data-p="q">
+    <div class="hero">
+      <div class="stack">
+        <div class="eyebrow">오늘의 질문</div>
+        <h2>은하들은 왜 서로 멀어지고 있을까?</h2>
+        <p class="lead">우주에는 우리은하 말고도 셀 수 없이 많은 은하가 있습니다. 1920년대, 한 천문학자가 우리은하 밖의 외부 은하를 관측하다가 놀라운 사실을 발견했어요.</p>
+        <div class="sci panel">
+          <span class="badge">과학자</span>
+          <div><b>허블</b> <span class="note num">(Hubble, E. P., 1889~1953)</span>
+            <p class="note">미국의 천문학자. 외부 은하의 존재를 알아냈고, 외부 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈다.</p></div>
+        </div>
+      </div>
+      <canvas id="heroCanvas" aria-label="은하들이 서로 멀어지는 애니메이션"></canvas>
+    </div>
     <div class="stack">
-      <div class="eyebrow">오늘의 질문</div>
-      <h2>은하들은 왜 서로 멀어지고 있을까?</h2>
-      <p class="lead">우주에는 우리은하 말고도 셀 수 없이 많은 은하가 있습니다. 1920년대, 한 천문학자가 우리은하 밖의 외부 은하를 관측하다가 놀라운 사실을 발견했어요.</p>
-      <div class="sci panel">
-        <span class="badge">과학자</span>
-        <div><b>허블</b> <span class="note num">(Hubble, E. P., 1889~1953)</span>
-          <p class="note">미국의 천문학자. 외부 은하의 존재를 알아냈고, 외부 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈다.</p></div>
+      <h3>오늘의 키워드 <span class="note">— 눌러서 뜻을 확인해요</span></h3>
+      <div class="kw" id="kwCards">
+        <button class="kwc"><b>외부 은하</b><span>우리은하 밖에 있는 은하. 서로 점점 멀어진다.</span></button>
+        <button class="kwc"><b>풍선 모형</b><span>풍선 표면은 우주 공간, 붙임딱지는 은하.</span></button>
+        <button class="kwc"><b>팽창의 중심</b><span>기준 은하를 바꾸어 보면 중심이 있는지 알 수 있다.</span></button>
+        <button class="kwc"><b>우주의 나이</b><span>시간을 되돌리면 우주는 작아진다. 약 138억 년 전에 탄생했다.</span></button>
       </div>
     </div>
-    <canvas id="heroCanvas" aria-label="은하들이 서로 멀어지는 애니메이션"></canvas>
+    <button class="btn primary next pnext">예측하러 가기 →</button>
   </div>
 
-  <div class="stack">
-    <h3>오늘의 키워드</h3>
-    <div class="kw">
-      <div><b>외부 은하</b><span>우리은하 밖에 있는 은하. 서로 점점 멀어진다.</span></div>
-      <div><b>풍선 모형</b><span>풍선 표면은 우주 공간, 붙임딱지는 은하.</span></div>
-      <div><b>팽창의 중심</b><span>기준 은하를 바꾸어 보면 중심이 있는지 알 수 있다.</span></div>
-      <div><b>우주의 나이와 모형의 한계</b><span>시간을 되돌리면 보이는 것, 풍선이 보여 주지 못하는 것.</span></div>
+  <div class="pane" data-p="pred" hidden>
+    <div class="panel stack">
+      <h3>실험 전에 예측해 보자</h3>
+      <p>풍선에 붙임딱지 1, 2, 3을 붙이고 풍선을 <b>더 크게</b> 불면, 딱지 사이의 거리는 어떻게 될까요?</p>
+      <canvas class="mini" id="predPic" aria-label="풍선 위 붙임딱지 1, 2, 3"></canvas>
+      <div class="choices" id="predict">
+        <label class="choice"><input type="radio" name="pred" value="a"><span>1~2 거리와 1~3 거리가 <b>똑같은 길이만큼</b> 늘어날 것이다.</span></label>
+        <label class="choice"><input type="radio" name="pred" value="b"><span>처음에 더 멀었던 <b>1~3 거리가 더 많이</b> 늘어날 것이다.</span></label>
+        <label class="choice"><input type="radio" name="pred" value="c"><span>처음에 더 가까웠던 <b>1~2 거리가 더 많이</b> 늘어날 것이다.</span></label>
+        <label class="choice"><input type="radio" name="pred" value="d"><span>딱지가 붙어 있으니 거리는 <b>변하지 않을</b> 것이다.</span></label>
+      </div>
+      <label for="predWhy" class="note">그렇게 예측한 까닭 <span class="tag">선택</span></label>
+      <textarea id="predWhy" class="short" placeholder="예) 풍선 고무가 전체적으로 늘어나니까…"></textarea>
     </div>
+    <button class="btn primary next" data-go="lab">풍선 실험으로 →</button>
   </div>
-
-  <div class="panel stack">
-    <h3>실험 전에 예측해 보자</h3>
-    <p>풍선에 붙임딱지 1, 2, 3을 붙이고 풍선을 <b>더 크게</b> 불면, 딱지 사이의 거리는 어떻게 될까요? 모둠의 예측을 하나 고르세요.</p>
-    <div class="choices" id="predict">
-      <label class="choice"><input type="radio" name="pred" value="a"><span>1~2 거리와 1~3 거리가 <b>똑같은 길이만큼</b> 늘어날 것이다.</span></label>
-      <label class="choice"><input type="radio" name="pred" value="b"><span>처음에 더 멀었던 <b>1~3 거리가 더 많이</b> 늘어날 것이다.</span></label>
-      <label class="choice"><input type="radio" name="pred" value="c"><span>처음에 더 가까웠던 <b>1~2 거리가 더 많이</b> 늘어날 것이다.</span></label>
-      <label class="choice"><input type="radio" name="pred" value="d"><span>딱지가 붙어 있으니 거리는 <b>변하지 않을</b> 것이다.</span></label>
-    </div>
-    <label for="predWhy" class="note">그렇게 예측한 까닭</label>
-    <textarea id="predWhy" placeholder="예) 풍선 고무가 전체적으로 늘어나니까…"></textarea>
-  </div>
-  <button class="btn primary next" data-go="lab">풍선 실험으로 →</button>
 </section>
 
 <!-- 2 풍선 실험 -->
 <section class="view" id="v-lab" hidden>
-  <div class="stack">
-    <div class="eyebrow">해 보기 · 모형</div>
-    <h2>풍선 모형으로 우주 팽창 알아보기</h2>
-    <p class="lead">풍선 표면은 우주 공간, 붙임딱지는 은하입니다. 풍선을 불어 우주를 팽창시키고, 은하 사이의 거리를 재 봅시다.</p>
+  <div class="subnav" role="tablist" aria-label="풍선 실험 단계">
+    <button role="tab" data-p="prep" aria-selected="true"><span class="sn">1</span>준비</button>
+    <button role="tab" data-p="measure" aria-selected="false"><span class="sn">2</span>측정</button>
+    <button role="tab" data-p="result" aria-selected="false"><span class="sn">3</span>결과 보기</button>
   </div>
 
-  <div class="grid2">
-    <div class="panel stack">
-      <h3>준비물</h3>
-      <p>둥근 모양 풍선 · 줄자 · 펜 · 붙임딱지 <span class="note">(부록 336쪽)</span></p>
-      <h3 style="margin-top:6px">모둠 역할</h3>
-      <div class="roles">
-        <div class="role"><b>풍선 담당</b><span>풍선을 불고 입구를 잡는다</span><input id="r1" aria-label="풍선 담당 이름" placeholder="이름"></div>
-        <div class="role"><b>측정 담당</b><span>줄자로 거리를 잰다</span><input id="r2" aria-label="측정 담당 이름" placeholder="이름"></div>
-        <div class="role"><b>기록 담당</b><span>표에 값을 입력한다</span><input id="r3" aria-label="기록 담당 이름" placeholder="이름"></div>
-        <div class="role"><b>발표 담당</b><span>결과와 토의를 발표한다</span><input id="r4" aria-label="발표 담당 이름" placeholder="이름"></div>
+  <div class="pane" data-p="prep">
+    <div class="stack">
+      <div class="eyebrow">해 보기 · 모형</div>
+      <h2>풍선 모형으로 우주 팽창 알아보기</h2>
+      <p class="lead">풍선 표면은 우주 공간, 붙임딱지는 은하입니다. 풍선을 불어 우주를 팽창시키고, 은하 사이의 거리를 재 봅시다.</p>
+    </div>
+    <div class="grid2">
+      <div class="panel stack">
+        <h3>준비물</h3>
+        <div class="kit"><span>둥근 풍선</span><span>줄자 (또는 실 + 자)</span><span>펜</span><span>붙임딱지 <small>부록 336쪽</small></span></div>
+        <div class="callout info"><b>잘 되는 요령</b><br>· 딱지는 풍선 <b>입구 근처를 피해</b> 가운데 둘레에 붙여요.<br>· 1~2는 가깝게, 1~3은 두 배쯤 멀게 붙여요.</div>
+      </div>
+      <div class="panel stack">
+        <h3>모둠 역할</h3>
+        <div class="roles">
+          <div class="role"><b>풍선 담당</b><span>풍선을 불고 입구를 잡는다</span><input id="r1" aria-label="풍선 담당 이름" placeholder="이름"></div>
+          <div class="role"><b>측정 담당</b><span>줄자로 거리를 잰다</span><input id="r2" aria-label="측정 담당 이름" placeholder="이름"></div>
+          <div class="role"><b>기록 담당</b><span>표에 값을 입력한다</span><input id="r3" aria-label="기록 담당 이름" placeholder="이름"></div>
+          <div class="role"><b>발표 담당</b><span>결과를 발표한다</span><input id="r4" aria-label="발표 담당 이름" placeholder="이름"></div>
+        </div>
       </div>
     </div>
+    <button class="btn primary next pnext">측정하러 가기 →</button>
+  </div>
+
+  <div class="pane" data-p="measure" hidden>
     <div class="panel stack">
-      <h3>실험 과정 <span class="note">— 끝낸 단계에 체크</span></h3>
+      <h3>실험 과정 <span class="note">— 끝낸 단계를 눌러요</span></h3>
       <ol class="steps" id="steps">
-        <li><span class="k">1</span><label><input type="checkbox" id="s1"><span>풍선을 <b>작게</b> 불어 표면에 붙임딱지를 골고루 붙인 후, 딱지 3개에 각각 1, 2, 3을 쓴다.</span></label></li>
-        <li><span class="k">2</span><label><input type="checkbox" id="s2"><span>줄자로 1~2, 1~3까지의 거리를 각각 측정한다.</span></label></li>
-        <li><span class="k">3</span><label><input type="checkbox" id="s3"><span>풍선을 <b>더 크게</b> 불어 1~2, 1~3까지의 거리를 측정한다.</span></label></li>
-        <li><span class="k">+</span><label><input type="checkbox" id="s4"><span><b>도전</b> 2~3 거리도 재고, 풍선을 한 번 더 크게 불어 측정한다.</span></label></li>
+        <li><span class="k">1</span><label><input type="checkbox" id="s1"><span>풍선을 <b>작게</b> 불어 붙임딱지를 붙이고, 딱지 3개에 1, 2, 3을 쓴다.</span></label></li>
+        <li><span class="k">2</span><label><input type="checkbox" id="s2"><span>줄자로 1~2, 1~3 거리를 재서 아래 표의 ①에 쓴다.</span></label></li>
+        <li><span class="k">3</span><label><input type="checkbox" id="s3"><span>풍선을 <b>더 크게</b> 불어 다시 재고 ②에 쓴다.</span></label></li>
+        <li><span class="k">+</span><label><input type="checkbox" id="s4"><span><b>도전</b> 2~3 거리도 재고, 한 번 더 크게 불어 ③에 쓴다.</span></label></li>
       </ol>
-      <div class="callout info">줄자는 풍선 <b>표면을 따라</b> 대고, 딱지의 <b>가운데</b>에서 가운데까지 잽니다. 측정하는 동안 풍선 입구가 새지 않게 꼭 잡아 주세요.</div>
+      <div class="callout info">줄자는 풍선 <b>표면을 따라</b> 대고, 딱지 <b>가운데에서 가운데까지</b> 잽니다.</div>
     </div>
+    <div class="panel stack">
+      <div class="row" style="justify-content:space-between">
+        <h3>측정 기록 <span class="note">(단위: cm)</span></h3>
+        <div class="row">
+          <button class="btn small" id="clearData">기록 지우기</button>
+          <span class="confirm" id="clearConfirm" hidden>정말 지울까요? <button class="btn small primary" id="clearYes">지우기</button><button class="btn small" id="clearNo">취소</button></span>
+        </div>
+      </div>
+      <div class="tablewrap">
+        <table class="data">
+          <thead><tr><th>딱지 사이</th><th>① 작게 분 풍선</th><th>② 크게 분 풍선</th><th>늘어난 거리<br><span class="note">② − ①</span></th><th>몇 배?<br><span class="note">② ÷ ①</span></th><th>③ 더 크게 <span class="tag">도전</span></th><th>몇 배?<br><span class="note">③ ÷ ①</span></th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <p class="note">늘어난 거리와 몇 배인지는 자동으로 계산돼요.</p>
+    </div>
+    <button class="btn primary next pnext">결과 보러 가기 →</button>
   </div>
 
-  <div class="panel stack">
-    <div class="row" style="justify-content:space-between">
-      <h3>측정 기록 <span class="note">(단위: cm)</span></h3>
-      <div class="row">
-        <button class="btn small" id="clearData">기록 지우기</button>
-        <span class="confirm" id="clearConfirm" hidden>정말 지울까요? <button class="btn small primary" id="clearYes">지우기</button><button class="btn small" id="clearNo">취소</button></span>
+  <div class="pane" data-p="result" hidden>
+    <div id="labFeedback"></div>
+    <div class="grid2">
+      <div class="panel stack">
+        <h3>풍선 크기에 따른 딱지 사이 거리</h3>
+        <div class="legend"><span><i style="background:var(--indigo)"></i>작게</span><span><i style="background:var(--accent)"></i>크게</span><span><i style="background:var(--warn)"></i>더 크게</span></div>
+        <div class="chartbox"><canvas id="barChart"></canvas><span class="ex" id="ex1">예시 데이터</span></div>
+      </div>
+      <div class="panel stack">
+        <h3>처음 거리가 멀수록 더 많이 멀어질까?</h3>
+        <div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>우리 모둠 측정값</span><span><i style="background:var(--muted);height:2px"></i>원점을 지나는 직선</span></div>
+        <div class="chartbox"><canvas id="scatter"></canvas><span class="ex" id="ex2">예시 데이터</span></div>
+        <p class="note">가로축은 처음 거리, 세로축은 늘어난 거리예요. 점이 직선 가까이 있으면 처음 거리가 먼 만큼 더 많이 늘어난 거예요.</p>
       </div>
     </div>
-    <div class="tablewrap">
-      <table class="data">
-        <thead><tr><th>딱지 사이</th><th>① 작게 분 풍선</th><th>② 크게 분 풍선</th><th>늘어난 거리<br><span class="note">② − ①</span></th><th>몇 배?<br><span class="note">② ÷ ①</span></th><th>③ 더 크게 <span class="tag">도전</span></th><th>몇 배?<br><span class="note">③ ÷ ①</span></th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-    <div id="labFeedback"></div>
+    <button class="btn primary next" data-go="sim">우주 시뮬레이터로 →</button>
   </div>
-
-  <div class="grid2">
-    <div class="panel stack">
-      <h3>풍선 크기에 따른 딱지 사이 거리</h3>
-      <div class="legend"><span><i style="background:var(--indigo)"></i>작게</span><span><i style="background:var(--accent)"></i>크게</span><span><i style="background:var(--warn)"></i>더 크게</span></div>
-      <div class="chartbox"><canvas id="barChart"></canvas><span class="ex" id="ex1">예시 데이터</span></div>
-    </div>
-    <div class="panel stack">
-      <h3>처음 거리가 멀수록 더 많이 멀어질까?</h3>
-      <div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>우리 모둠 측정값</span><span><i style="background:var(--muted);height:2px"></i>원점을 지나는 직선</span></div>
-      <div class="chartbox"><canvas id="scatter"></canvas><span class="ex" id="ex2">예시 데이터</span></div>
-      <p class="note">가로축은 처음(작게 분 풍선) 거리, 세로축은 크게 불었을 때 늘어난 거리입니다. 점들이 원점을 지나는 직선 가까이 놓이면, 늘어난 거리가 처음 거리에 비례한다는 뜻이에요.</p>
-    </div>
-  </div>
-  <button class="btn primary next" data-go="sim">우주 시뮬레이터로 →</button>
 </section>
 
 <!-- 3 시뮬레이터 -->
@@ -405,7 +530,7 @@ table.ref th{color:var(--muted);font-weight:500;font-size:13px}
   <div class="stack">
     <div class="eyebrow">모형 확장 · 시뮬레이션</div>
     <h2>내가 서 있는 은하에서 우주를 보면</h2>
-    <p class="lead">풍선 실험을 컴퓨터 속 우주로 옮겼습니다. 아무 은하나 눌러 그 은하를 <b>관측자</b>로 정하고, 우주를 팽창시켜 보세요. 화면은 언제나 관측자 은하를 가운데에 둡니다.</p>
+    <p class="lead">아무 은하나 눌러 그 은하를 <b>관측자</b>로 정하고, 우주를 팽창시켜 보세요. 화면은 언제나 관측자 은하를 가운데에 둡니다.</p>
   </div>
   <div class="simwrap">
     <canvas id="sim" aria-label="우주 팽창 시뮬레이터. 은하를 누르면 관측자가 바뀝니다."></canvas>
@@ -418,120 +543,133 @@ table.ref th{color:var(--muted);font-weight:500;font-size:13px}
     </div>
   </div>
   <div class="readout" id="readout"></div>
-  <div class="grid2">
-    <div class="panel stack">
-      <h3>탐구 미션</h3>
-      <ol class="missions">
-        <li>▶ 팽창을 누르고, 가까운 은하 A와 먼 은하 B 중 어느 쪽이 더 빨리 멀어지는지 아래 숫자로 확인하자.</li>
-        <li>멀어지는 속도 ÷ 거리 값을 은하 A와 B에서 비교해 보자. 무엇을 알 수 있을까?</li>
-        <li>다른 은하를 눌러 관측자를 바꿔 보자. 그 은하에서 봐도 다른 은하들이 멀어지는가?</li>
-        <li>◀ 시간 되돌리기를 눌러 보자. 우주의 크기는 어떻게 될까?</li>
-      </ol>
+  <div class="panel stack">
+    <h3>탐구 미션 <span class="note">— 해 본 미션을 눌러 체크해요</span></h3>
+    <div class="mchk" id="mchk">
+      <button data-m="0"><span class="mk"></span>▶ 팽창을 누르고, 가까운 은하 A와 먼 은하 B 중 어느 쪽이 더 빨리 멀어지는지 확인하기</button>
+      <button data-m="1"><span class="mk"></span>다른 은하를 눌러 관측자를 바꾸고, 그 은하에서도 다른 은하들이 멀어지는지 보기</button>
+      <button data-m="2"><span class="mk"></span>◀ 시간 되돌리기를 눌러 우주의 크기가 어떻게 되는지 보기</button>
     </div>
-    <div class="panel stack">
-      <h3>미션 기록</h3>
-      <label for="simNote" class="note">발견한 것을 한두 문장으로 적어 보세요.</label>
-      <textarea id="simNote" placeholder="예) 관측자를 바꿔도…"></textarea>
-      <div class="callout info">은하의 점 크기는 팽창해도 그대로입니다. 늘어나는 것은 은하 <b>사이의 공간</b>이에요. 풍선에서도 붙임딱지 자체는 커지지 않았죠.</div>
-    </div>
+    <label for="simNote" class="note">가장 놀라웠던 발견 한 가지 <span class="tag">한 문장</span></label>
+    <div class="starter" id="simStarters"><button>관측자를 바꿔도…</button><button>먼 은하일수록…</button><button>시간을 되돌리면…</button></div>
+    <textarea id="simNote" class="short" placeholder="위의 말머리를 눌러 시작해도 돼요"></textarea>
   </div>
   <button class="btn primary next" data-go="talk">모둠 토의로 →</button>
 </section>
 
-<!-- 4 토의 -->
+<!-- 4 모둠 토의: 빈칸 비계 -->
 <section class="view" id="v-talk" hidden>
-  <div class="stack">
-    <div class="eyebrow">모둠 토의</div>
-    <h2>풍선에서 우주로 생각 넓히기</h2>
-    <p class="lead">실험 결과와 시뮬레이터에서 본 것을 근거로 모둠의 생각을 정리하세요. 막히면 ‘생각 도우미’를 열어 보세요.</p>
+  <div class="subnav" role="tablist" aria-label="모둠 토의 단계">
+    <button role="tab" data-p="f1" aria-selected="true"><span class="sn">1</span>거리 비교</button>
+    <button role="tab" data-p="f2" aria-selected="false"><span class="sn">2</span>풍선과 우주</button>
+    <button role="tab" data-p="f3" aria-selected="false"><span class="sn">3</span>중심 찾기</button>
+    <button role="tab" data-p="f4" aria-selected="false"><span class="sn">4</span>모형의 한계</button>
   </div>
-  <div class="panel q">
-    <div class="qh"><span class="qn">1</span><b>풍선을 더 크게 불면 붙임딱지 1과 2, 1과 3 사이의 거리는 어떻게 변하는지 비교해 보자.</b><span class="src">교과서 1</span></div>
-    <div class="compare" id="myData"></div>
-    <textarea id="t1" aria-label="토의 1 답"></textarea>
-    <details class="hint"><summary>생각 도우미</summary><div>두 거리 모두 늘었나요? 늘어난 길이는 어느 쪽이 더 큰가요? ‘몇 배’ 값은 서로 비슷한가요? 표의 숫자를 문장에 넣어 써 보세요.</div></details>
+  <p class="note talkhow">번호가 붙은 빈칸을 누르고, 아래에서 알맞은 말을 골라 채워요. 다 채우면 우리 모둠의 문장이 완성돼요.</p>
+
+  <div class="pane" data-p="f1">
+    <h2 class="qtitle">풍선을 더 크게 불면 1~2, 1~3 거리는 어떻게 변할까?</h2>
+    <div class="evid" id="f1data"></div>
+    <div class="frame" id="frame-f1"></div>
+    <button class="btn primary next pnext">다음: 풍선과 우주 →</button>
   </div>
-  <div class="panel q">
-    <div class="qh"><span class="qn">2</span><b>풍선 표면은 우주 공간, 붙임딱지는 은하라고 비유할 때, 은하 사이의 거리는 어떻게 변하는지 토의해 보자.</b><span class="src">교과서 토의</span></div>
-    <textarea id="t2" aria-label="토의 2 답"></textarea>
-    <details class="hint"><summary>생각 도우미</summary><div>딱지가 스스로 움직였나요, 아니면 딱지 사이의 고무가 늘어났나요? 우주에서 ‘고무’에 해당하는 것은 무엇일까요?</div></details>
+
+  <div class="pane" data-p="f2" hidden>
+    <h2 class="qtitle">시간이 지나면 은하 사이의 거리는 어떻게 변할까?</h2>
+    <div class="obsgrid">
+      <div class="obspic"><canvas id="linkPic" aria-label="은하들 사이의 점선이 점점 길어지는 그림"></canvas><span class="cap" id="linkCap">우주 크기 ×1.0</span></div>
+      <div class="frame" id="frame-f2"></div>
+    </div>
+    <button class="btn primary next pnext">다음: 중심 찾기 →</button>
   </div>
-  <div class="panel q">
-    <div class="qh"><span class="qn">3</span><b>2번 딱지 위에 작은 개미가 산다면, 개미 눈에는 다른 딱지들이 어떻게 보일까? 팽창하는 우주의 ‘중심’은 어디일까?</b><span class="src">심화</span></div>
+
+  <div class="pane" data-p="f3" hidden>
+    <h2 class="qtitle">팽창하는 우주의 중심은 어디일까?</h2>
     <div class="refbox">
       <b>기준 은하를 바꾸어 보자</b>
-      <p class="note">한 줄로 놓인 은하 A, B, C가 있다. 우주가 팽창해 모든 거리가 1.5배가 되었다. 기준 은하를 바꿔 가며 다른 은하까지의 거리를 비교해 보자.</p>
+      <p class="note">은하 A, B, C 사이의 거리가 모두 1.5배가 되었어요. 기준 은하를 <b>A, B, C 모두</b> 눌러 보세요.</p>
       <div class="row"><span class="note">기준 은하</span><div class="seg" id="refSeg"><button aria-pressed="true" data-r="0">A</button><button aria-pressed="false" data-r="1">B</button><button aria-pressed="false" data-r="2">C</button></div>
         <button class="btn small" id="refPlay">팽창 전 ↔ 후</button></div>
       <canvas class="refline" id="refLine" aria-label="은하 A, B, C의 위치"></canvas>
       <div class="tablewrap"><table class="ref" id="refTable"></table></div>
       <p class="note" id="refMsg"></p>
     </div>
-    <textarea id="t3" aria-label="토의 3 답"></textarea>
-    <details class="hint"><summary>생각 도우미</summary><div>시뮬레이터에서 관측자 은하를 여러 번 바꿔 보았지요. 어떤 은하에서 보아도 결과가 같았나요? 풍선 <b>표면 위</b>에서 중심이라고 할 만한 곳이 있나요?</div></details>
+    <div class="frame" id="frame-f3"></div>
+    <button class="btn primary next pnext">다음: 모형의 한계 →</button>
   </div>
-  <div class="panel q">
-    <div class="qh"><span class="qn">4</span><b>풍선 모형이 실제 우주와 다른 점(모형의 한계)을 찾아보자.</b><span class="src">심화</span></div>
-    <textarea id="t4" aria-label="토의 4 답"></textarea>
-    <details class="hint"><summary>생각 도우미</summary><div>풍선에는 안쪽 공간과 입구가 있고 끝도 있어요. 풍선은 바람을 넣는 사람이 있고, 언젠가 터지기도 하죠. 붙임딱지 대신 펜으로 점을 찍었다면 점의 크기는 어떻게 되었을까요?</div></details>
-  </div>
-  <div class="row" style="justify-content:space-between">
-    <button class="btn" id="revealKey">핵심 정리 보기</button>
-    <button class="btn primary" data-go="check">개념 확인으로 →</button>
-  </div>
-  <div class="panel stack" id="keyBox" hidden>
-    <h3>핵심 정리</h3>
-    <p>풍선 표면이 팽창할수록 붙임딱지 사이의 거리는 멀어진다. 이와 마찬가지로 관측된 외부 은하들 사이의 거리가 멀어지는 것은 <b>우주 공간이 팽창</b>하고 있기 때문이다.</p>
-    <p>팽창하는 풍선 표면에 중심이 없는 것처럼, 팽창하는 우주에도 <b>중심이 없다</b>. 어느 은하에서 관측하더라도 다른 은하들은 멀어지고, 멀리 있는 은하일수록 더 빨리 멀어진다.</p>
-    <p class="note">모형의 한계 예시: 실제 우주는 풍선처럼 ‘안쪽’이나 ‘바깥’이 있는 물체가 아니다. 풍선 안쪽의 중심은 실제 우주의 중심이 아니다. 은하 자체는 팽창하지 않는다(붙임딱지가 커지지 않는 것과 같다).</p>
-    <p class="note">더 알아보기: 아주 가까이 있어 서로 중력으로 강하게 끌어당기는 은하들은 멀어지지 않는다. 우리은하와 안드로메다은하는 오히려 가까워지고 있다. 우주 팽창은 은하들이 멀리 떨어진 넓은 규모에서 뚜렷하게 나타난다.</p>
+
+  <div class="pane" data-p="f4" hidden>
+    <h2 class="qtitle">풍선 모형과 실제 우주는 무엇이 같고, 무엇이 다를까?</h2>
+    <div class="sort" id="sortBox"></div>
+    <div class="frame" id="frame-f4"></div>
+    <button class="btn primary next" data-go="check">개념 정리로 →</button>
   </div>
 </section>
 
 <!-- 5 개념 확인 -->
 <section class="view" id="v-check" hidden>
-  <div class="stack">
-    <div class="eyebrow">개념 정리</div>
-    <h2>시간을 거꾸로 돌리면</h2>
-    <p class="lead">팽창하는 우주의 시간을 과거로 되돌리면 우주의 크기는 점점 작아집니다. 이를 바탕으로 과학자들은 우주가 약 138억 년 전에 탄생하였고, 점점 팽창하여 현재의 모습이 되었다고 설명합니다.</p>
+  <div class="subnav" role="tablist" aria-label="개념 확인 단계">
+    <button role="tab" data-p="sum" aria-selected="true"><span class="sn">1</span>핵심 정리</button>
+    <button role="tab" data-p="quiz" aria-selected="false"><span class="sn">2</span>확인 문제</button>
   </div>
-  <div class="timeline"><canvas id="timeline" aria-label="과거에서 현재로 우주가 커지는 모습"></canvas></div>
-  <div class="keys">
-    <div class="key"><b>허블의 발견</b>우리은하 밖 외부 은하를 관측하여 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈다.</div>
-    <div class="key"><b>우주 공간의 팽창</b>은하가 스스로 날아가는 것이 아니라, 은하 사이의 공간이 늘어나 거리가 멀어진다.</div>
-    <div class="key"><b>중심이 없다</b>어느 은하에서 보아도 다른 은하가 멀어진다. 멀리 있는 은하일수록 더 빨리 멀어진다.</div>
-    <div class="key"><b>우주의 탄생</b>시간을 되돌리면 우주는 점점 작아진다. 우주는 약 138억 년 전에 탄생하여 팽창해 왔다.</div>
+  <div class="pane" data-p="sum">
+    <div class="stack">
+      <div class="eyebrow">개념 정리</div>
+      <h2>시간을 거꾸로 돌리면</h2>
+      <p class="lead">팽창하는 우주의 시간을 과거로 되돌리면 우주의 크기는 점점 작아집니다. 이를 바탕으로 과학자들은 우주가 약 138억 년 전에 탄생하였고, 점점 팽창하여 현재의 모습이 되었다고 설명합니다.</p>
+    </div>
+    <div class="timeline"><canvas id="timeline" aria-label="과거에서 현재로 우주가 커지는 모습"></canvas></div>
+    <div class="keys">
+      <div class="key"><b>허블의 발견</b>외부 은하를 관측하여 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈다.</div>
+      <div class="key"><b>우주 공간의 팽창</b>은하가 스스로 날아가는 것이 아니라, 은하 사이의 공간이 늘어나 거리가 멀어진다.</div>
+      <div class="key"><b>중심이 없다</b>어느 은하에서 보아도 다른 은하가 멀어진다. 멀리 있는 은하일수록 더 빨리 멀어진다.</div>
+      <div class="key"><b>우주의 탄생</b>시간을 되돌리면 우주는 점점 작아진다. 우주는 약 138억 년 전에 탄생하여 팽창해 왔다.</div>
+    </div>
+    <details class="hint more"><summary>더 알아보기: 모든 은하가 멀어질까?</summary><div>아주 가까이 있어 서로 중력으로 강하게 끌어당기는 은하들은 멀어지지 않아요. 우리은하와 안드로메다은하는 오히려 가까워지고 있어요. 우주 팽창은 은하들이 멀리 떨어진 넓은 규모에서 뚜렷하게 나타나요.</div></details>
+    <button class="btn primary next pnext">확인 문제 풀기 →</button>
   </div>
-  <div class="row" style="justify-content:space-between">
-    <h3>개념 확인 문제</h3>
-    <span class="score" id="score">0 / 6</span>
+  <div class="pane" data-p="quiz" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h3>개념 확인 문제</h3>
+      <span class="score" id="score">0 / 6</span>
+    </div>
+    <div class="quiz" id="quiz"></div>
+    <button class="btn primary next" data-go="report">마무리로 →</button>
   </div>
-  <div class="quiz" id="quiz"></div>
-  <button class="btn primary next" data-go="report">모둠 결과 정리로 →</button>
 </section>
 
 <!-- 6 결과 -->
 <section class="view" id="v-report" hidden>
-  <div class="stack">
-    <div class="eyebrow">마무리</div>
-    <h2>나의 결과 카드</h2>
-    <p class="lead" id="reportLead">지금까지 입력한 내용이 한 장에 모였습니다. 빠진 곳이 없는지 확인한 뒤 <b>결과 복사</b>를 눌러 선생님이 안내한 곳(하이러닝, 패들렛 등)에 붙여 넣으세요.</p>
+  <div class="subnav" role="tablist" aria-label="마무리 단계">
+    <button role="tab" data-p="write" aria-selected="true"><span class="sn">1</span>한 줄 정리</button>
+    <button role="tab" data-p="card" aria-selected="false"><span class="sn">2</span>결과 카드</button>
   </div>
-  <div class="panel stack">
-    <h3>공책에 쓰듯 한 줄 정리</h3>
-    <p class="note">오늘 배운 것을 내 말로 두세 문장으로 정리해 보세요. <b>거리, 중심, 모형</b> 세 낱말을 꼭 넣습니다.</p>
-    <textarea id="sum" aria-label="한 줄 정리"></textarea>
-    <div class="kwchk" id="kwchk"><span data-k="거리">거리</span><span data-k="중심">중심</span><span data-k="모형">모형</span></div>
-    <details class="hint"><summary>예시 답 보기 (먼저 써 본 뒤에 열어 보세요)</summary><div>붙임딱지 사이가 벌어지듯 우주가 팽창하면 은하 사이의 거리가 늘어난다. 어느 은하를 기준으로 해도 다른 은하가 멀어지므로 팽창의 중심은 정할 수 없다. 풍선 모형은 팽창을 이해하는 데 도움이 되지만, 이 모형만으로 실제 우주의 모양과 크기를 알 수는 없다.</div></details>
+  <div class="pane" data-p="write">
+    <div class="panel stack">
+      <h3>공책에 쓰듯 정리하기</h3>
+      <p class="note">오늘 배운 것을 내 말로 두세 문장으로 써요. <b>거리, 중심, 모형</b> 세 낱말을 꼭 넣어요. 막히면 말머리를 눌러 시작해요.</p>
+      <div class="starter" id="sumStarters"><button>우주가 팽창하면 은하 사이의 거리는</button><button>어느 은하를 기준으로 해도</button><button>풍선 모형은</button></div>
+      <textarea id="sum" aria-label="한 줄 정리"></textarea>
+      <div class="kwchk" id="kwchk"><span data-k="거리">거리</span><span data-k="중심">중심</span><span data-k="모형">모형</span></div>
+      <details class="hint"><summary>예시 답 보기 (먼저 써 본 뒤에 열어 보세요)</summary><div>붙임딱지 사이가 벌어지듯 우주가 팽창하면 은하 사이의 거리가 늘어난다. 어느 은하를 기준으로 해도 다른 은하가 멀어지므로 팽창의 중심은 정할 수 없다. 풍선 모형은 팽창을 이해하는 데 도움이 되지만, 이 모형만으로 실제 우주의 모양과 크기를 알 수는 없다.</div></details>
+    </div>
+    <button class="btn primary next pnext">결과 카드 보기 →</button>
   </div>
-  <div class="report" id="reportCard"></div>
-  <div class="row">
-    <button class="btn primary" id="sendNow" hidden>선생님께 지금 보내기</button>
-    <button class="btn" id="copyBtn">결과 복사</button>
-    <button class="btn" id="resetAll">이 기기의 모든 기록 지우기</button>
-    <span class="confirm" id="resetConfirm" hidden>모든 입력이 사라집니다. 계속할까요? <button class="btn small primary" id="resetYes">모두 지우기</button><button class="btn small" id="resetNo">취소</button></span>
+  <div class="pane" data-p="card" hidden>
+    <div class="stack">
+      <div class="eyebrow">마무리</div>
+      <h2>나의 결과 카드</h2>
+      <p class="lead" id="reportLead">지금까지 입력한 내용이 한 장에 모였습니다. 빠진 곳이 없는지 확인한 뒤 <b>결과 복사</b>를 눌러 선생님이 안내한 곳(하이러닝, 패들렛 등)에 붙여 넣으세요.</p>
+    </div>
+    <div class="report" id="reportCard"></div>
+    <div class="row">
+      <button class="btn primary" id="sendNow" hidden>선생님께 지금 보내기</button>
+      <button class="btn" id="copyBtn">결과 복사</button>
+      <button class="btn" id="resetAll">이 기기의 모든 기록 지우기</button>
+      <span class="confirm" id="resetConfirm" hidden>모든 입력이 사라집니다. 계속할까요? <button class="btn small primary" id="resetYes">모두 지우기</button><button class="btn small" id="resetNo">취소</button></span>
+    </div>
+    <pre class="out" id="copyText" aria-label="복사할 결과 텍스트"></pre>
   </div>
-  <pre class="out" id="copyText" aria-label="복사할 결과 텍스트"></pre>
 </section>
 <!-- 선생님 화면 -->
 <section class="view" id="v-teacher" hidden>
@@ -601,7 +739,7 @@ function payload(){
   return Object.assign({app:'expand',cls:S.cls,grp:S.grp,num:S.num,members:S.members,
     roles:['풍선 ','측정 ','기록 ','발표 '].map((r,i)=>r+(S.roles[i]||'-')).join(' / '),
     pred:S.pred?PRED_TEXT[S.pred]:'',predWhy:S.predWhy,sim:S.notes.sim||'',
-    t1:S.notes.t1||'',t2:S.notes.t2||'',t3:S.notes.t3||'',t4:S.notes.t4||'',sum:S.notes.sum||'',
+    t1:talkText(1),t2:talkText(2),t3:talkText(3),t4:talkText(4),sum:S.notes.sum||'',
     score:String(QUIZ.filter((it,i)=>S.quiz[i]===it.a).length),answered:String(Object.keys(S.quiz).length)},d);
 }
 function queueSend(){
@@ -631,11 +769,8 @@ function show(){
   VIEWS.forEach(x=>{$('#v-'+x).hidden=(x!==v);});
   $$('#tabs a').forEach(a=>{ if(a.dataset.v===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
   const cur=$('#tabs a[aria-current]'); if(cur) cur.scrollIntoView({block:'nearest',inline:'nearest'});
-  if(v==='lab') drawCharts();
+  const sec=$('#v-'+v); if(sec&&sec._go) sec._go(SUB[sec.id],false); else linkAnim(false);
   if(v==='sim'){ resizeSim(); drawSim(); }
-  if(v==='talk'){ renderMyData(); refDraw(); }
-  if(v==='check') drawTimeline();
-  if(v==='report') renderReport();
   if(v==='teacher') teacherOpen();
   $('#tabs').parentElement.hidden=(v==='teacher');
   $('.team').hidden=(v==='teacher'); $('footer.foot').hidden=(v==='teacher');
@@ -645,7 +780,7 @@ window.addEventListener('hashchange',()=>{show();window.scrollTo(0,0);});
 $$('[data-go]').forEach(b=>b.addEventListener('click',()=>{location.hash=b.dataset.go;}));
 function markDone(){
   const d={open:!!S.pred,lab:filled('12','s')&&filled('12','b')&&filled('13','s')&&filled('13','b'),sim:!!(S.notes.sim||'').trim(),
-    talk:['t1','t2'].every(k=>(S.notes[k]||'').trim()),check:Object.keys(S.quiz).length>=QUIZ.length,report:false};
+    talk:frameDone('f1')&&frameDone('f2'),check:Object.keys(S.quiz).length>=QUIZ.length,report:false};
   $$('#tabs a').forEach(a=>a.classList.toggle('done',!!d[a.dataset.v]&&a.getAttribute('aria-current')!=='page'));
   if(window.parent!==window){ try{window.parent.postMessage({type:'eu-progress',done:['open','lab','sim','talk','check'].filter(k=>d[k]).length,total:5},location.origin);}catch(e){} }
 }
@@ -880,18 +1015,171 @@ sim.addEventListener('click',e=>{
 });
 $('#simNote').value=S.notes.sim||''; $('#simNote').addEventListener('input',e=>{S.notes.sim=e.target.value;save();markDone();});
 
-/* ---------- talk ---------- */
-['t1','t2','t3','t4'].forEach(k=>{const el=$('#'+k);el.value=S.notes[k]||'';el.addEventListener('input',()=>{S.notes[k]=el.value;save();markDone();});});
+/* ---------- 한 줄 정리 ---------- */
 $('#sum').value=S.notes.sum||'';
 function kwPaint(){const v=$('#sum').value; $$('#kwchk span').forEach(x=>x.classList.toggle('on',v.includes(x.dataset.k)));}
-$('#sum').addEventListener('input',e=>{S.notes.sum=e.target.value;save();kwPaint();renderReport();}); kwPaint();
-$('#revealKey').addEventListener('click',()=>{const b=$('#keyBox');b.hidden=!b.hidden;$('#revealKey').textContent=b.hidden?'핵심 정리 보기':'핵심 정리 닫기';});
-function renderMyData(){
-  const s12=val('12','s'),b12=val('12','b'),s13=val('13','s'),b13=val('13','b');
-  $('#myData').innerHTML=`<div><b>1~2 거리</b><span class="num">${f1(s12)} → ${f1(b12)} cm</span>${s12&&b12?` <span class="note">(+${f1(b12-s12)}, ${f2(b12/s12)}배)</span>`:''}</div>
-  <div><b>1~3 거리</b><span class="num">${f1(s13)} → ${f1(b13)} cm</span>${s13&&b13?` <span class="note">(+${f1(b13-s13)}, ${f2(b13/s13)}배)</span>`:''}</div>
-  <div><b>우리 모둠 예측</b>${S.pred?PRED_TEXT[S.pred]:'<span class="note">아직 고르지 않음</span>'}</div>`;
+$('#sum').addEventListener('input',e=>{S.notes.sum=e.target.value;save();kwPaint();paintSubDone();}); kwPaint();
+
+/* ---------- 하위 단계 탭 ---------- */
+const SUB={};
+function onPane(sec,p){
+  if(sec==='v-open'&&p==='pred') drawPredPic();
+  if(sec==='v-lab'&&p==='result'){ feedback(); drawCharts(); }
+  if(sec==='v-talk'){ renderF1Data(); renderFrame(p); if(p==='f3') refDraw(); if(p==='f4') renderSort(); linkAnim(p==='f2'); } else linkAnim(false);
+  if(sec==='v-check'&&p==='sum') drawTimeline();
+  if(sec==='v-report'&&p==='card') renderReport();
 }
+function paintSubDone(){
+  const done={f1:frameDone('f1'),f2:frameDone('f2'),f3:frameDone('f3'),f4:frameDone('f4'),
+    measure:filled('12','s')&&filled('12','b')&&filled('13','s')&&filled('13','b'),pred:!!S.pred,quiz:Object.keys(S.quiz).length>=QUIZ.length,write:!!(S.notes.sum||'').trim()};
+  $$('.subnav button').forEach(b=>b.classList.toggle('done',!!done[b.dataset.p]&&b.getAttribute('aria-selected')!=='true'));
+}
+function initSubs(){
+  $$('section.view').forEach(sec=>{
+    const nav=sec.querySelector('.subnav'); if(!nav) return;
+    const panes=Array.from(sec.querySelectorAll(':scope > .pane'));
+    const go=(p,scroll)=>{ SUB[sec.id]=p;
+      nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===p));
+      panes.forEach(x=>x.hidden=(x.dataset.p!==p)); onPane(sec.id,p); paintSubDone();
+      if(scroll) window.scrollTo({top:0,behavior:reduce?'auto':'smooth'}); };
+    nav.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.p,false)));
+    panes.forEach((pn,i)=>pn.querySelectorAll('.pnext').forEach(b=>b.addEventListener('click',()=>go(panes[i+1].dataset.p,true))));
+    sec._go=go; SUB[sec.id]=panes[0].dataset.p;
+  });
+}
+
+/* ---------- 키워드 카드 ---------- */
+$$('#kwCards .kwc').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+
+/* ---------- 예측 그림: 풍선 위 붙임딱지 ---------- */
+function drawPredPic(){
+  const c=setupCanvas($('#predPic')); if(!c) return; const {ctx,w,h}=c; ctx.clearRect(0,0,w,h);
+  const balloon=(cx,r,lab)=>{
+    const g=ctx.createRadialGradient(cx-r*.35,h/2-r*.4,r*.1,cx,h/2,r); g.addColorStop(0,'#ffd0dd'); g.addColorStop(1,'#e8628d');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(cx,h/2-4,r,r*1.08,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx-5,h/2-4+r*1.08); ctx.lineTo(cx+5,h/2-4+r*1.08); ctx.lineTo(cx,h/2+4+r*1.08); ctx.fillStyle='#c24470'; ctx.fill();
+    const k=r/42, P=[[-14,-10],[4,-14],[22,10]];
+    P.forEach((q,i)=>{const x=cx+q[0]*k,y=h/2-4+q[1]*k; ctx.fillStyle='#2a3cc4'; ctx.beginPath(); ctx.arc(x,y,7,0,7); ctx.fill(); ctx.fillStyle='#fff'; ctx.font='600 10px '+css('--f-body'); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(i+1,x,y+.5);});
+    ctx.fillStyle=css('--muted'); ctx.font='13px '+css('--f-body'); ctx.textBaseline='alphabetic'; ctx.fillText(lab,cx,h-4);
+  };
+  const r=Math.min(52,h*.34);
+  balloon(w*.28,r*.72,'작게 분 풍선');
+  ctx.fillStyle=css('--accent'); ctx.font='22px '+css('--f-body'); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('→',w*.5,h/2-6);
+  balloon(w*.72,r,'더 크게 분 풍선  ?');
+}
+
+/* ---------- 빈칸 비계 ---------- */
+const FR={
+ f1:{lines:[
+   {tag:'관측',parts:['풍선을 더 크게 불었더니 1~2 거리와 1~3 거리가 모두 ',{o:['늘어났다','줄어들었다','그대로였다'],h:'표에서 ① 작게 분 풍선과 ② 크게 분 풍선의 값을 비교해 보세요.'},'.']},
+   {tag:'관측',parts:['늘어난 거리는 처음에 더 멀리 있던 ',{o:['1~3','1~2'],h:'위 카드에서 ‘늘어난 거리’가 더 큰 쪽을 찾아보세요.'},' 쪽이 더 컸다.']},
+   {tag:'해석',parts:['처음 거리가 멀수록 ',{o:['더 많이','더 적게','똑같이'],h:'1~3은 1~2보다 처음에 더 멀었어요. 그런데 늘어난 거리는?'},' 멀어진다. 풍선 표면 전체가 ',{o:['같은 비율로','한쪽만'],h:'‘몇 배’ 값을 보세요. 두 값이 비슷한가요?'},' 늘어나기 때문이다.']}]},
+ f2:{lines:[
+   {tag:'대응',parts:['풍선 표면은 ',{o:['우주 공간','은하','별'],h:'풍선이 커지면서 늘어나는 것은 무엇이었나요?'},', 붙임딱지는 ',{o:['은하','우주 공간','행성'],h:'표면 위에 붙어 있는 작은 점에 해당하는 것은?'},'에 해당한다.']},
+   {tag:'관측',parts:['외부 은하들은 대체로 서로 ',{o:['멀어진다','가까워진다','그대로 있다'],h:'왼쪽 그림의 점선 길이가 어떻게 되나요?'},'.']},
+   {tag:'해석',parts:['은하 사이의 거리가 멀어지는 것은 ',{o:['은하 사이의 공간이 늘어나서','은하가 스스로 날아가서','은하가 점점 커져서'],h:'붙임딱지는 스스로 움직이지 않았어요. 늘어난 것은 무엇이었나요?'},'이다. 이 관측 결과는 ',{o:['우주 팽창','우주 수축','은하의 회전'],h:'공간이 늘어나는 것을 무엇이라고 했나요?'},'을 뒷받침한다.']}]},
+ f3:{lines:[
+   {tag:'관측',parts:['A를 기준으로 하면 B와 C가 모두 ',{o:['멀어진다','가까워진다'],h:'위 표에서 ‘늘어난 거리’를 보세요.'},'.']},
+   {tag:'관측',parts:['B나 C를 기준으로 해도 나머지 은하들이 모두 ',{o:['멀어진다','가까워진다','멈춰 있다'],h:'B와 C를 눌러 표를 다시 보세요.',lock:'ref'},'.']},
+   {tag:'해석',parts:['어느 은하에서 보아도 똑같으므로, 팽창하는 우주에는 ',{o:['특별한 중심이 없다','우리은하가 중심이다','A 은하가 중심이다'],h:'A, B, C 중 어느 하나만 특별했나요?',lock:'ref'},'.']}]},
+ f4:{lines:[
+   {tag:'정리',parts:['풍선 모형은 ',{o:['우주 팽창','별의 탄생'],h:'오늘 풍선으로 무엇을 알아보았나요?',lock:'sort'},'을 이해하는 데 도움이 된다.']},
+   {tag:'정리',parts:['하지만 풍선 ',{o:['안쪽의 한가운데','표면 위의 딱지'],h:'위 카드에서 ‘우주와 다르다’에 해당한 것을 떠올려 보세요.',lock:'sort'},'는 실제 우주의 중심이 아니다.']}]}
+};
+// 선택지 순서를 빈칸마다 고정된 방식으로 섞음 (정답이 늘 첫째가 되지 않게)
+Object.entries(FR).forEach(([id,F])=>{let n=0; F.lines.forEach(L=>L.parts.forEach(p=>{ if(typeof p==='string') return;
+  const r=rng(id.charCodeAt(1)*31+(n++)*7+3); const ans=p.o[0]; const o=p.o.slice(); for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]];}
+  p.opts=o; p.ans=ans; })); F.n=n; });
+const ACT={}, MISS={}, JUST={};
+S.fill=S.fill||{}; S.sort=S.sort||{}; S.refTried=S.refTried||[0]; S.mis=S.mis||[];
+function frameDone(id){const st=S.fill[id]||{}; return Object.keys(st).filter(k=>st[k]).length>=FR[id].n;}
+function locked(p){ if(p.lock==='ref') return !(S.refTried.includes(1)||S.refTried.includes(2)); if(p.lock==='sort') return !SORT.every((c,i)=>S.sort[i]===c.a); return false; }
+function sentence(id){const F=FR[id]; return F.lines.map(L=>L.parts.map(p=>typeof p==='string'?p:p.ans).join('')).join(' ');}
+function blankList(id){const out=[]; FR[id].lines.forEach(L=>L.parts.forEach(p=>{ if(typeof p!=='string') out.push(p); })); return out;}
+function renderFrame(id){
+  const box=$('#frame-'+id); if(!box) return; const F=FR[id]; const st=S.fill[id]||(S.fill[id]={});
+  const B=blankList(id); if(ACT[id]===undefined||st[ACT[id]]) ACT[id]=B.findIndex((p,i)=>!st[i]);
+  let n=0, html='';
+  F.lines.forEach(L=>{ html+=`<div class="fl${L.tag==='해석'||L.tag==='정리'?' interp':''}"><span class="ftag">${L.tag}:</span><p>`+L.parts.map(p=>{
+    if(typeof p==='string') return esc(p); const i=n++; const ok=!!st[i];
+    return `<button class="blank${ok?' ok':''}${ok&&JUST[id]===i?' pop':''}${!ok&&ACT[id]===i?' act':''}" data-i="${i}" ${ok?'tabindex="-1"':''} aria-label="빈칸 ${i+1}${ok?' '+p.ans:''}"><span class="bn">${i+1}</span><span class="bt">${ok?esc(p.ans):'?'}</span></button>`;
+  }).join('')+'</p></div>'; });
+  if(!frameDone(id)){
+    const a=ACT[id], p=B[a];
+    if(locked(p)) html+=`<div class="lockmsg2">${p.lock==='ref'?'위에서 기준 은하를 <b>B나 C</b>로도 바꿔 본 다음에 빈칸 '+(a+1)+'을 채울 수 있어요.':'위의 카드 네 장을 모두 맞게 고른 다음에 채울 수 있어요.'}</div>`;
+    else html+=`<div class="bank"><div class="bq"><b>빈칸 ${a+1}</b>에 들어갈 말을 골라요</div><div class="chips">${p.opts.map(o=>`<button class="chip${(MISS[id+a]||[]).includes(o)?' no':''}" data-o="${esc(o)}" ${(MISS[id+a]||[]).includes(o)?'disabled':''}>${esc(o)}</button>`).join('')}</div>${(MISS[id+a]||[]).length?`<div class="hint">힌트: ${esc(p.h)}</div>`:''}</div>`;
+  } else {
+    const k=id.slice(1);
+    html+=`<div class="donebox"><div class="dh">완성! 우리 모둠의 문장</div><p class="sent">${esc(sentence(id))}</p>
+      <label class="note" for="own${k}">내 말로 한 문장 덧붙이기 <span class="tag">선택</span></label><textarea id="own${k}" placeholder="예) 우리 모둠 풍선에서는…">${esc(S.notes['o'+k]||'')}</textarea></div>`;
+  }
+  box.innerHTML=html;
+  box.querySelectorAll('.blank:not(.ok)').forEach(b=>b.addEventListener('click',()=>{ACT[id]=+b.dataset.i; JUST[id]=-1; renderFrame(id);}));
+  box.querySelectorAll('.chip:not(.no)').forEach(c=>c.addEventListener('click',()=>{
+    const a=ACT[id], p=B[a];
+    if(c.dataset.o===p.ans){ st[a]=true; JUST[id]=a; if(frameDone(id)){ S.notes['t'+id.slice(1)]=sentence(id); toast('문장 완성!'); } save(); renderFrame(id); paintSubDone(); markDone(); }
+    else { JUST[id]=-1; (MISS[id+a]=MISS[id+a]||[]).push(c.dataset.o); renderFrame(id); }
+  }));
+  const own=box.querySelector('textarea'); if(own) own.addEventListener('input',()=>{S.notes['o'+id.slice(1)]=own.value; save();});
+}
+function talkText(k){ const t=S.notes['t'+k]||''; const o=(S.notes['o'+k]||'').trim(); return t+(o?(t?' / 내 말: ':'')+o:''); }
+
+/* 거리 비교의 근거: 우리 모둠 측정값 */
+function renderF1Data(){
+  const box=$('#f1data'); if(!box) return;
+  let s12=val('12','s'),b12=val('12','b'),s13=val('13','s'),b13=val('13','b'), ex=false;
+  if(!(s12&&b12&&s13&&b13)){ s12=6;b12=9.2;s13=10;b13=15.1; ex=true; }
+  const i12=b12-s12,i13=b13-s13, big=i13>=i12?'13':'12';
+  const card=(lab,s,b,inc,id)=>`<div class="ev${big===id?' big':''}"><span class="lab">${lab}</span><span class="v">${f1(s)} → ${f1(b)} cm</span><span class="d">늘어난 거리 <b>+${f1(inc)} cm</b> · ${f2(b/s)}배</span></div>`;
+  box.innerHTML=card('1~2 거리',s12,b12,i12,'12')+card('1~3 거리',s13,b13,i13,'13')+(ex?'<span class="exn">아직 측정값이 없어 예시 값으로 보여 줘요. 풍선 실험의 측정 칸을 채우면 우리 모둠 값으로 바뀌어요.</span>':'');
+}
+
+/* 관측 그림: 은하 사이 점선이 길어짐 */
+const LINK=(()=>{const r=rng(4242),G=[];for(let j=0;j<5;j++)for(let i=0;i<8;i++)G.push({x:(i+.5)/8+(r()-.5)*.06,y:(j+.5)/5+(r()-.5)*.08,a:r()*Math.PI,h:[340,190,45,260][Math.floor(r()*4)]});
+  return {G,pairs:[[10,11],[12,13],[14,22],[17,25],[27,28]],t0:0,run:false,paused:false,k:1};})();
+function drawLink(k){
+  const c=setupCanvas($('#linkPic')); if(!c) return; const {ctx,w,h}=c;
+  ctx.fillStyle='#03040a'; ctx.fillRect(0,0,w,h);
+  const P=g=>[w/2+(g.x-.5)*w*.8*k, h/2+(g.y-.5)*h*.8*k];
+  ctx.setLineDash([5,5]); ctx.lineWidth=2; ctx.strokeStyle='#f2c14e';
+  LINK.pairs.forEach(([a,b])=>{const A=P(LINK.G[a]),B=P(LINK.G[b]); ctx.beginPath(); ctx.moveTo(A[0],A[1]); ctx.lineTo(B[0],B[1]); ctx.stroke();});
+  ctx.setLineDash([]);
+  const s=Math.max(5,Math.min(w,h)*.028);
+  LINK.G.forEach(g=>{const [x,y]=P(g); if(x<-10||x>w+10||y<-10||y>h+10) return;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(g.a);
+    ctx.fillStyle=`hsla(${g.h},70%,60%,.28)`; ctx.beginPath(); ctx.ellipse(0,0,s*1.9,s*.95,0,0,7); ctx.fill();
+    ctx.strokeStyle=`hsl(${g.h},75%,72%)`; ctx.lineWidth=1.6; ctx.beginPath(); ctx.ellipse(0,0,s*1.3,s*.6,0,0,7); ctx.stroke();
+    ctx.fillStyle='#fff3d6'; ctx.beginPath(); ctx.arc(0,0,s*.35,0,7); ctx.fill(); ctx.restore();});
+  $('#linkCap').textContent='우주 크기 ×'+k.toFixed(2)+(LINK.paused?' · 멈춤 (눌러서 다시)':' · 눌러서 멈춤');
+}
+function linkAnim(on){
+  if(!on){LINK.run=false;return;} if(LINK.run) return; LINK.run=true;
+  if(reduce){LINK.k=1.2; drawLink(LINK.k); LINK.run=false; return;}
+  let last=performance.now();
+  const step=now=>{ if(!LINK.run) return; const dt=(now-last)/1000; last=now;
+    if(!LINK.paused){ LINK.t0+=dt; LINK.k=1+.3*(1-Math.cos(LINK.t0*0.9))/2; } drawLink(LINK.k); requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+$('#linkPic').addEventListener('click',()=>{LINK.paused=!LINK.paused; drawLink(LINK.k);});
+
+/* 모형의 한계: 같다 / 다르다 */
+const SORT=[
+ {t:'풍선이 커지면 붙임딱지 사이의 거리가 멀어진다.',a:'same',e:'우주가 팽창하면 은하 사이의 거리도 멀어져요.'},
+ {t:'풍선이 커져도 붙임딱지 자체의 크기는 그대로다.',a:'same',e:'은하 자체도 팽창하면서 커지지는 않아요.'},
+ {t:'풍선에는 안쪽 공간과 한가운데 중심이 있다.',a:'diff',e:'실제 우주는 안과 밖이 있는 물체가 아니고, 팽창의 중심도 없어요.'},
+ {t:'풍선은 누군가 바람을 넣어야 커지고, 너무 불면 터진다.',a:'diff',e:'우주는 누가 바람을 넣어서 커지는 것이 아니에요.'}];
+function renderSort(){
+  const box=$('#sortBox'); if(!box) return;
+  box.innerHTML=SORT.map((c,i)=>{const pk=S.sort[i]; const cls=pk?(pk===c.a?' right':' wrong'):'';
+    return `<div class="sc${cls}"><p>${esc(c.t)}</p><div class="sb"><button data-i="${i}" data-v="same" class="${pk==='same'?'pick':''}">우주와 같다</button><button data-i="${i}" data-v="diff" class="${pk==='diff'?'pick':''}">우주와 다르다</button></div>
+      <span class="fbk">${pk?(pk===c.a?'맞아요. '+esc(c.e):'다시 생각해 봐요.'):'&nbsp;'}</span></div>`;}).join('');
+  box.querySelectorAll('.sb button').forEach(b=>b.addEventListener('click',()=>{S.sort[b.dataset.i]=b.dataset.v; save(); renderSort(); renderFrame('f4');}));
+}
+
+/* 시뮬레이터 미션 체크와 말머리 */
+$$('#mchk button').forEach(b=>{ b.classList.toggle('on',!!S.mis[b.dataset.m]); b.addEventListener('click',()=>{S.mis[b.dataset.m]=!S.mis[b.dataset.m]; b.classList.toggle('on',!!S.mis[b.dataset.m]); save();}); });
+function starters(boxSel,taSel){ $$(boxSel+' button').forEach(b=>b.addEventListener('click',()=>{const ta=$(taSel); const v=ta.value.trim(); ta.value=(v?v+' ':'')+b.textContent.replace(/…$/,'')+' '; ta.focus(); ta.dispatchEvent(new Event('input'));})); }
+starters('#simStarters','#simNote'); starters('#sumStarters','#sum');
 
 /* ---------- 기준 은하 바꾸기 ---------- */
 const REF={pos:[0,5,10],names:['A','B','C'],ref:0,after:false};
@@ -915,7 +1203,7 @@ function refTable(){
   $('#refTable').innerHTML=h;
   $('#refMsg').textContent=['A를 기준으로 하면 B와 C가 모두 멀어진다. 다른 은하를 기준으로 골라 보자.','B를 기준으로 해도 A와 C가 모두 멀어진다. B에서 보면 B가 가운데처럼 보인다.','C를 기준으로 해도 A와 B가 모두 멀어진다. 그렇다면 팽창의 중심은 어디일까?'][r];
 }
-$$('#refSeg button').forEach(b=>b.addEventListener('click',()=>{REF.ref=+b.dataset.r; $$('#refSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b)); refTable(); refDraw();}));
+$$('#refSeg button').forEach(b=>b.addEventListener('click',()=>{REF.ref=+b.dataset.r; $$('#refSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b)); refTable(); refDraw(); if(!S.refTried.includes(REF.ref)){S.refTried.push(REF.ref); save(); renderFrame('f3');}}));
 $('#refPlay').addEventListener('click',()=>{REF.after=!REF.after; refDraw();});
 refTable();
 
@@ -977,19 +1265,19 @@ function reportText(){
 ``,`■ 예측: ${S.pred?PRED_TEXT[S.pred]:'-'}`,`  까닭: ${S.predWhy||'-'}`,
 ``,`■ 측정 결과 (cm)`,...(rows.length?rows.map(r=>'  '+r):['  -']),
 ``,`■ 시뮬레이터에서 발견한 것`,`  ${S.notes.sim||'-'}`,
-``,`■ 토의 1 (거리 비교)`,`  ${S.notes.t1||'-'}`,
-`■ 토의 2 (은하 사이 거리)`,`  ${S.notes.t2||'-'}`,
-`■ 토의 3 (우주의 중심)`,`  ${S.notes.t3||'-'}`,
-`■ 토의 4 (모형의 한계)`,`  ${S.notes.t4||'-'}`,
+``,`■ 토의 1 (거리 비교)`,`  ${talkText(1)||'-'}`,
+`■ 토의 2 (은하 사이 거리)`,`  ${talkText(2)||'-'}`,
+`■ 토의 3 (우주의 중심)`,`  ${talkText(3)||'-'}`,
+`■ 토의 4 (모형의 한계)`,`  ${talkText(4)||'-'}`,
 ``,`■ 한 줄 정리`,`  ${S.notes.sum||'-'}`,``,`■ 개념 확인: ${score()} / ${QUIZ.length} (푼 문제 ${answered}개)`
   ].join('\n');
 }
 function renderReport(){
-  const miss=[]; if(!S.cls||!S.grp||!S.num) miss.push('반·모둠·번호'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!(S.notes.t1||'').trim()||!(S.notes.t2||'').trim()) miss.push('토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제'); if(!(S.notes.sum||'').trim()) miss.push('한 줄 정리');
+  const miss=[]; if(!S.cls||!S.grp||!S.num) miss.push('반·모둠·번호'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!frameDone('f1')||!frameDone('f2')) miss.push('모둠 토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제'); if(!(S.notes.sum||'').trim()) miss.push('한 줄 정리');
   const rows=PAIRS.map(p=>{const s=val(p.id,'s'),b=val(p.id,'b'); return s||b?`${p.label}: ${f1(s)} → ${f1(b)} cm${s&&b?` (${f2(b/s)}배)`:''}`:null;}).filter(Boolean).join('\n')||'-';
   $('#reportCard').innerHTML=`<div class="row" style="justify-content:space-between"><h3>${esc(S.cls||'?')}반 ${esc(S.grp||'?')}모둠 ${esc(S.num||'?')}번</h3><span class="score">${score()} / ${QUIZ.length}</span></div>
   <dl><dt>모둠원</dt><dd>${esc(S.members||'-')}</dd><dt>예측</dt><dd>${S.pred?PRED_TEXT[S.pred]:'-'}</dd><dt>측정</dt><dd class="num">${esc(rows)}</dd>
-  <dt>발견</dt><dd>${esc(S.notes.sim||'-')}</dd><dt>토의 2</dt><dd>${esc(S.notes.t2||'-')}</dd><dt>우주의 중심</dt><dd>${esc(S.notes.t3||'-')}</dd><dt>한 줄 정리</dt><dd>${esc(S.notes.sum||'-')}</dd></dl>
+  <dt>발견</dt><dd>${esc(S.notes.sim||'-')}</dd><dt>풍선과 우주</dt><dd>${esc(talkText(2)||'-')}</dd><dt>우주의 중심</dt><dd>${esc(talkText(3)||'-')}</dd><dt>한 줄 정리</dt><dd>${esc(S.notes.sum||'-')}</dd></dl>
   ${miss.length?`<div class="callout warn">아직 비어 있는 곳: ${miss.join(', ')}</div>`:'<div class="callout good">모든 활동을 마쳤어요. 결과를 복사해 제출하세요.</div>'}`;
   $('#copyText').textContent=reportText();
 }
@@ -1004,7 +1292,7 @@ $('#resetYes').addEventListener('click',()=>{try{localStorage.removeItem(KEY);}c
 
 /* ---------- theme / resize ---------- */
 let rt; window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{drawCharts(); if(!$('#v-sim').hidden){resizeSim();drawSim();} if(!$('#v-check').hidden) drawTimeline();},120);});
-const redraw=()=>{drawCharts(); if(!$('#v-talk').hidden) refDraw(); if(!$('#v-sim').hidden) drawSim(); if(!$('#v-check').hidden) drawTimeline();};
+const redraw=()=>{drawCharts(); if(!$('#v-talk').hidden){ refDraw(); drawLink(LINK.k); } if(!$('#v-open').hidden) drawPredPic(); if(!$('#v-sim').hidden) drawSim(); if(!$('#v-check').hidden) drawTimeline();};
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
 new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
@@ -1100,7 +1388,7 @@ $('#tDay').addEventListener('change',()=>{ if($('#tPin').value) tLoad(); });
 $('#tPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tLoad(); });
 $('#tAuto').addEventListener('change',e=>{ clearInterval(tTimer); if(e.target.checked) tTimer=setInterval(()=>{ if(!$('#v-teacher').hidden) tLoad(); },20000); });
 
-updateLab(); show();
+initSubs(); updateLab(); show();
 })();
 </script>
 
