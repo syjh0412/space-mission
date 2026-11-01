@@ -215,6 +215,22 @@ html.embed .top .wrap{padding-block:12px}
 html.embed .simwrap canvas{height:440px}
 html.embed .team select:disabled{opacity:1;color:var(--ink)}
 footer.foot a{color:var(--muted);font-size:13px}
+.kw{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.kw div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.kw b{display:block;font-family:var(--f-display);font-weight:400;font-size:19px}
+.kw span{font-size:14px;color:var(--muted)}
+.refbox{border:1px dashed var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.refline{width:100%;height:92px;display:block}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 14px;cursor:pointer;font-weight:500}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--indigo);color:var(--surface)}
+table.ref{border-collapse:collapse;font-size:15px;min-width:300px}
+table.ref th,table.ref td{border-bottom:1px solid var(--line);padding:6px 12px;text-align:center}
+table.ref th{color:var(--muted);font-weight:500;font-size:13px}
+.kwchk{display:flex;gap:8px;flex-wrap:wrap}
+.kwchk span{font-size:13px;border-radius:999px;padding:2px 12px;border:1px solid var(--line);color:var(--muted)}
+.kwchk span.on{background:var(--good-soft);border-color:var(--good);color:var(--good)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -268,6 +284,16 @@ footer.foot a{color:var(--muted);font-size:13px}
       </div>
     </div>
     <canvas id="heroCanvas" aria-label="은하들이 서로 멀어지는 애니메이션"></canvas>
+  </div>
+
+  <div class="stack">
+    <h3>오늘의 키워드</h3>
+    <div class="kw">
+      <div><b>외부 은하</b><span>우리은하 밖에 있는 은하. 서로 점점 멀어진다.</span></div>
+      <div><b>풍선 모형</b><span>풍선 표면은 우주 공간, 붙임딱지는 은하.</span></div>
+      <div><b>팽창의 중심</b><span>기준 은하를 바꾸어 보면 중심이 있는지 알 수 있다.</span></div>
+      <div><b>우주의 나이와 모형의 한계</b><span>시간을 되돌리면 보이는 것, 풍선이 보여 주지 못하는 것.</span></div>
+    </div>
   </div>
 
   <div class="panel stack">
@@ -408,6 +434,15 @@ footer.foot a{color:var(--muted);font-size:13px}
   </div>
   <div class="panel q">
     <div class="qh"><span class="qn">3</span><b>2번 딱지 위에 작은 개미가 산다면, 개미 눈에는 다른 딱지들이 어떻게 보일까? 팽창하는 우주의 ‘중심’은 어디일까?</b><span class="src">심화</span></div>
+    <div class="refbox">
+      <b>기준 은하를 바꾸어 보자</b>
+      <p class="note">한 줄로 놓인 은하 A, B, C가 있다. 우주가 팽창해 모든 거리가 1.5배가 되었다. 기준 은하를 바꿔 가며 다른 은하까지의 거리를 비교해 보자.</p>
+      <div class="row"><span class="note">기준 은하</span><div class="seg" id="refSeg"><button aria-pressed="true" data-r="0">A</button><button aria-pressed="false" data-r="1">B</button><button aria-pressed="false" data-r="2">C</button></div>
+        <button class="btn small" id="refPlay">팽창 전 ↔ 후</button></div>
+      <canvas class="refline" id="refLine" aria-label="은하 A, B, C의 위치"></canvas>
+      <div class="tablewrap"><table class="ref" id="refTable"></table></div>
+      <p class="note" id="refMsg"></p>
+    </div>
     <textarea id="t3" aria-label="토의 3 답"></textarea>
     <details class="hint"><summary>생각 도우미</summary><div>시뮬레이터에서 관측자 은하를 여러 번 바꿔 보았지요. 어떤 은하에서 보아도 결과가 같았나요? 풍선 <b>표면 위</b>에서 중심이라고 할 만한 곳이 있나요?</div></details>
   </div>
@@ -424,7 +459,8 @@ footer.foot a{color:var(--muted);font-size:13px}
     <h3>핵심 정리</h3>
     <p>풍선 표면이 팽창할수록 붙임딱지 사이의 거리는 멀어진다. 이와 마찬가지로 관측된 외부 은하들 사이의 거리가 멀어지는 것은 <b>우주 공간이 팽창</b>하고 있기 때문이다.</p>
     <p>팽창하는 풍선 표면에 중심이 없는 것처럼, 팽창하는 우주에도 <b>중심이 없다</b>. 어느 은하에서 관측하더라도 다른 은하들은 멀어지고, 멀리 있는 은하일수록 더 빨리 멀어진다.</p>
-    <p class="note">모형의 한계 예시: 실제 우주는 풍선처럼 ‘안쪽’이나 ‘바깥’이 있는 물체가 아니다. 은하 자체는 팽창하지 않는다(붙임딱지가 커지지 않는 것과 같다).</p>
+    <p class="note">모형의 한계 예시: 실제 우주는 풍선처럼 ‘안쪽’이나 ‘바깥’이 있는 물체가 아니다. 풍선 안쪽의 중심은 실제 우주의 중심이 아니다. 은하 자체는 팽창하지 않는다(붙임딱지가 커지지 않는 것과 같다).</p>
+    <p class="note">더 알아보기: 아주 가까이 있어 서로 중력으로 강하게 끌어당기는 은하들은 멀어지지 않는다. 우리은하와 안드로메다은하는 오히려 가까워지고 있다. 우주 팽창은 은하들이 멀리 떨어진 넓은 규모에서 뚜렷하게 나타난다.</p>
   </div>
 </section>
 
@@ -456,6 +492,13 @@ footer.foot a{color:var(--muted);font-size:13px}
     <div class="eyebrow">마무리</div>
     <h2>나의 결과 카드</h2>
     <p class="lead" id="reportLead">지금까지 입력한 내용이 한 장에 모였습니다. 빠진 곳이 없는지 확인한 뒤 <b>결과 복사</b>를 눌러 선생님이 안내한 곳(하이러닝, 패들렛 등)에 붙여 넣으세요.</p>
+  </div>
+  <div class="panel stack">
+    <h3>공책에 쓰듯 한 줄 정리</h3>
+    <p class="note">오늘 배운 것을 내 말로 두세 문장으로 정리해 보세요. <b>거리, 중심, 모형</b> 세 낱말을 꼭 넣습니다.</p>
+    <textarea id="sum" aria-label="한 줄 정리"></textarea>
+    <div class="kwchk" id="kwchk"><span data-k="거리">거리</span><span data-k="중심">중심</span><span data-k="모형">모형</span></div>
+    <details class="hint"><summary>예시 답 보기 (먼저 써 본 뒤에 열어 보세요)</summary><div>붙임딱지 사이가 벌어지듯 우주가 팽창하면 은하 사이의 거리가 늘어난다. 어느 은하를 기준으로 해도 다른 은하가 멀어지므로 팽창의 중심은 정할 수 없다. 풍선 모형은 팽창을 이해하는 데 도움이 되지만, 이 모형만으로 실제 우주의 모양과 크기를 알 수는 없다.</div></details>
   </div>
   <div class="report" id="reportCard"></div>
   <div class="row">
@@ -532,7 +575,7 @@ function payload(){
   return Object.assign({app:'expand',cls:S.cls,grp:S.grp,num:S.num,members:S.members,
     roles:['풍선 ','측정 ','기록 ','발표 '].map((r,i)=>r+(S.roles[i]||'-')).join(' / '),
     pred:S.pred?PRED_TEXT[S.pred]:'',predWhy:S.predWhy,sim:S.notes.sim||'',
-    t1:S.notes.t1||'',t2:S.notes.t2||'',t3:S.notes.t3||'',t4:S.notes.t4||'',
+    t1:S.notes.t1||'',t2:S.notes.t2||'',t3:S.notes.t3||'',t4:S.notes.t4||'',sum:S.notes.sum||'',
     score:String(QUIZ.filter((it,i)=>S.quiz[i]===it.a).length),answered:String(Object.keys(S.quiz).length)},d);
 }
 function queueSend(){
@@ -564,7 +607,7 @@ function show(){
   const cur=$('#tabs a[aria-current]'); if(cur) cur.scrollIntoView({block:'nearest',inline:'nearest'});
   if(v==='lab') drawCharts();
   if(v==='sim'){ resizeSim(); drawSim(); }
-  if(v==='talk') renderMyData();
+  if(v==='talk'){ renderMyData(); refDraw(); }
   if(v==='check') drawTimeline();
   if(v==='report') renderReport();
   if(v==='teacher') teacherOpen();
@@ -811,6 +854,9 @@ $('#simNote').value=S.notes.sim||''; $('#simNote').addEventListener('input',e=>{
 
 /* ---------- talk ---------- */
 ['t1','t2','t3','t4'].forEach(k=>{const el=$('#'+k);el.value=S.notes[k]||'';el.addEventListener('input',()=>{S.notes[k]=el.value;save();markDone();});});
+$('#sum').value=S.notes.sum||'';
+function kwPaint(){const v=$('#sum').value; $$('#kwchk span').forEach(x=>x.classList.toggle('on',v.includes(x.dataset.k)));}
+$('#sum').addEventListener('input',e=>{S.notes.sum=e.target.value;save();kwPaint();renderReport();}); kwPaint();
 $('#revealKey').addEventListener('click',()=>{const b=$('#keyBox');b.hidden=!b.hidden;$('#revealKey').textContent=b.hidden?'핵심 정리 보기':'핵심 정리 닫기';});
 function renderMyData(){
   const s12=val('12','s'),b12=val('12','b'),s13=val('13','s'),b13=val('13','b');
@@ -818,6 +864,32 @@ function renderMyData(){
   <div><b>1~3 거리</b><span class="num">${f1(s13)} → ${f1(b13)} cm</span>${s13&&b13?` <span class="note">(+${f1(b13-s13)}, ${f2(b13/s13)}배)</span>`:''}</div>
   <div><b>우리 모둠 예측</b>${S.pred?PRED_TEXT[S.pred]:'<span class="note">아직 고르지 않음</span>'}</div>`;
 }
+
+/* ---------- 기준 은하 바꾸기 ---------- */
+const REF={pos:[0,5,10],names:['A','B','C'],ref:0,after:false};
+function refDraw(){
+  const c=setupCanvas($('#refLine')); if(!c) return; const {ctx,w,h}=c; ctx.clearRect(0,0,w,h);
+  const k=REF.after?1.5:1, L=30, span=(w-60)/15, base=REF.pos[REF.ref];
+  // 기준 은하는 제자리에 두고, 나머지 은하가 기준에서 멀어지게 그림 (팽창 후에도 화면 안에 들어오도록 배치)
+  const refX=L+1.5*base*span;
+  const sx=i=>refX+(REF.pos[i]-base)*k*span;
+  ctx.strokeStyle=css('--line'); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(8,h/2); ctx.lineTo(w-8,h/2); ctx.stroke();
+  REF.names.forEach((n,i)=>{const x=sx(i), me=i===REF.ref;
+    ctx.fillStyle=me?css('--accent'):css('--indigo'); ctx.beginPath(); ctx.arc(x,h/2,me?11:9,0,7); ctx.fill();
+    ctx.fillStyle=css('--surface'); ctx.font='600 12px '+css('--f-body'); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(n,x,h/2+1);
+    if(me){ctx.fillStyle=css('--accent'); ctx.textBaseline='top'; ctx.fillText('기준',x,h/2+16);} });
+  ctx.fillStyle=css('--muted'); ctx.font='12px '+css('--f-body'); ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(REF.after?'팽창 후 (거리 1.5배)':'팽창 전',8,4);
+}
+function refTable(){
+  const r=REF.ref; let h='<tr><th>기준 '+REF.names[r]+'에서</th><th>팽창 전</th><th>팽창 후</th><th>늘어난 거리</th></tr>';
+  REF.names.forEach((n,i)=>{ if(i===r) return; const d=Math.abs(REF.pos[i]-REF.pos[r]);
+    h+=`<tr><td>${REF.names[r]} → ${n}</td><td class="num">${d}</td><td class="num">${(d*1.5).toFixed(1).replace('.0','')}</td><td class="num calc up">+${(d*.5).toFixed(1).replace('.0','')}</td></tr>`;});
+  $('#refTable').innerHTML=h;
+  $('#refMsg').textContent=['A를 기준으로 하면 B와 C가 모두 멀어진다. 다른 은하를 기준으로 골라 보자.','B를 기준으로 해도 A와 C가 모두 멀어진다. B에서 보면 B가 가운데처럼 보인다.','C를 기준으로 해도 A와 B가 모두 멀어진다. 그렇다면 팽창의 중심은 어디일까?'][r];
+}
+$$('#refSeg button').forEach(b=>b.addEventListener('click',()=>{REF.ref=+b.dataset.r; $$('#refSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b)); refTable(); refDraw();}));
+$('#refPlay').addEventListener('click',()=>{REF.after=!REF.after; refDraw();});
+refTable();
 
 /* ---------- timeline ---------- */
 function drawTimeline(){
@@ -837,7 +909,7 @@ function drawTimeline(){
 /* ---------- quiz ---------- */
 const QUIZ=[
  {q:'허블이 우리은하 밖의 외부 은하를 관측하여 알아낸 사실로 옳은 것은?',o:['외부 은하들은 우리은하 쪽으로 다가오고 있다','외부 은하들 사이의 거리가 점점 멀어지고 있다','외부 은하들은 제자리에 멈춰 있다','외부 은하는 모두 우리은하 안에 있다'],a:1,e:'허블은 외부 은하들 사이의 거리가 점점 멀어진다는 것을 알아냈습니다.'},
- {q:'풍선 모형에서 붙임딱지와 풍선 표면이 비유하는 것을 바르게 짝지은 것은?',o:['붙임딱지 – 별, 풍선 표면 – 은하','붙임딱지 – 은하, 풍선 표면 – 우주 공간','붙임딱지 – 행성, 풍선 표면 – 태양계','붙임딱지 – 우주, 풍선 표면 – 은하'],a:1,e:'붙임딱지는 은하, 풍선 표면은 우주 공간에 해당합니다.'},
+ {q:'풍선에 붙임딱지 A, B, C를 붙이고 풍선을 불었더니, 딱지의 크기는 그대로이고 딱지 사이의 간격만 넓어졌다. 이 모형을 우주에 바르게 대응시킨 것은?',o:['풍선 속의 공기가 우주의 모든 은하를 나타낸다','풍선 표면은 팽창하는 우주 공간을, 붙임딱지는 은하를 나타낸다','붙임딱지의 크기가 커져야 우주가 팽창한 것이다','풍선 안쪽의 한가운데가 실제 우주의 중심이다'],a:1,e:'풍선 표면이 늘어나면 표면 위 두 점 사이의 간격이 커집니다. 표면은 우주 공간, 딱지는 은하에 해당하고, 은하 자체는 커지지 않습니다. 우주에 해당하는 것은 표면이므로 풍선 안쪽의 중심은 우주의 중심이 아닙니다.'},
  {q:'풍선을 더 크게 불었을 때, 처음에 1번 딱지에서 더 멀리 있던 딱지는 어떻게 되는가?',o:['더 적게 멀어진다','가까운 딱지와 똑같은 길이만큼 멀어진다','더 많이 멀어진다','오히려 가까워진다'],a:2,e:'풍선 전체가 같은 비율로 늘어나므로, 처음 거리가 먼 딱지일수록 늘어나는 길이가 큽니다. 우주에서도 멀리 있는 은하일수록 더 빨리 멀어집니다.'},
  {q:'관측된 외부 은하들 사이의 거리가 멀어지는 까닭으로 가장 알맞은 것은?',o:['은하들이 엔진처럼 스스로 움직이기 때문','우주 공간이 팽창하고 있기 때문','은하들이 점점 커지고 있기 때문','우리은하가 다른 은하를 밀어내기 때문'],a:1,e:'은하 사이의 우주 공간 자체가 팽창하기 때문에 거리가 멀어집니다. 붙임딱지가 커지지 않았듯 은하 자체가 커지는 것은 아닙니다.'},
  {q:'팽창하는 우주에 대한 설명으로 옳은 것은?',o:['우리은하가 우주의 중심이다','우주의 중심에서 가까운 은하만 멀어진다','팽창하는 우주에는 중심이 없다','다른 은하에서 관측하면 은하들이 가까워진다'],a:2,e:'팽창하는 풍선 표면에 중심이 없는 것처럼 팽창하는 우주에도 중심이 없습니다. 어느 은하에서 보아도 다른 은하들은 멀어집니다.'},
@@ -881,15 +953,15 @@ function reportText(){
 `■ 토의 2 (은하 사이 거리)`,`  ${S.notes.t2||'-'}`,
 `■ 토의 3 (우주의 중심)`,`  ${S.notes.t3||'-'}`,
 `■ 토의 4 (모형의 한계)`,`  ${S.notes.t4||'-'}`,
-``,`■ 개념 확인: ${score()} / ${QUIZ.length} (푼 문제 ${answered}개)`
+``,`■ 한 줄 정리`,`  ${S.notes.sum||'-'}`,``,`■ 개념 확인: ${score()} / ${QUIZ.length} (푼 문제 ${answered}개)`
   ].join('\n');
 }
 function renderReport(){
-  const miss=[]; if(!S.cls||!S.grp||!S.num) miss.push('반·모둠·번호'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!(S.notes.t1||'').trim()||!(S.notes.t2||'').trim()) miss.push('토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제');
+  const miss=[]; if(!S.cls||!S.grp||!S.num) miss.push('반·모둠·번호'); if(!S.pred) miss.push('예측'); if(!(val('12','s')&&val('12','b')&&val('13','s')&&val('13','b'))) miss.push('측정값'); if(!(S.notes.t1||'').trim()||!(S.notes.t2||'').trim()) miss.push('토의 1·2'); if(Object.keys(S.quiz).length<QUIZ.length) miss.push('개념 확인 문제'); if(!(S.notes.sum||'').trim()) miss.push('한 줄 정리');
   const rows=PAIRS.map(p=>{const s=val(p.id,'s'),b=val(p.id,'b'); return s||b?`${p.label}: ${f1(s)} → ${f1(b)} cm${s&&b?` (${f2(b/s)}배)`:''}`:null;}).filter(Boolean).join('\n')||'-';
   $('#reportCard').innerHTML=`<div class="row" style="justify-content:space-between"><h3>${esc(S.cls||'?')}반 ${esc(S.grp||'?')}모둠 ${esc(S.num||'?')}번</h3><span class="score">${score()} / ${QUIZ.length}</span></div>
   <dl><dt>모둠원</dt><dd>${esc(S.members||'-')}</dd><dt>예측</dt><dd>${S.pred?PRED_TEXT[S.pred]:'-'}</dd><dt>측정</dt><dd class="num">${esc(rows)}</dd>
-  <dt>발견</dt><dd>${esc(S.notes.sim||'-')}</dd><dt>토의 2</dt><dd>${esc(S.notes.t2||'-')}</dd><dt>우주의 중심</dt><dd>${esc(S.notes.t3||'-')}</dd></dl>
+  <dt>발견</dt><dd>${esc(S.notes.sim||'-')}</dd><dt>토의 2</dt><dd>${esc(S.notes.t2||'-')}</dd><dt>우주의 중심</dt><dd>${esc(S.notes.t3||'-')}</dd><dt>한 줄 정리</dt><dd>${esc(S.notes.sum||'-')}</dd></dl>
   ${miss.length?`<div class="callout warn">아직 비어 있는 곳: ${miss.join(', ')}</div>`:'<div class="callout good">모든 활동을 마쳤어요. 결과를 복사해 제출하세요.</div>'}`;
   $('#copyText').textContent=reportText();
 }
@@ -904,7 +976,7 @@ $('#resetYes').addEventListener('click',()=>{try{localStorage.removeItem(KEY);}c
 
 /* ---------- theme / resize ---------- */
 let rt; window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{drawCharts(); if(!$('#v-sim').hidden){resizeSim();drawSim();} if(!$('#v-check').hidden) drawTimeline();},120);});
-const redraw=()=>{drawCharts(); if(!$('#v-sim').hidden) drawSim(); if(!$('#v-check').hidden) drawTimeline();};
+const redraw=()=>{drawCharts(); if(!$('#v-talk').hidden) refDraw(); if(!$('#v-sim').hidden) drawSim(); if(!$('#v-check').hidden) drawTimeline();};
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
 new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
@@ -971,7 +1043,7 @@ function tRender(){
       h+=`<tr><td colspan="8" class="det"><dl>
         <dt>모둠원</dt><dd>${esc(r.members||'-')}</dd><dt>역할</dt><dd>${esc(r.roles||'-')}</dd><dt>예측</dt><dd>${esc(r.pred||'-')}\n까닭: ${esc(r.predWhy||'-')}</dd>
         <dt>측정 (cm)</dt><dd class="num">1~2: ${D('12','s')} → ${D('12','b')} → ${D('12','x')}\n1~3: ${D('13','s')} → ${D('13','b')} → ${D('13','x')}\n2~3: ${D('23','s')} → ${D('23','b')} → ${D('23','x')}</dd>
-        <dt>시뮬레이터</dt><dd>${esc(r.sim||'-')}</dd><dt>토의 1</dt><dd>${esc(r.t1||'-')}</dd><dt>토의 2</dt><dd>${esc(r.t2||'-')}</dd><dt>토의 3</dt><dd>${esc(r.t3||'-')}</dd><dt>토의 4</dt><dd>${esc(r.t4||'-')}</dd></dl></td></tr>`;
+        <dt>시뮬레이터</dt><dd>${esc(r.sim||'-')}</dd><dt>토의 1</dt><dd>${esc(r.t1||'-')}</dd><dt>토의 2</dt><dd>${esc(r.t2||'-')}</dd><dt>토의 3</dt><dd>${esc(r.t3||'-')}</dd><dt>토의 4</dt><dd>${esc(r.t4||'-')}</dd><dt>한 줄 정리</dt><dd>${esc(r.sum||'-')}</dd></dl></td></tr>`;
     }
   });
   h+='</tbody></table></div></div>';
