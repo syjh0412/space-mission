@@ -284,7 +284,7 @@ body{margin:0}
 </head>
 <body>
 
-<nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="../">우주 탐사 기획단</a><a href="./" aria-current="page">우리은하 천체 탐험대</a></div></nav>
+<nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="../">우주 탐사 기획단</a><a href="./" aria-current="page">우리은하 천체 탐험대</a><a href="../expanding-universe/">팽창하는 우주 탐구실</a></div></nav>
 <div class="banner" id="banner" hidden></div>
 <div class="teachbar" id="teachbar" hidden><div class="in"><b>교사 모드</b><span>여기서 누르는 내용은 시트에 기록되지 않아요.</span><button class="tool" id="tbDash">탐사 현황 보기</button><button class="tool" id="tbExit">교사 모드 끝내기</button></div></div>
 <div class="wrap">
@@ -317,7 +317,6 @@ body{margin:0}
     <button class="tab" role="tab" data-tab="dex" aria-selected="false"><span class="lg">천체 </span>도감<span class="n" id="nDex"></span></button>
     <button class="tab" role="tab" data-tab="note" aria-selected="false">탐험 노트<span class="n" id="nNote"></span></button>
     <button class="tab" role="tab" data-tab="quiz" aria-selected="false"><span class="lg">최종 </span>퀴즈<span class="n" id="nQuiz"></span></button>
-    <button class="tab" role="tab" data-tab="expand" aria-selected="false">우주팽창<span class="n" id="nExpand"></span></button>
   </nav>
 
   <section id="tab-galaxy">
@@ -347,12 +346,6 @@ body{margin:0}
   <section id="tab-note" hidden>
     <p class="lockmsg" id="noteLock"></p>
     <div class="notes" id="notes"></div>
-  </section>
-
-  <section id="tab-expand" hidden>
-    <div class="gintro"><h2>우주 팽창 탐험</h2><p>우리은하 밖으로 나가 볼 차례예요. 수많은 외부 은하들은 서로 점점 멀어지고 있어요. 풍선 실험과 시뮬레이터로 그 까닭을 찾아보세요.</p></div>
-    <p class="lockmsg" id="expandLock" hidden>위에서 <b>번호</b>를 먼저 골라 주세요. 반·모둠·번호가 우주팽창 기록에도 그대로 쓰여요.</p>
-    <iframe id="expandFrame" title="팽창하는 우주 탐구실" style="width:100%;border:0;display:block;min-height:600px;background:var(--sky)"></iframe>
   </section>
 
   <section id="tab-quiz" hidden>
@@ -1049,39 +1042,14 @@ function changeTeam(){
   const c=$('#clsSel').value,t=$('#teamSel').value,u=$('#numSel').value;if(c===S.cls&&t===S.teamNo&&u===S.num)return;
   // 다른 학생이 이 기기를 쓰면 화면 기록을 새로 시작 (이미 보낸 기록은 시트에 남아 있음)
   const fresh=S.num!=='' ;S.cls=c;S.teamNo=t;S.num=u;if(fresh){S.found={};S.quiz={};S.galaxy={}}teamRows=[];save();renderAll();loadTeam();
-  if(!$('#tab-expand').hidden)openExpand();
 }
 $('#clsSel').onchange=changeTeam;$('#teamSel').onchange=changeTeam;$('#numSel').onchange=changeTeam;
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));
-  ['galaxy','mission','dex','note','quiz','expand'].forEach(k=>$('#tab-'+k).hidden=k!==t.dataset.tab);
-  if(t.dataset.tab==='expand')openExpand();
+  ['galaxy','mission','dex','note','quiz'].forEach(k=>$('#tab-'+k).hidden=k!==t.dataset.tab);
   if(t.dataset.tab==='galaxy')renderGalaxy();
   if(t.dataset.tab==='note')renderNote();
   if(t.dataset.tab==='dex'){renderDex();showTeamStat();loadTeam()}});
-/* ---------- 우주팽창 탭: 팽창하는 우주 탐구실을 그대로 불러옴 ---------- */
-function huntToast(m){let t=$('#huntToast');if(!t){t=document.createElement('div');t.id='huntToast';t.setAttribute('role','status');
-  t.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-size:17px;padding:8px 20px;border-radius:999px;z-index:60';document.body.appendChild(t)}
-  t.textContent=m;t.hidden=false;clearTimeout(huntToast._t);huntToast._t=setTimeout(()=>t.hidden=true,1900)}
-window.addEventListener('message',e=>{if(e.origin!==location.origin||!e.data)return;
-  if(e.data.type==='eu-toast')huntToast(e.data.msg);
-  if(e.data.type==='eu-progress')$('#nExpand').textContent=e.data.done?`${e.data.done}/${e.data.total}`:'';});
-(()=>{try{const v=JSON.parse(localStorage.getItem('expanding-universe-lab-v1')||'{}');const n=[!!v.pred,!!(v.data&&v.data['12']&&v.data['12'].b),!!(v.notes&&v.notes.sim),!!(v.notes&&v.notes.t1&&v.notes.t2),Object.keys(v.quiz||{}).length>=6].filter(Boolean).length;if(n)$('#nExpand').textContent=n+'/5'}catch(e){}})();
-let expandSrc='',expandRO=null;
-function openExpand(){
-  const f=$('#expandFrame');
-  $('#expandLock').hidden=!!S.num; f.hidden=!S.num; if(!S.num)return;
-  const src=`../expanding-universe/?embed=1&theme=hunt&cls=${encodeURIComponent(S.cls)}&grp=${encodeURIComponent(S.teamNo)}&num=${encodeURIComponent(S.num)}`;
-  if(src!==expandSrc){expandSrc=src;f.src=src+'#open';}
-}
-$('#expandFrame').addEventListener('load',()=>{
-  const f=$('#expandFrame');
-  try{
-    const d=f.contentDocument; const fit=()=>{f.style.height=Math.max(600,d.documentElement.scrollHeight)+'px'};
-    if(expandRO)expandRO.disconnect(); expandRO=new ResizeObserver(fit); expandRO.observe(d.body); fit();
-    f.contentWindow.addEventListener('hashchange',()=>{setTimeout(fit,50); f.scrollIntoView({block:'start'});});
-  }catch(e){ f.style.height='85vh'; }
-});
 $('#resetBtn').onclick=()=>{$('#resetConfirm').hidden=false};
 $('#resetNo').onclick=()=>{$('#resetConfirm').hidden=true};
 $('#resetYes').onclick=()=>{S.found={};S.quiz={};S.galaxy={};save();$('#resetConfirm').hidden=true;renderAll()};

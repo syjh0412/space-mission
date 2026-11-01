@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="hunt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -224,6 +224,7 @@ html.embed .wrap{max-width:none;padding-left:0;padding-right:0}
 html.embed nav.tabs{position:static;background:transparent}
 html.embed body::before{display:none}
 html.embed .toast{display:none}
+html.embed .unitnav{display:none}
 html.embed .simwrap canvas{height:440px}
 html.embed .team select:disabled{opacity:1;color:var(--ink)}
 footer.foot a{color:var(--muted);font-size:13px}
@@ -243,12 +244,23 @@ table.ref th{color:var(--muted);font-weight:500;font-size:13px}
 .kwchk{display:flex;gap:8px;flex-wrap:wrap}
 .kwchk span{font-size:13px;border-radius:999px;padding:2px 12px;border:1px solid var(--line);color:var(--muted)}
 .kwchk span.on{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.unitnav{position:relative;z-index:5;background:#050816;border-bottom:1px solid #26335E;font-family:'Do Hyeon','Noto Sans KR',sans-serif}
+.unitnav .in{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+.unitnav .lbl{color:#9BA8CE;font-size:15px;margin-right:4px}
+.unitnav a{color:#EAF0FF;text-decoration:none;font-size:17px;padding:4px 12px;border-radius:999px;border:1px solid #26335E;white-space:nowrap}
+.unitnav a:hover{border-color:#9BA8CE}
+.unitnav a[aria-current="page"]{background:#FFD166;color:#1a1200;border-color:#FFD166}
+@media (max-width:480px){.unitnav .lbl{display:none}.unitnav a{font-size:15px;padding:3px 10px}.unitnav .in{gap:6px}}
+:root[data-theme="hunt"] header.top{background:transparent;border-bottom:0}
+:root[data-theme="hunt"] nav.tabs{background:var(--bg)}
+:root[data-theme="hunt"] body::before{background:var(--bg)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
 <div id="cfgErr" class="callout warn" hidden>설정(CONFIG) 부분에 오류가 있어 구글 시트 저장이 꺼졌습니다. index.html 위쪽의 GAS_URL 줄에서 따옴표와 쉼표를 확인해 주세요.</div>
+<nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="../">우주 탐사 기획단</a><a href="../star-hunt/">우리은하 천체 탐험대</a><a href="./" aria-current="page">팽창하는 우주 탐구실</a></div></nav>
 <header class="top">
   <div class="wrap">
     <div class="brand">
@@ -573,6 +585,8 @@ if(QP.get('cls')||QP.get('grp')||QP.get('num')){
   if(S.num&&nn&&S.num!==nn){ S={cls:'',grp:'',members:'',pred:'',predWhy:'',roles:['','','',''],steps:[false,false,false,false],data:{},notes:{},quiz:{},unsent:false,num:''}; }
   S.cls=nc; S.grp=ng; S.num=nn;
 }
+/* 탐험대에서 고른 반·모둠·번호가 있으면 처음에 그대로 가져옴 */
+if(!S.cls&&!S.grp&&!S.num){ try{ const h=JSON.parse(localStorage.getItem('mw-hunt-v3')||'{}'); if(h.cls) S.cls=String(h.cls); if(h.teamNo) S.grp=String(h.teamNo); if(h.num) S.num=String(h.num); }catch(e){} }
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function save(){S.unsent=true;persist();queueSend();}
 
@@ -771,9 +785,10 @@ while(GAL.length<54){const x=R()*2.4-1.2,y=R()*1.8-.9; if(GAL.some(g=>Math.hypot
   GAL.push({x,y,r:1.6+R()*2.4,h:[200,45,320,180,30][Math.floor(R()*5)],type:R()<.6?1:0,rot:R()*Math.PI,name:''});}
 function drawGalaxy(ctx,x,y,g,alpha,size){
   const r=(size||1)*g.r;
-  const grd=ctx.createRadialGradient(x,y,0,x,y,r*3);
+  ctx.save(); ctx.translate(x,y); ctx.rotate(g.rot||0); ctx.scale(1,g.type?.55:1);
+  const grd=ctx.createRadialGradient(0,0,0,0,0,r*3);
   grd.addColorStop(0,`hsla(${g.h},90%,92%,${alpha})`); grd.addColorStop(.35,`hsla(${g.h},80%,70%,${alpha*.55})`); grd.addColorStop(1,`hsla(${g.h},80%,60%,0)`);
-  ctx.fillStyle=grd; ctx.save(); ctx.translate(x,y); ctx.rotate(g.rot||0); ctx.scale(1,g.type?.55:1); ctx.beginPath(); ctx.arc(0,0,r*3,0,7); ctx.fill(); ctx.restore();
+  ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(0,0,r*3,0,7); ctx.fill(); ctx.restore();
 }
 
 /* hero canvas */
