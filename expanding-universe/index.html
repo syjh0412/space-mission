@@ -493,7 +493,7 @@ footer.foot a{color:var(--muted);font-size:13px}
    GAS_URL: 구글 Apps Script 웹 앱 주소(…/exec)를 큰따옴표 안에 붙여 넣으세요.
    비워 두면 기록은 각 기기에만 저장됩니다. */
 window.CONFIG = {
-  GAS_URL: ""
+  GAS_URL: "https://script.google.com/macros/s/AKfycbxAkxx9Eml3Xye1GdUK02uTK9rWTiW9kyZ4iFs_dF4tfvsnk0qoAYVc2l2DQRTHE7_j/exec"
 };
 </script>
 <script>
@@ -529,7 +529,7 @@ let sending=false,sendTimer=null;
 function pill(kind,text){const p=$('#sync'); if(!p) return; p.hidden=!GAS; p.className='sync '+kind; p.textContent=text;}
 function payload(){
   const d={}; ['12','13','23'].forEach(p=>['s','b','x'].forEach(k=>{d['d'+p+k]=((S.data[p]||{})[k]||'').toString().trim();}));
-  return Object.assign({cls:S.cls,grp:S.grp,num:S.num,members:S.members,
+  return Object.assign({app:'expand',cls:S.cls,grp:S.grp,num:S.num,members:S.members,
     roles:['풍선 ','측정 ','기록 ','발표 '].map((r,i)=>r+(S.roles[i]||'-')).join(' / '),
     pred:S.pred?PRED_TEXT[S.pred]:'',predWhy:S.predWhy,sim:S.notes.sim||'',
     t1:S.notes.t1||'',t2:S.notes.t2||'',t3:S.notes.t3||'',t4:S.notes.t4||'',
@@ -927,7 +927,7 @@ async function tLoad(){
   try{sessionStorage.setItem('eu-pin',pin);}catch(e){}
   $('#tStatus').textContent='불러오는 중…';
   try{
-    const r=await fetch(`${GAS}?pin=${encodeURIComponent(pin)}&day=${encodeURIComponent($('#tDay').value)}&t=${Date.now()}`,{cache:'no-store'});
+    const r=await fetch(`${GAS}?app=expand&pin=${encodeURIComponent(pin)}&day=${encodeURIComponent($('#tDay').value)}&t=${Date.now()}`,{cache:'no-store'});
     const j=await r.json();
     if(!j.ok){$('#tStatus').textContent=j.error==='PIN'?'PIN이 맞지 않아요':'불러오지 못했어요: '+(j.error||'');return;}
     TROWS=j.rows||[]; const t=new Date(); $('#tStatus').textContent=`${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')} 기준`;
