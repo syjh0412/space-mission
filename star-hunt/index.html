@@ -227,6 +227,11 @@ body{margin:0}
 .zdots{display:flex;flex-wrap:wrap;gap:8px}
 .zdot{font-family:var(--display);font-size:16px;border:1px dashed var(--line);border-radius:999px;padding:3px 14px;color:var(--muted)}
 .zdot.done{border:1px solid var(--gold);background:var(--gold);color:var(--gold-ink)}
+button.zdot{background:none;cursor:pointer}
+button.zdot:hover{border-color:var(--gold);color:var(--fg)}
+button.zdot.done{background:var(--gold)}
+button.zdot.done:hover{color:var(--gold-ink)}
+.gstep{scroll-margin-top:calc(80px + var(--tbh,0px))}
 .zone{margin-bottom:22px}
 .zone-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;margin-bottom:10px}
 .zone-head h2{font-size:24px}
@@ -877,7 +882,8 @@ const GSTEPS=[
 let gAns={},gTap=null,gTilt=0,gGlob=false,gOpen=false,gLook=0,gMonth=7,gOpened={};
 function gDotsOnly(){
   const n=GSTEPS.filter(s=>S.galaxy[s.id]).length;$('#nGalaxy').textContent=`${n}/4`;
-  const d=$('#gDots');if(d)d.innerHTML=GSTEPS.map((s,i)=>`<span class="zdot${S.galaxy[s.id]?' done':''}">${i+1}단계${S.galaxy[s.id]?' ✓':''}</span>`).join('');
+  const d=$('#gDots');if(d){d.innerHTML=GSTEPS.map((s,i)=>`<button type="button" class="zdot${S.galaxy[s.id]?' done':''}" data-step="${s.id}" aria-label="${i+1}단계 ${s.title}로 이동">${i+1}단계${S.galaxy[s.id]?' ✓':''}</button>`).join('');
+    d.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const t=document.getElementById('step-'+b.dataset.step);if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});}
 }
 function renderGalaxy(){
   gDotsOnly();
