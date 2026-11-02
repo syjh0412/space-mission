@@ -361,6 +361,26 @@ details.more{font-size:15px}
 .teamsync.got{border-left-color:var(--good)}
 .teamsync.diff{border-left-color:var(--warn)}
 .teamsync .mates{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,118px),1fr));gap:8px}
+.funnel div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.funnel .lab{font-size:12.5px;color:var(--muted)}
+.funnel .val{font-family:var(--f-mono);font-size:20px;font-variant-numeric:tabular-nums}
+.funnel .val small{font-size:12px;color:var(--muted)}
+.funnel .bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.funnel .bar i{display:block;height:100%;background:var(--good)}
+table.prog{border-collapse:collapse;width:100%;min-width:900px;font-size:13.5px}
+table.prog th{color:var(--muted);font-weight:500;font-size:12px;padding:6px 4px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+table.prog td{border-bottom:1px solid var(--line);padding:7px 4px;text-align:center;vertical-align:middle}
+table.prog td.l{text-align:left}
+table.prog tr.gsep td{border-top:2px solid var(--line)}
+table.prog tr.g{cursor:pointer}
+table.prog tr.g:hover td{background:var(--surface-2)}
+.st{display:inline-grid;place-items:center;min-width:26px;height:22px;border-radius:6px;font-size:11.5px;font-family:var(--f-mono);border:1px solid var(--line);color:var(--muted);padding:0 4px}
+.st.y{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.st.h{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.where{display:inline-block;font-size:12.5px;border-radius:999px;padding:2px 10px;background:var(--indigo-soft);color:var(--indigo);white-space:nowrap}
+.ago{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.ago.idle{color:var(--warn);font-weight:700}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -695,7 +715,7 @@ details.more{font-size:15px}
     <label for="tDay">날짜<input id="tDay" type="date"></label>
     <label for="tCls">반<select id="tCls"><option value="">전체</option><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select></label>
     <button class="btn primary" id="tLoad">불러오기</button>
-    <label class="chk" for="tAuto"><input type="checkbox" id="tAuto"> 20초마다 새로고침</label>
+    <label class="chk" for="tAuto"><input type="checkbox" id="tAuto" checked> 15초마다 새로고침</label>
     <span class="note" id="tStatus"></span>
   </div>
   <div id="tOut" class="stack" style="gap:18px"></div>
@@ -746,12 +766,22 @@ if(!CFG) document.getElementById('cfgErr').hidden=false;
 const GAS=String((CFG&&CFG.GAS_URL)||'').replace(/[\u201C\u201D\u2018\u2019"']/g,'').trim();
 let sending=false,sendTimer=null;
 function pill(kind,text){const p=$('#sync'); if(!p) return; p.hidden=!GAS; p.className='sync '+kind; p.textContent=text;}
+/* 선생님 화면에 보낼 세부 진행 (빈칸 몇 개 채웠는지, 미션 몇 개 했는지) */
+function progJSON(){ try{
+  const fr={}; ['f1','f2','f3','f4'].forEach(id=>{const st=S.fill[id]||{}; fr[id]=[Object.keys(st).filter(k=>st[k]).length,FR[id].n];});
+  return JSON.stringify({fr,mis:(S.mis||[]).filter(Boolean).length,sort:SORT.filter((c,i)=>S.sort[i]===c.a).length,steps:(S.steps||[]).filter(Boolean).length,sim:!!(S.notes.sim||'').trim()});
+}catch(e){return '';} }
+const VNAME={open:'생각 열기',lab:'풍선 실험',sim:'시뮬레이터',talk:'모둠 토의',check:'개념 확인',report:'마무리'};
+function setWhere(v){ if(!VNAME[v]) return; const sec=$('#v-'+v), p=SUB['v-'+v];
+  const b=sec&&p?sec.querySelector(`.subnav button[data-p="${p}"]`):null;
+  const label=VNAME[v]+(b?' · '+b.textContent.replace(/^\d/,'').trim():'');
+  if(S.where!==label){ S.where=label; save(); } }
 function payload(){
   const d={}; ['12','13','23'].forEach(p=>['s','b','x'].forEach(k=>{d['d'+p+k]=((S.data[p]||{})[k]||'').toString().trim();}));
   return Object.assign({app:'expand',cls:S.cls,grp:S.grp,num:S.num,members:S.members,
     roles:['풍선 ','측정 ','기록 ','발표 '].map((r,i)=>r+(S.roles[i]||'-')).join(' / '),
     pred:S.pred?PRED_TEXT[S.pred]:'',predWhy:S.predWhy,sim:S.notes.sim||'',
-    t1:talkText(1),t2:talkText(2),t3:talkText(3),t4:talkText(4),sum:S.notes.sum||'',
+    t1:talkText(1),t2:talkText(2),t3:talkText(3),t4:talkText(4),sum:S.notes.sum||'',where:S.where||'',prog:progJSON(),
     score:String(QUIZ.filter((it,i)=>S.quiz[i]===it.a).length),answered:String(Object.keys(S.quiz).length)},d);
 }
 function queueSend(){
@@ -783,7 +813,7 @@ function show(){
   const cur=$('#tabs a[aria-current]'); if(cur) cur.scrollIntoView({block:'nearest',inline:'nearest'});
   const sec=$('#v-'+v); if(sec&&sec._go) sec._go(SUB[sec.id],false); else linkAnim(false);
   if(v==='sim'){ resizeSim(); drawSim(); }
-  if(v==='teacher') teacherOpen();
+  if(v==='teacher') teacherOpen(); else setWhere(v);
   $('#tabs').parentElement.hidden=(v==='teacher');
   $('.team').hidden=(v==='teacher'); $('footer.foot').hidden=(v==='teacher');
   markDone();
@@ -1131,7 +1161,8 @@ function initSubs(){
     const go=(p,scroll)=>{ SUB[sec.id]=p;
       nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===p));
       panes.forEach(x=>x.hidden=(x.dataset.p!==p)); onPane(sec.id,p); paintSubDone();
-      if(scroll) window.scrollTo({top:0,behavior:reduce?'auto':'smooth'}); };
+      if(scroll) window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+      if(!sec.hidden) setWhere(sec.id.slice(2)); };
     nav.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.p,false)));
     panes.forEach((pn,i)=>pn.querySelectorAll('.pnext').forEach(b=>b.addEventListener('click',()=>go(panes[i+1].dataset.p,true))));
     sec._go=go; SUB[sec.id]=panes[0].dataset.p;
@@ -1423,12 +1454,7 @@ function tRender(){
   const avg=done.length?(done.reduce((a,r)=>a+(+r.score),0)/done.length).toFixed(1):'–';
   const preds=Object.values(PRED_TEXT).map(t=>({t,n:rows.filter(r=>r.pred===t).length}));
   const pmax=Math.max(1,...preds.map(p=>p.n));
-  let h=`<div class="tiles">
-    <div class="tile"><div class="lab">기록한 학생 (모둠)</div><div class="val">${rows.length} <span style="font-size:15px">(${new Set(rows.map(r=>r.cls+r.grp)).size})</span></div></div>
-    <div class="tile"><div class="lab">측정 완료</div><div class="val">${rows.filter(measured).length}</div></div>
-    <div class="tile"><div class="lab">토의 1·2 작성</div><div class="val">${rows.filter(r=>(r.t1||'').trim()&&(r.t2||'').trim()).length}</div></div>
-    <div class="tile"><div class="lab">퀴즈 평균 (${QUIZ.length}점)</div><div class="val">${avg}</div></div></div>
-  <div class="grid2">
+  const GRID=`  <div class="grid2">
     <div class="panel stack"><h3>실험 전 예측</h3>${preds.map(p=>`<div class="pbar"><span>${p.t}</span><span class="bar"><i style="width:${p.n/pmax*100}%"></i></span><span class="num">${p.n}</span></div>`).join('')}
       <p class="note">예측을 고르지 않은 학생: ${rows.filter(r=>!r.pred).length}</p></div>
     <div class="panel stack"><h3>반 전체 측정 결과</h3>
@@ -1436,24 +1462,41 @@ function tRender(){
       <div class="chartbox"><canvas id="tScatter"></canvas></div>
       <p class="note">점마다 모둠 번호가 붙어 있어요. 모둠마다 한 번씩만 찍어요.</p>
       <div class="interp" id="tScNote"></div></div>
-  </div>
-  <div class="panel stack"><h3>학생별 진행</h3><p class="note">모둠별로 묶여 있어요. 줄을 누르면 그 학생의 답을 볼 수 있어요.</p>
-  <div class="tablewrap"><table class="tlist"><thead><tr><th>반</th><th>모둠</th><th>번호</th><th>예측</th><th>측정 (1~2 / 1~3 배율)</th><th>토의</th><th>퀴즈</th><th>저장</th></tr></thead><tbody>`;
-  rows.forEach((r,i)=>{
-    const id=r.cls+'|'+r.grp+'|'+(r.num||'');
-    const r12=num(r.d12s)&&num(r.d12b)?(num(r.d12b)/num(r.d12s)).toFixed(2):'–', r13=num(r.d13s)&&num(r.d13b)?(num(r.d13b)/num(r.d13s)).toFixed(2):'–';
-    h+=`<tr class="g" data-id="${esc(id)}"><td>${esc(r.cls)}</td><td>${esc(r.grp)}</td><td>${esc(r.num||'-')}</td><td>${r.pred?'<span class="chip y">함</span>':'<span class="chip n">안 함</span>'}</td>
-      <td>${measured(r)?`<span class="chip y">완료</span> <span class="num">${r12} / ${r13}배</span>`:'<span class="chip n">미완료</span>'}</td>
-      <td><span class="num">${talked(r)}/4</span></td><td><span class="num">${+r.answered?r.score+'/'+QUIZ.length:'–'}</span></td><td class="num">${esc((r.updated||'').slice(11,16))}</td></tr>`;
+  </div>`;
+  const PR=r=>{let o={};try{o=JSON.parse(r.prog||'{}');}catch(e){} return o;};
+  const fr=(r,id)=>{const f=(PR(r).fr||{})[id]; return f||[0,0];};
+  const STEPS=[['예측',r=>!!r.pred?2:0],['측정',r=>measured(r)?2:(num(r.d12s)||num(r.d13s)?1:0)],['시뮬',r=>(r.sim||'').trim()?2:(PR(r).mis?1:0)],
+    ['토의①',r=>{const f=fr(r,'f1');return f[1]&&f[0]>=f[1]?2:f[0]?1:((r.t1||'').trim()?2:0);}],['토의②',r=>{const f=fr(r,'f2');return f[1]&&f[0]>=f[1]?2:f[0]?1:((r.t2||'').trim()?2:0);}],
+    ['토의③',r=>{const f=fr(r,'f3');return f[1]&&f[0]>=f[1]?2:f[0]?1:((r.t3||'').trim()?2:0);}],['토의④',r=>{const f=fr(r,'f4');return f[1]&&f[0]>=f[1]?2:(f[0]||PR(r).sort)?1:((r.t4||'').trim()?2:0);}],
+    ['개념 확인',r=>+r.answered>=QUIZ.length?2:(+r.answered?1:0)],['한 줄 정리',r=>(r.sum||'').trim()?2:0]];
+  const cellTxt=(i,r,v)=>{ if(i===0) return v?'✓':'·';
+    if(i===1) return v===2?(num(r.d13b)&&num(r.d13s)?(num(r.d13b)/num(r.d13s)).toFixed(2)+'배':'✓'):(v?'중':'·');
+    if(i===2) return v===2?'✓':(v?PR(r).mis+'/3':'·');
+    if(i>=3&&i<=6){const f=fr(r,'f'+(i-2)); return v===2?'✓':(v?(f[0]+'/'+f[1]):'·');}
+    if(i===7) return v===2?r.score+'/'+QUIZ.length:(v?r.answered+'문항':'·');
+    return v?'✓':'·'; };
+  const ago=r=>{const t=Date.parse(String(r.updated||'').replace(' ','T')+'+09:00'); if(!t) return {m:null,txt:'-'}; const m=Math.max(0,Math.round((Date.now()-t)/60000)); return {m,txt:m<1?'방금':m+'분 전'};};
+  const dayIsToday=$('#tDay').value===seoulToday();
+  let h=`<div class="panel stack"><div class="row" style="justify-content:space-between"><h3>단계별 진행</h3><span class="note">초록: 끝냄 · 주황: 하는 중 · 숫자는 채운 빈칸이나 푼 문제 수</span></div>
+    <div class="funnel">${STEPS.map(([n,f])=>{const d=rows.filter(r=>f(r)===2).length, w=rows.filter(r=>f(r)===1).length; return `<div><span class="lab">${n}</span><span class="val">${d}<small> / ${rows.length}${w?' · 하는 중 '+w:''}</small></span><span class="bar"><i style="width:${rows.length?d/rows.length*100:0}%"></i></span></div>`;}).join('')}</div></div>
+  <div class="panel stack"><div class="row" style="justify-content:space-between"><h3>학생별 진행</h3><span class="note">${dayIsToday?'5분 넘게 저장이 없으면 주황으로 표시해요. ':''}줄을 누르면 그 학생의 답을 볼 수 있어요.</span></div>
+  <div class="tablewrap"><table class="prog"><thead><tr><th>모둠</th><th>번호</th><th>지금 보는 화면</th>${STEPS.map(x=>`<th>${x[0]}</th>`).join('')}<th>마지막 저장</th></tr></thead><tbody>`;
+  let lastG=null;
+  rows.forEach(r=>{
+    const id=r.cls+'|'+r.grp+'|'+(r.num||''); const a=ago(r); const idle=dayIsToday&&a.m!=null&&a.m>=5;
+    h+=`<tr class="g${lastG!==null&&lastG!==r.grp?' gsep':''}" data-id="${esc(id)}"><td>${esc(r.grp)}</td><td>${esc(r.num||'-')}</td><td class="l">${r.where?`<span class="where">${esc(r.where)}</span>`:'<span class="note">-</span>'}</td>
+      ${STEPS.map(([n,f],i)=>{const v=f(r); return `<td><span class="st${v===2?' y':v===1?' h':''}">${esc(cellTxt(i,r,v))}</span></td>`;}).join('')}
+      <td><span class="ago${idle?' idle':''}">${a.txt}</span></td></tr>`;
+    lastG=r.grp;
     if(openRow===id){
       const D=(p,k)=>esc(r['d'+p+k]||'–');
-      h+=`<tr><td colspan="8" class="det"><dl>
+      h+=`<tr><td colspan="13" class="det" style="text-align:left"><dl>
         <dt>모둠원</dt><dd>${esc(r.members||'-')}</dd><dt>역할</dt><dd>${esc(r.roles||'-')}</dd><dt>예측</dt><dd>${esc(r.pred||'-')}\n까닭: ${esc(r.predWhy||'-')}</dd>
         <dt>측정 (cm)</dt><dd class="num">1~2: ${D('12','s')} → ${D('12','b')} → ${D('12','x')}\n1~3: ${D('13','s')} → ${D('13','b')} → ${D('13','x')}\n2~3: ${D('23','s')} → ${D('23','b')} → ${D('23','x')}</dd>
         <dt>시뮬레이터</dt><dd>${esc(r.sim||'-')}</dd><dt>토의 1</dt><dd>${esc(r.t1||'-')}</dd><dt>토의 2</dt><dd>${esc(r.t2||'-')}</dd><dt>토의 3</dt><dd>${esc(r.t3||'-')}</dd><dt>토의 4</dt><dd>${esc(r.t4||'-')}</dd><dt>한 줄 정리</dt><dd>${esc(r.sum||'-')}</dd></dl></td></tr>`;
     }
   });
-  h+='</tbody></table></div></div>';
+  h+='</tbody></table></div></div>'+GRID;
   $('#tOut').innerHTML=h;
   $$('#tOut tr.g').forEach(tr=>tr.addEventListener('click',()=>{openRow=(openRow===tr.dataset.id)?null:tr.dataset.id;tRender();}));
   tScatter(rows);
@@ -1495,7 +1538,8 @@ $('#tLoad').addEventListener('click',tLoad);
 $('#tCls').addEventListener('change',()=>{ if(TROWS.length) tRender(); });
 $('#tDay').addEventListener('change',()=>{ if($('#tPin').value) tLoad(); });
 $('#tPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tLoad(); });
-$('#tAuto').addEventListener('change',e=>{ clearInterval(tTimer); if(e.target.checked) tTimer=setInterval(()=>{ if(!$('#v-teacher').hidden) tLoad(); },20000); });
+function tAutoSet(){ clearInterval(tTimer); if($('#tAuto').checked) tTimer=setInterval(()=>{ if(!$('#v-teacher').hidden&&$('#tPin').value) tLoad(); },15000); }
+$('#tAuto').addEventListener('change',tAutoSet); tAutoSet();
 
 initSubs(); updateLab(); show();
 })();
