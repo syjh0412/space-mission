@@ -352,6 +352,15 @@ canvas.mini{width:100%;height:150px;display:block;border-radius:12px;background:
 .starter button{border:1px dashed var(--indigo);background:transparent;color:var(--indigo);border-radius:999px;padding:4px 12px;font-size:14px;cursor:pointer}
 .starter button:hover{background:var(--indigo-soft)}
 details.more{font-size:15px}
+.interp{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.interp .ih{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.interp p b{color:var(--accent)}
+.interp .ex2{font-size:12.5px;color:var(--warn)}
+.interp .link{color:var(--indigo)}
+.teamsync{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-left:4px solid var(--indigo);border-radius:4px 12px 12px 4px;padding:10px 14px;background:var(--surface);font-size:14.5px}
+.teamsync.got{border-left-color:var(--good)}
+.teamsync.diff{border-left-color:var(--warn)}
+.teamsync .mates{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -495,13 +504,14 @@ details.more{font-size:15px}
           <span class="confirm" id="clearConfirm" hidden>정말 지울까요? <button class="btn small primary" id="clearYes">지우기</button><button class="btn small" id="clearNo">취소</button></span>
         </div>
       </div>
+      <div class="teamsync" id="teamSync" hidden></div>
       <div class="tablewrap">
         <table class="data">
           <thead><tr><th>딱지 사이</th><th>① 작게 분 풍선</th><th>② 크게 분 풍선</th><th>늘어난 거리<br><span class="note">② − ①</span></th><th>몇 배?<br><span class="note">② ÷ ①</span></th><th>③ 더 크게 <span class="tag">도전</span></th><th>몇 배?<br><span class="note">③ ÷ ①</span></th></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
       </div>
-      <p class="note">늘어난 거리와 몇 배인지는 자동으로 계산돼요.</p>
+      <p class="note">늘어난 거리와 몇 배인지는 자동으로 계산돼요. 모둠에서 <b>한 명(기록 담당)만 입력</b>하면 같은 모둠 친구들 화면에도 자동으로 들어가요.</p>
     </div>
     <button class="btn primary next pnext">결과 보러 가기 →</button>
   </div>
@@ -513,12 +523,14 @@ details.more{font-size:15px}
         <h3>풍선 크기에 따른 딱지 사이 거리</h3>
         <div class="legend"><span><i style="background:var(--indigo)"></i>작게</span><span><i style="background:var(--accent)"></i>크게</span><span><i style="background:var(--warn)"></i>더 크게</span></div>
         <div class="chartbox"><canvas id="barChart"></canvas><span class="ex" id="ex1">예시 데이터</span></div>
+        <div class="interp" id="barNote"></div>
       </div>
       <div class="panel stack">
         <h3>처음 거리가 멀수록 더 많이 멀어질까?</h3>
         <div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>우리 모둠 측정값</span><span><i style="background:var(--muted);height:2px"></i>원점을 지나는 직선</span></div>
         <div class="chartbox"><canvas id="scatter"></canvas><span class="ex" id="ex2">예시 데이터</span></div>
         <p class="note">가로축은 처음 거리, 세로축은 늘어난 거리예요. 점이 직선 가까이 있으면 처음 거리가 먼 만큼 더 많이 늘어난 거예요.</p>
+        <div class="interp" id="scNote"></div>
       </div>
     </div>
     <button class="btn primary next" data-go="sim">우주 시뮬레이터로 →</button>
@@ -818,7 +830,7 @@ PAIRS.forEach(p=>{
   tb.appendChild(tr);
   ['s','b','x'].forEach(k=>{
     const el=tr.querySelector('#d'+p.id+k); el.value=(S.data[p.id]||{})[k]||'';
-    el.addEventListener('input',()=>{S.data[p.id]=S.data[p.id]||{};S.data[p.id][k]=el.value;save();updateLab();});
+    el.addEventListener('input',()=>{S.data[p.id]=S.data[p.id]||{};S.data[p.id][k]=el.value;S.dataFrom=null;save();updateLab();paintTeam();});
   });
 });
 function updateLab(){
@@ -854,6 +866,39 @@ $('#clearData').addEventListener('click',()=>{$('#clearConfirm').hidden=false;})
 $('#clearNo').addEventListener('click',()=>{$('#clearConfirm').hidden=true;});
 $('#clearYes').addEventListener('click',()=>{S.data={};save();$$('#tbody input').forEach(i=>i.value='');$('#clearConfirm').hidden=true;updateLab();toast('측정 기록을 지웠어요');});
 
+/* ---------- 모둠 기록 함께 보기: 같은 모둠 친구가 입력한 측정값 ---------- */
+const DKEYS=['12','13','23'].flatMap(p=>['s','b','x'].map(k=>[p,k]));
+let TEAMROW=null, teamBusy=false;
+function myFilled(){return DKEYS.some(([p,k])=>filled(p,k));}
+function rowFilled(r){return DKEYS.filter(([p,k])=>num2(r['d'+p+k])).length;}
+function num2(x){const v=parseFloat(String(x||'').replace(',','.'));return isFinite(v)&&v>0?v:null;}
+function sameAsMine(r){return DKEYS.every(([p,k])=>String(((S.data[p]||{})[k])||'').trim()===String(r['d'+p+k]||'').trim());}
+function applyTeam(r){S.data={}; DKEYS.forEach(([p,k])=>{const v=String(r['d'+p+k]||'').trim(); if(v){S.data[p]=S.data[p]||{}; S.data[p][k]=v;}}); S.dataFrom=String(r.num); save();
+  DKEYS.forEach(([p,k])=>{const el=$('#d'+p+k); if(el) el.value=(S.data[p]||{})[k]||'';}); updateLab(); paintTeam();}
+function paintTeam(){
+  const box=$('#teamSync'); if(!box) return;
+  if(!GAS||!S.cls||!S.grp||!S.num){box.hidden=false; box.className='teamsync'; box.innerHTML='<span>반·모둠·번호를 고르면 모둠 친구가 입력한 측정값을 함께 볼 수 있어요.</span>'; return;}
+  box.hidden=false;
+  const r=TEAMROW;
+  if(!r){ box.className='teamsync'; box.innerHTML=myFilled()?'<span>내가 입력한 값이 모둠 친구들 화면에도 자동으로 들어가요.</span>':'<span>모둠의 기록 담당이 입력하면 여기에 자동으로 나타나요. (20초마다 확인)</span><button class="btn small" id="teamNow">지금 확인</button>'; }
+  else if(sameAsMine(r)){ box.className='teamsync got'; box.innerHTML=`<span><b>${esc(r.num)}번</b>이 입력한 측정값과 같아요. ✓</span>`; }
+  else if(!myFilled()||S.dataFrom===String(r.num)){ applyTeam(r); toast(r.num+'번이 입력한 측정값을 가져왔어요'); return; }
+  else { box.className='teamsync diff'; box.innerHTML=`<span><b>${esc(r.num)}번</b>이 입력한 값이 내 값과 달라요. (1~2: ${esc(r.d12s||'-')} → ${esc(r.d12b||'-')}, 1~3: ${esc(r.d13s||'-')} → ${esc(r.d13b||'-')})</span><button class="btn small primary" id="teamUse">${esc(r.num)}번 값으로 바꾸기</button>`; }
+  const n=$('#teamNow'); if(n) n.addEventListener('click',()=>loadTeamData(true));
+  const u=$('#teamUse'); if(u) u.addEventListener('click',()=>{applyTeam(TEAMROW); toast('모둠 값으로 바꿨어요');});
+}
+async function loadTeamData(force){
+  if(!GAS||!S.cls||!S.grp||!S.num||teamBusy){paintTeam();return;}
+  if(!force&&$('#v-lab').hidden&&$('#v-talk').hidden) return;
+  teamBusy=true;
+  try{const res=await fetch(`${GAS}?app=expand&mode=team&cls=${encodeURIComponent(S.cls)}&grp=${encodeURIComponent(S.grp)}&t=${Date.now()}`,{cache:'no-store'}); const j=await res.json();
+    const mates=(j.rows||[]).filter(x=>String(x.num)!==String(S.num)&&rowFilled(x)>=2).sort((a,b)=>String(b.updated).localeCompare(String(a.updated)));
+    TEAMROW=mates[0]||null;
+  }catch(e){}
+  teamBusy=false; paintTeam();
+}
+setInterval(()=>loadTeamData(false),20000);
+
 /* charts */
 const EX={'12':{s:6,b:9.2,x:12.1},'13':{s:10,b:15.1,x:20.3},'23':{s:8,b:12.3,x:16.0}};
 function chartData(){
@@ -869,8 +914,52 @@ function setupCanvas(c){
   const ctx=c.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w,h};
 }
 function niceMax(v){if(v<=0)return 10;const p=Math.pow(10,Math.floor(Math.log10(v)));const n=v/p;return (n<=2?2:n<=5?5:10)*p;}
+const PNAME={'12':'1~2','13':'1~3','23':'2~3'};
+function chartNotes(){
+  const {example,get}=chartData();
+  const P=PAIRS.map(p=>({id:p.id,n:PNAME[p.id],s:get(p.id,'s'),b:get(p.id,'b'),x:get(p.id,'x')})).filter(q=>q.s&&q.b);
+  const head='<span class="ih">'+(example?'예시 값으로 읽어 보기':'우리 모둠 결과 읽기')+'</span>'+(example?'<span class="ex2">아직 측정값이 없어 예시 값을 해석했어요. 측정 칸을 채우면 우리 모둠 값으로 바뀌어요.</span>':'');
+  /* 막대그래프 */
+  let bar='';
+  if(!P.length) bar='<p>측정 칸의 ①과 ②를 채우면 해석이 나타나요.</p>';
+  else{
+    const up=P.filter(q=>q.b>q.s), down=P.filter(q=>q.b<=q.s);
+    bar+=`<p>${P.map(q=>`<b>${q.n}</b> ${f1(q.s)} → ${f1(q.b)} cm`).join(', ')}.</p>`;
+    if(!down.length) bar+=`<p>풍선을 크게 불자 ${P.length>1?'모든 쌍의':''} 막대가 길어졌어요. 딱지 사이의 거리가 <b>모두 늘어났다</b>는 뜻이에요.</p>`;
+    else bar+=`<p>${down.map(q=>q.n).join(', ')}은(는) 거리가 늘지 않았어요. ①과 ② 칸이 바뀌지 않았는지, 같은 딱지 사이를 쟀는지 확인해 보세요.</p>`;
+    if(up.length>=2){ const far=up.slice().sort((a,b)=>b.s-a.s)[0], most=up.slice().sort((a,b)=>(b.b-b.s)-(a.b-a.s))[0];
+      bar+= far.id===most.id?`<p>처음에 가장 멀었던 <b>${far.n}</b>의 막대가 가장 많이 자랐어요(+${f1(far.b-far.s)} cm).</p>`
+        :`<p>가장 많이 늘어난 쌍은 ${most.n}(+${f1(most.b-most.s)} cm)이고, 처음에 가장 멀었던 쌍은 ${far.n}이에요. 보통은 처음에 먼 쌍이 더 많이 늘어나니, 측정을 한 번 더 확인해 보세요.</p>`; }
+    const X=P.filter(q=>q.x);
+    if(X.length) bar+=`<p>한 번 더 크게 불었더니 거리가 계속 늘어 처음의 ${X.map(q=>`${q.n} <b>${f2(q.x/q.s)}배</b>`).join(', ')}가 되었어요. 우주도 팽창이 계속되면 은하 사이가 계속 멀어져요.</p>`;
+  }
+  $('#barNote').innerHTML=head+bar;
+  /* 점그래프 */
+  let sc='';
+  const Q=P.filter(q=>q.b>q.s).map(q=>({n:q.n,x:q.s,y:q.b-q.s,r:(q.b-q.s)/q.s}));
+  if(Q.length<2) sc='<p>점이 2개 이상 있어야 경향을 읽을 수 있어요. 1~2와 1~3을 모두 채워 주세요.</p>';
+  else{
+    const k=Q.reduce((a,q)=>a+q.x*q.y,0)/Q.reduce((a,q)=>a+q.x*q.x,0);
+    const mean=Q.reduce((a,q)=>a+q.r,0)/Q.length, spread=(Math.max(...Q.map(q=>q.r))-Math.min(...Q.map(q=>q.r)))/mean;
+    const odd=Q.slice().sort((a,b)=>Math.abs(b.r-k)-Math.abs(a.r-k))[0];
+    const rising=Q.slice().sort((a,b)=>a.x-b.x).every((q,i,arr)=>i===0||q.y>=arr[i-1].y);
+    if(spread<=0.2&&rising){
+      sc+=`<p>점들이 <b>원점을 지나는 직선 가까이</b> 놓여 있어요. 처음 거리가 멀수록 늘어난 거리도 그만큼 커서, 늘어난 거리가 처음 거리에 <b>비례</b>해요.</p>`;
+      sc+=`<p>우리 풍선은 어느 쌍이든 거리가 약 <b>${f2(1+k)}배</b>가 되었어요(처음 거리의 약 ${Math.round(k*100)}%만큼 늘어남). 풍선 표면 전체가 같은 비율로 부풀었기 때문이에요.</p>`;
+    } else if(spread<=0.5&&rising){
+      sc+=`<p>점들이 대체로 <b>오른쪽 위로</b> 올라가요. 처음 거리가 먼 쌍일수록 더 많이 늘어났어요.</p>`;
+      sc+=`<p>다만 <b>${odd.n}</b>의 점이 직선에서 조금 떨어져 있어요(처음 거리의 ${Math.round(odd.r*100)}% 증가). 풍선이 고르게 부풀지 않았거나 측정 오차일 수 있어요.</p>`;
+    } else {
+      sc+=`<p>점들이 직선에서 많이 벗어나 있어요. 특히 <b>${odd.n}</b>을 다시 재 보세요. 줄자를 표면에 밀착했는지, 딱지 가운데에서 가운데까지 쟀는지, 풍선 입구 근처를 피했는지 확인해요.</p>`;
+    }
+    sc+=`<p class="link">우주에 비유하면: 멀리 있는 은하일수록 더 빨리, 더 많이 멀어진다는 뜻이에요.</p>`;
+    if(Q.length===2) sc+='<p class="ex2">2~3 거리도 재면 점이 3개가 되어 경향이 더 분명해져요.</p>';
+  }
+  $('#scNote').innerHTML=head+sc;
+}
 function drawCharts(){
   if($('#v-lab').hidden) return;
+  chartNotes();
   const {example,get}=chartData();
   $('#ex1').hidden=!example; $('#ex2').hidden=!example;
   const ink=css('--ink'),muted=css('--muted'),line=css('--line'),acc=css('--accent'),ind=css('--indigo'),warn=css('--warn');
@@ -1024,6 +1113,7 @@ $('#sum').addEventListener('input',e=>{S.notes.sum=e.target.value;save();kwPaint
 const SUB={};
 function onPane(sec,p){
   if(sec==='v-open'&&p==='pred') drawPredPic();
+  if(sec==='v-lab'&&(p==='measure'||p==='result')) loadTeamData(true);
   if(sec==='v-lab'&&p==='result'){ feedback(); drawCharts(); }
   if(sec==='v-talk'){ renderF1Data(); renderFrame(p); if(p==='f3') refDraw(); if(p==='f4') renderSort(); linkAnim(p==='f2'); } else linkAnim(false);
   if(sec==='v-check'&&p==='sum') drawTimeline();
@@ -1344,7 +1434,8 @@ function tRender(){
     <div class="panel stack"><h3>반 전체 측정 결과</h3>
       <div class="legend"><span><i style="background:var(--indigo);border-radius:50%"></i>1~2</span><span><i style="background:var(--accent);border-radius:50%"></i>1~3</span><span><i style="background:var(--warn);border-radius:50%"></i>2~3</span></div>
       <div class="chartbox"><canvas id="tScatter"></canvas></div>
-      <p class="note">점마다 모둠 번호가 붙어 있어요. 같은 모둠은 같은 풍선을 재므로 점이 겹칠 수 있어요. 처음 거리가 먼 쌍일수록 위쪽에 있으면 ‘멀리 있을수록 더 많이 멀어진다’는 결과입니다.</p></div>
+      <p class="note">점마다 모둠 번호가 붙어 있어요. 모둠마다 한 번씩만 찍어요.</p>
+      <div class="interp" id="tScNote"></div></div>
   </div>
   <div class="panel stack"><h3>학생별 진행</h3><p class="note">모둠별로 묶여 있어요. 줄을 누르면 그 학생의 답을 볼 수 있어요.</p>
   <div class="tablewrap"><table class="tlist"><thead><tr><th>반</th><th>모둠</th><th>번호</th><th>예측</th><th>측정 (1~2 / 1~3 배율)</th><th>토의</th><th>퀴즈</th><th>저장</th></tr></thead><tbody>`;
@@ -1367,10 +1458,28 @@ function tRender(){
   $$('#tOut tr.g').forEach(tr=>tr.addEventListener('click',()=>{openRow=(openRow===tr.dataset.id)?null:tr.dataset.id;tRender();}));
   tScatter(rows);
 }
+function tNote(G){
+  const box=$('#tScNote'); if(!box) return;
+  const both=G.filter(r=>num(r.d12s)&&num(r.d12b)&&num(r.d13s)&&num(r.d13b));
+  if(!both.length){box.innerHTML='<span class="ih">반 전체 결과 읽기</span><p>1~2와 1~3을 모두 측정한 모둠이 생기면 해석이 나타나요.</p>';return;}
+  const ok=both.filter(r=>{const s12=num(r.d12s),s13=num(r.d13s),i12=num(r.d12b)-s12,i13=num(r.d13b)-s13; return (s13>s12)?(i13>i12):(i12>i13);});
+  const rat=both.map(r=>({g:r.grp,a:num(r.d12b)/num(r.d12s),b:num(r.d13b)/num(r.d13s)}));
+  const same=rat.filter(x=>Math.abs(x.a-x.b)/((x.a+x.b)/2)<=0.15);
+  const off=both.filter(r=>!ok.includes(r)).map(r=>r.grp+'모둠');
+  box.innerHTML=`<span class="ih">반 전체 결과 읽기</span>
+    <p>측정한 <b>${both.length}개 모둠</b> 가운데 <b>${ok.length}개 모둠</b>에서 처음에 더 먼 딱지 쌍이 더 많이 늘어났어요.</p>
+    <p>‘몇 배’ 값(1~2와 1~3)이 거의 같게 나온 모둠은 ${same.length}개예요. 풍선 전체가 같은 비율로 부풀었다는 증거예요.</p>
+    ${off.length?`<p>예상과 다르게 나온 모둠: <b>${off.join(', ')}</b>. 측정 방법을 함께 짚어 보기 좋은 사례예요.</p>`:''}
+    <p class="link">여러 모둠의 점을 모아 보면, 처음 거리가 먼 쌍일수록 위쪽(더 많이 늘어남)에 놓이는 경향이 보여요. 멀리 있는 은하일수록 더 빨리 멀어진다는 것과 같은 관계예요.</p>`;
+}
 function tScatter(rows){
   const c=$('#tScatter'); if(!c) return; const s=setupCanvas(c); if(!s) return; const {ctx,w,h}=s;
   const muted=css('--muted'),line=css('--line'),ink=css('--ink'); const col={'12':css('--indigo'),'13':css('--accent'),'23':css('--warn')};
-  const pts=[]; rows.forEach(r=>['12','13','23'].forEach(p=>{const a=num(r['d'+p+'s']),b=num(r['d'+p+'b']); if(a&&b) pts.push({x:a,y:b-a,p,g:r.grp});}));
+  // 같은 모둠은 같은 풍선을 재므로, 모둠마다 가장 최근 기록 한 줄만 씀
+  const byG={}; rows.forEach(r=>{ if(!(num(r.d12s)||num(r.d13s))) return; const key=r.cls+'|'+r.grp; if(!byG[key]||String(r.updated)>String(byG[key].updated)) byG[key]=r; });
+  const G=Object.values(byG);
+  const pts=[]; G.forEach(r=>['12','13','23'].forEach(p=>{const a=num(r['d'+p+'s']),b=num(r['d'+p+'b']); if(a&&b) pts.push({x:a,y:b-a,p,g:r.grp});}));
+  tNote(G);
   ctx.clearRect(0,0,w,h); ctx.font='12px '+css('--f-body');
   if(!pts.length){ctx.fillStyle=muted;ctx.textAlign='center';ctx.fillText('아직 측정값이 없어요',w/2,h/2);return;}
   const L=40,R=14,T=14,B=34,pw=w-L-R,ph=h-T-B;
