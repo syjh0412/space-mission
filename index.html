@@ -188,6 +188,8 @@ footer .rule b{color:var(--flame)}
 @media (max-width:480px){.unitnav .lbl{display:none}.unitnav a{font-size:15px;padding:3px 10px}.unitnav .in{gap:6px}}
 
 [hidden]{display:none!important}
+.tband{position:relative;z-index:30;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:center;background:#ffd166;color:#1a1200;font-size:14px;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));text-align:center}
+.tband button{border:1px solid #1a1200;background:transparent;color:#1a1200;border-radius:999px;padding:3px 12px;font:inherit;font-size:13px;cursor:pointer}
 /* ================= 수행평가 화면 ================= */
 body.compact header{padding:22px 0 4px}
 body.compact header .sub,body.compact header .badge{display:none}
@@ -390,6 +392,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 </head>
 <body>
 <nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="star-hunt/">우리은하 천체 탐험대</a><a href="expanding-universe/">팽창하는 우주 탐구실</a><a href="./" aria-current="page">우주 탐사 기획단</a></div></nav>
+<div class="tband" id="tband" hidden><b>교사 시범 모드</b><span>이 기기에서 학생 화면에 입력한 내용은 구글 시트에 저장되지 않고, 학생들 화면에도 나타나지 않아요.</span><button type="button" id="tbandOff">시범 모드 끝내기</button></div>
 <div id="stars"></div>
 <div class="wrap">
 
@@ -1121,10 +1124,27 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const CFG=window.CONFIG||{}; const GAS=String(CFG.GAS_URL||'').replace(/[“”‘’"']/g,'').trim();
 const KEY='space-mission-pa-v1';
 function blank(){return {cls:'',grp:'',num:'',name:'',s1:{read:{},q:['',''],qb:[{t:0},{t:0}],qc:[[],[]],likes:{},repTags:[]},s2:{chk:[],data:[{},{},{}],target:{},methods:[],gear:[{},{},{}],debris:[],link:{}},s3:{brief:[{},{},{},{}],check:[],peer:{},token:{why:[]}},fin:{c:[{},{},{}],self:[]},unsent:false};}
+const S0=blank;
 let S=blank();
 try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(blank(),JSON.parse(r));}catch(e){}
 if(!S.cls&&!S.num){ try{ const h=JSON.parse(localStorage.getItem('mw-hunt-v3')||'{}'); if(h.cls) S.cls=String(h.cls); if(h.teamNo) S.grp=String(h.teamNo); if(h.num) S.num=String(h.num);}catch(e){} }
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+/* ---------- 교사 시범 모드: 선생님 기기에서 학생 화면에 입력한 것은 시트로 보내지 않고, 모둠 친구에게도 보이지 않음 ---------- */
+const DEMO='space-teacher-demo', DKEY=KEY+'-demo', BKEY=KEY+'-student';
+function isDemo(){try{return localStorage.getItem(DEMO)==='1';}catch(e){return false;}}
+function applyDemo(){try{
+  if(isDemo()&&!localStorage.getItem(DKEY)){ // 시범 시작: 이 기기의 학생 기록을 따로 보관하고 빈 기록으로 시작
+    const r=localStorage.getItem(KEY); if(r) localStorage.setItem(BKEY,r); localStorage.setItem(DKEY,'1');
+    S=Object.assign(S0(),{cls:S.cls,grp:S.grp}); S.unsent=false; localStorage.setItem(KEY,JSON.stringify(S)); }
+  if(!isDemo()&&localStorage.getItem(DKEY)){ // 시범 끝: 시범 기록은 버리고 보관해 둔 기록을 되돌림
+    const b=localStorage.getItem(BKEY); if(b){localStorage.setItem(KEY,b); S=Object.assign(S0(),JSON.parse(b));} else {localStorage.removeItem(KEY); S=S0();}
+    localStorage.removeItem(BKEY); localStorage.removeItem(DKEY); S.unsent=false; }
+}catch(e){}}
+applyDemo();
+function enterDemo(){ if(isDemo()) return; try{localStorage.setItem(DEMO,'1');}catch(e){} applyDemo(); location.reload(); }
+function exitDemo(){ try{localStorage.removeItem(DEMO);}catch(e){} applyDemo(); location.hash=''; location.reload(); }
+function paintDemo(){ const b=document.getElementById('tband'); if(b) b.hidden=!isDemo(); }
+
 function save(){S.unsent=true;persist();queue();refreshDone();}
 function toast(m){let t=$('#toast2');if(!t){t=document.createElement('div');t.id='toast2';t.className='toast2';t.setAttribute('role','status');document.body.appendChild(t);}t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2000);}
 
@@ -1164,8 +1184,8 @@ function finText(){const f=S.fin||{}; const rows=(f.c||[]).filter(r=>r&&(r.t||r.
   return {f1:`[목적·성과] ${f.a1||''}\n[질문] ${f.a2||''}\n[연결] ${f.a3||''}`,f2:`[자료] ${f.b1||''}\n[방법·이유] ${f.b2||''}`,f3:`${rows}\n[연결 까닭] ${f.c2||''}`,f4:`[예상 결과] ${f.d1||''}\n[도움] ${f.d2||''}\n[우주 쓰레기] ${f.d3||''}`};}
 function payload(){const c=card(),ch=chalNo(); const d=Object.assign({},S); delete d.unsent;
   return Object.assign({app:'mission',cls:S.cls,grp:S.grp,num:S.num,name:S.name,card:c?c.title:'',chal:ch?CHAL[ch].name:'',rep:S.s1.rep||'',submitted:S.fin.submitted||'',data:JSON.stringify(d)},finText());}
-function queue(){ if(!GAS){pill('','기록은 이 기기에 저장돼요');return;} if(!S.cls||!S.grp||!S.num){pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요');return;} pill('wait','저장 대기'); clearTimeout(timer); timer=setTimeout(push,2500); }
-async function push(){ if(!GAS||sending||!S.unsent||!S.cls||!S.grp||!S.num) return; sending=true; S.unsent=false; persist(); pill('wait','전송 중');
+function queue(){ if(!GAS){pill('','기록은 이 기기에 저장돼요');return;} if(isDemo()){pill('ok','교사 시범 · 저장 안 함');return;} if(!S.cls||!S.grp||!S.num){pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요');return;} pill('wait','저장 대기'); clearTimeout(timer); timer=setTimeout(push,2500); }
+async function push(){ if(!GAS||sending||!S.unsent||!S.cls||!S.grp||!S.num||isDemo()) return; sending=true; S.unsent=false; persist(); pill('wait','전송 중');
   try{const r=await fetch(GAS,{method:'POST',body:JSON.stringify(payload())}); const j=await r.json(); if(!j.ok) throw 0; pill('ok','선생님께 저장됨 ✓');}
   catch(e){S.unsent=true;persist();pill('wait','전송 대기 · 자동으로 다시 보냄');} sending=false; }
 setInterval(()=>{if(S.unsent)push();},15000); window.addEventListener('online',()=>{if(S.unsent)push();});
@@ -1333,7 +1353,7 @@ async function tLoad(){ TPIN=$('#tPin').value.trim(); if(!TPIN){$('#tStatus').te
   $('#tStatus').textContent='불러오는 중…';
   try{const r=await fetch(`${GAS}?app=mission&pin=${encodeURIComponent(TPIN)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json();
     if(!j.ok){$('#tStatus').textContent=j.error==='PIN'?'PIN이 맞지 않아요':'불러오지 못했어요';return;}
-    TROWS=(j.rows||[]).map(x=>{let d={};try{d=JSON.parse(x.data||'{}');}catch(e){} return Object.assign(x,{d});}); $('#tStatus').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준'; tRender();}
+    enterDemo(); TROWS=(j.rows||[]).map(x=>{let d={};try{d=JSON.parse(x.data||'{}');}catch(e){} return Object.assign(x,{d});}); $('#tStatus').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준'; tRender();}
   catch(e){$('#tStatus').textContent='연결 실패 · Apps Script 배포를 확인해 주세요';} }
 function obsOf(d){const s1=d.s1||{},s2=d.s2||{},s3=d.s3||{},f=d.fin||{}; const q=s1.q||[];
   return [has(q[0])||has(q[1]),has((s1.read||{}).b)&&has(s1.rep),(s2.data||[]).some(r=>r&&has(r.d))&&(s2.methods||[]).length>0,(s2.gear||[]).some(r=>r&&has(r.g)&&has(r.job)),has(s3.revised),!!f.submitted];}
@@ -1379,7 +1399,8 @@ $('#tCopy').addEventListener('click',()=>{ const cls=$('#tCls').value; const row
 /* ---------- 시작 ---------- */
 bindAll(); initSubs();
 $('#linkQ').textContent=S.s1.rep||'(1차시 대표 질문)';
-if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp&&S.num) pill('ok','선생님께 저장됨 ✓'); else pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요'); }
+paintDemo(); document.getElementById('tband').querySelector('button').addEventListener('click',exitDemo);
+if(isDemo()){ pill('ok','교사 시범 · 저장 안 함'); } else if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp&&S.num) pill('ok','선생님께 저장됨 ✓'); else pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요'); }
 show();
 })();
 

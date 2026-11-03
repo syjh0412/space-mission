@@ -1063,7 +1063,7 @@ $('#resetYes').onclick=()=>{S.found={};S.quiz={};S.galaxy={};save();$('#resetCon
 /* ---------- 선생님 대시보드 ---------- */
 let PIN='',dashRows=[],dashTimer=null;
 $('#teacherBtn').onclick=async()=>{
-  if(TEACH){if(await loadDash())openDash();return}
+  if(TEACH&&PIN){if(await loadDash())openDash();return}
   if(!GAS){$('#sheet').innerHTML=`<div class="sheet-head"><h2>선생님 화면</h2><button class="x" aria-label="닫기">✕</button></div><p>선생님 화면은 구글 시트를 연결해야 쓸 수 있어요. 지금은 학생 기록이 각 기기에만 저장돼요.</p><p style="color:var(--muted)">연결 방법: index.html의 CONFIG에서 GAS_URL에 Apps Script 웹 앱 주소를 넣어 주세요.</p>`;bindClose();openSheet();return}
   $('#sheet').innerHTML=`<div class="sheet-head"><h2>선생님 확인</h2><button class="x" aria-label="닫기">✕</button></div>
    <form class="pinbox" id="pinForm"><label for="pinIn">PIN 번호</label><input id="pinIn" type="password" inputmode="numeric" autocomplete="off">
@@ -1141,7 +1141,7 @@ function setTbh(){const b=$('#teachbar');document.documentElement.style.setPrope
 window.addEventListener('resize',setTbh);
 function syncSelects(){$('#clsSel').value=S.cls;$('#teamSel').value=S.teamNo;$('#numSel').value=S.num}
 function enterTeacher(){
-  if(TEACH)return;TEACH=true;SAVED=S;
+  if(TEACH)return;TEACH=true;SAVED=S;try{localStorage.setItem('space-teacher-demo','1')}catch(e){}
   // 시범용 빈 기록 (기기에 저장되지 않고, 시트로도 보내지 않음)
   S={cls:SAVED.cls,teamNo:SAVED.teamNo,num:'',found:{},quiz:{},galaxy:{},queue:[]};
   teamRows=[];gAns={};gTap=null;syncSelects();
@@ -1149,13 +1149,15 @@ function enterTeacher(){
   renderAll();flush();
 }
 function exitTeacher(){
-  if(!TEACH)return;TEACH=false;S=SAVED;SAVED=null;teamRows=[];gAns={};gTap=null;syncSelects();
+  if(!TEACH)return;TEACH=false;try{localStorage.removeItem('space-teacher-demo')}catch(e){}S=SAVED;SAVED=null;teamRows=[];gAns={};gTap=null;syncSelects();
   $('#teachbar').hidden=true;setTbh();$('#dash').hidden=true;clearInterval(dashTimer);PIN='';
   $('#teacherBtn').textContent='선생님';$('#resetBtn').textContent='처음부터 다시';
   renderAll();loadTeam();flush();
 }
-$('#tbDash').onclick=async()=>{if(await loadDash())openDash()};
+$('#tbDash').onclick=async()=>{if(!PIN){$('#teacherBtn').click();return} if(await loadDash())openDash()};
 $('#tbExit').onclick=exitTeacher;
+// 다른 활동(탐구실·기획단)에서 교사 시범 모드를 켰다면 여기서도 교사 모드로 시작
+try{if(localStorage.getItem('space-teacher-demo')==='1'){PIN=sessionStorage.getItem('eu-pin')||'';enterTeacher();}}catch(e){}
 flush();loadTeam();
 try{localStorage.setItem('mw-test','1');localStorage.removeItem('mw-test')}catch(e){showBanner('이 브라우저는 기록을 기기에 저장하지 못해요(비공개 모드 등). 기록은 선생님 시트에 저장되고, 번호를 다시 고르면 불러와요.')}
 $('#teamReload').onclick=()=>{teamStat={state:'idle',msg:''};showTeamStat();loadTeam()};
