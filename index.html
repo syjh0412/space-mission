@@ -449,6 +449,34 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 .intro .chips{margin:8px 0 6px}
 .intro .punch{text-align:left;margin:8px 0 12px}
 @media (max-width:640px){.hflow{grid-template-columns:1fr 1fr}.hgrid{grid-template-columns:1fr}}
+
+.exhelp{margin:-4px 0 10px;font-size:.88rem}
+.exhelp summary{cursor:pointer;color:var(--ion);list-style:none;display:inline-block;padding:3px 10px;border:1px dashed var(--line);border-radius:999px}
+.exhelp summary::-webkit-details-marker{display:none}
+.exhelp[open] summary{border-style:solid}
+.exhelp > div{margin-top:8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.exhelp .frame{color:var(--ink)}
+.exhelp .frame u{text-decoration:none;border-bottom:2px solid var(--gold);padding:0 .3em;color:var(--gold)}
+.exhelp .exam{color:var(--mut)}
+.exhelp .exam em{font-style:normal;color:var(--ink)}
+.exhelp .tiny{color:var(--mut);font-size:.8rem}
+
+.databox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px}
+.databox h4{margin:0 0 8px;color:var(--gold);font-size:.95rem}
+.databox h4 small{color:var(--mut);font-weight:400;font-size:.8rem;margin-left:6px}
+.databox .dcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.databox .dcols b{display:block;font-size:.85rem;margin-bottom:4px}
+.databox ul{margin:0;padding-left:18px;font-size:.88rem;line-height:1.5}
+.databox .dchips{margin-top:8px;font-size:.85rem;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.databox .dchips b{margin-right:2px}
+.databox .dchips span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.databox.compact{margin:10px 0 0}
+.fillchips{margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:.85rem}
+.fillchips > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fillchips .hint{margin:0}
+.dchip{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:3px 10px;font:inherit;font-size:.82rem;cursor:pointer}
+.dchip:hover{border-color:var(--ion)}
+@media (max-width:560px){.databox .dcols{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -606,13 +634,16 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
     <div class="cardref" id="cardRef1"></div>
     <div class="box fld">
       <h3>기본카드를 자세히 읽기</h3>
-      <p class="warn">카드의 문장을 그대로 옮기는 것이 목표가 아니에요. 내 말로 짧게 바꿔 써요.</p>
+      <p class="warn">카드의 문장을 그대로 옮기는 것이 목표가 아니에요. 내 말로 짧게 바꿔 써요. 막히면 문항 아래 <b>도움 보기</b>를 열어 문장 틀과 예시를 참고해요.</p>
       <span>① 이 탐사는 어디에서 무엇을 알아보려고 했는가?</span>
       <textarea data-k="s1.read.a" data-copy="story" class="short"></textarea>
+      <details class="exhelp" data-ex="a"><summary>막히면 도움 보기</summary><div></div></details>
       <span>② 탐사 결과 새롭게 알게 된 사실이나 가능해진 일은 무엇인가?</span>
       <textarea data-k="s1.read.b" data-copy="meaning" class="short"></textarea>
+      <details class="exhelp" data-ex="b"><summary>막히면 도움 보기</summary><div></div></details>
       <span>③ 이 성과만으로 아직 알 수 없거나 더 확인해야 할 것은 무엇인가?</span>
       <textarea data-k="s1.read.c" data-copy="remain" class="short"></textarea>
+      <details class="exhelp" data-ex="c"><summary>막히면 도움 보기</summary><div></div></details>
     </div>
     <button class="btn pri nextb pnext">다음: 나의 질문 만들기 →</button>
   </div>
@@ -1220,6 +1251,7 @@ function openOv(i){
       <p class="one2">${c.one}${c.imgCap?` <span style="opacity:.7">| 사진: ${c.imgCap}</span>`:''}</p>
 
       <div class="blk"><h4>탐사 이야기</h4><p>${c.story}</p></div>
+      <div class="blk">${dataBox(c)}</div>
       <div class="blk"><h4>이 성과의 의미</h4><p>${c.meaning}</p></div>
       <div class="blk left"><h4>⭐ 아직 남은 점 — 여기서 여러분의 질문이 시작됩니다</h4><p>${c.remain}</p></div>
       <div class="blk"><h4>질문 씨앗</h4><ul class="seeds">${c.seeds.map(s=>`<li>${s}</li>`).join('')}</ul></div>
@@ -1390,11 +1422,74 @@ function renderPick(){
   $('#chalOpts').innerHTML=Object.keys(CHAL).map(k=>`<button data-c="${k}" aria-pressed="${+k===n}">${CHAL[k].em} ${esc(CHAL[k].name.split(':')[0])}</button>`).join('');
   $$('#chalOpts button').forEach(b=>b.addEventListener('click',()=>{S.s1.chal=+b.dataset.c===c.chal?null:+b.dataset.c; save(); renderPick();}));
 }
+
+
+/* ---------- 카드별 탐사 자료 상자 (①②③ 답하기·질문 만들기 재료) ---------- */
+const CARD_DATA={
+ '미션 01':{place:['예제로 충돌구','화성 극지방','화성 땅속(지하)','옛 강·호수 바닥의 퇴적층'],target:['암석·토양 시료','물 얼음','과거 물의 흔적(퇴적층)','대기 성분'],
+   known:['옛날 물이 흘렀던 예제로 충돌구에서 암석을 분석하고 시료를 모아 두었다','로버가 돌아다니며 여러 암석과 지형을 비교했다','작은 헬리콥터(인제뉴어티)가 얇은 대기에서도 날 수 있음을 확인했다'],
+   unknown:['화성에 생명체가 있었는지','땅속·극지방에 물 얼음이 얼마나 있는지','다른 지역의 퇴적층도 같은 역사를 보여 주는지']},
+ '미션 02':{place:['달 남극','햇빛이 거의 닿지 않는 영구 음영 지역','달 착륙 후보지','달 궤도'],target:['지형(경사·바위)','물 얼음','자기장','표면 온도'],
+   known:['달 주위를 돌며 넓은 지역의 표면 영상과 지형 자료를 얻었다','자기장·감마선을 측정하고 그늘진 지역 관측에 참여했다','달–지구 인터넷 통신 시험에 성공했다'],
+   unknown:['물 얼음이 어디에 얼마나, 어떤 상태로 있는지','착륙 후보지가 실제로 안전한지(현장 확인 필요)','달의 자원을 꺼내 쓸 수 있는지']},
+ '미션 03':{place:['달 표면(고요의 바다)','달 남극','달 기지 후보지','달 궤도'],target:['달 암석·토양 시료','물 얼음','우주비행사의 몸 변화','지구–달 거리'],
+   known:['사람이 달에 내려 암석과 토양을 가져왔다','가져온 시료로 달의 형성과 표면 환경을 연구했다','레이저 반사경으로 지구–달 거리를 정밀하게 재게 되었다'],
+   unknown:['달 남극에 물 얼음이 있는지, 얼마나 있는지','오래 머물 때 몸에 어떤 변화가 생기는지','달의 자원을 현지에서 쓸 수 있는지']},
+ '미션 04':{place:['지구 저궤도','정지궤도','수명이 끝난 위성이 모인 궤도','대기권 재진입 경로'],target:['위성의 위치·속도','우주 쓰레기의 수와 크기','위성 신호(전파)','충돌 위험'],
+   known:['인류가 만든 물체를 궤도에 올려 계속 추적할 수 있음을 보였다','전파 신호를 지구로 보냈다','이후 통신·위치 확인·기상 관측 위성이 뒤따랐다'],
+   unknown:['궤도가 얼마나 혼잡해졌고 충돌 위험이 얼마나 큰지','수명이 끝난 위성을 어떻게 처리할지','모든 나라가 지킬 궤도 이용 규칙을 어떻게 만들지']},
+ '미션 05':{place:['별이 태어나는 성운(먼지 속)','먼 은하(딥 필드)','외계 행성의 대기','우리은하 중심'],target:['적외선·가시광선 등 여러 파장의 빛','천체의 온도·성분','시간에 따른 밝기 변화','은하의 모양과 거리'],
+   known:['대기 밖에서 별·성운·은하를 오래 관측했다(허블)','적외선으로 먼지 속 별 탄생 영역과 아주 먼 우주를 보게 되었다(웹)','같은 천체를 여러 파장으로 보면 온도·성분 등 다른 정보를 얻는다'],
+   unknown:['시료를 가져올 수 없어 성분을 직접 확인하지 못한다','사진 한 장으로는 변화를 확정하기 어렵다','두 망원경의 자료를 합치면 무엇이 더 보일지']},
+ '미션 06':{place:['명왕성 표면(하트 모양 평원)','명왕성의 산지','명왕성의 대기','카이퍼대의 작은 천체'],target:['지형의 높낮이','표면 얼음의 성분','대기의 두께','계절에 따른 변화'],
+   known:['명왕성에 평원·산지 등 다양한 지형과 표면 얼음, 얇은 대기가 있음을 확인했다','카이퍼대의 작은 천체도 관측했다','착륙하지 않고 근접 통과만으로도 많은 자료를 얻을 수 있음을 보였다'],
+   unknown:['계절에 따라 표면과 대기가 어떻게 변하는지','명왕성 내부가 어떻게 생겼는지','오랜 시간을 두고 보면 표면이 변하는지']}};
+function dataBox(c,compact){
+  const d=CARD_DATA[c.no]; if(!d) return '';
+  const li=a=>a.map(x=>`<li>${esc(x)}</li>`).join('');
+  return `<div class="databox${compact?' compact':''}"><h4>📦 탐사 자료 상자 <small>①②③에 답하고 질문을 만들 때 가져다 쓰세요</small></h4>
+    <div class="dcols"><div><b>✅ 알아낸 것 (②의 재료)</b><ul>${li(d.known)}</ul></div><div><b>❓ 아직 모르는 것 (③·질문의 재료)</b><ul>${li(d.unknown)}</ul></div></div>
+    <div class="dchips"><b>📍 장소·대상 후보</b> ${d.place.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+    <div class="dchips"><b>📏 관측·측정할 것</b> ${d.target.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`;
+}
+
+/* ---------- 1차시: 카드 읽기 도움(문장 틀 + 카드별 예시) ---------- */
+const READ_FRAME={
+  a:'<u>어디</u>에서 <u>무엇</u>을 알아보려고 <u>어떤 방법</u>으로 탐사했다.',
+  b:'그 결과 <u>무엇</u>을 알게 되었다 / <u>무엇</u>이 가능해졌다.',
+  c:'하지만 <u>장소나 시간이 한정되어서</u> 아직 <u>무엇</u>은 모른다 / 더 확인해야 한다.'};
+const READ_EX={
+ '미션 01':{a:'화성 땅 위에서 로버가 돌아다니며, 옛날에 물이 있었는지와 어떤 암석이 있는지 알아보려고 했다.',
+            b:'작은 헬리콥터가 화성 하늘을 날 수 있다는 걸 알게 되었고, 로버가 못 가는 곳을 하늘에서 볼 수 있게 되었다.',
+            c:'화성에 생명체가 있었는지는 아직 모른다. 한 곳만 조사했으니 땅속이나 극지방도 봐야 한다.'},
+ '미션 02':{a:'달 주위를 돌면서 달 표면의 지형과 자기장, 햇빛이 안 닿는 곳을 알아보려고 했다.',
+            b:'달의 넓은 지역을 비교해서 안전하게 내릴 만한 곳을 미리 고를 수 있게 되었다.',
+            c:'물 얼음이 정말 얼마나 있는지는 궤도에서는 알 수 없다. 착륙선이 내려가서 확인해야 한다.'},
+ '미션 03':{a:'달 표면에 사람이 직접 내려가서 달의 돌과 흙을 가져오려고 했다.',
+            b:'가져온 돌로 달이 어떻게 만들어졌는지 연구할 수 있었고, 반사경으로 달까지 거리를 정확히 재게 되었다.',
+            c:'달의 한 곳에 잠깐 머물렀을 뿐이라, 남극의 물 얼음이나 오래 살 때 몸의 변화는 아직 모른다.'},
+ '미션 04':{a:'지구 주위 궤도에 인공위성을 올려서, 사람이 만든 물체가 우주를 계속 돌 수 있는지 알아보려고 했다.',
+            b:'위성을 띄울 수 있다는 걸 보여 줘서, 그 뒤로 통신·위치 확인·날씨 관측 위성이 가능해졌다.',
+            c:'위성이 너무 많아지면 서로 부딪히거나 쓰레기가 되는데, 다 쓴 위성을 어떻게 처리할지는 아직 숙제다.'},
+ '미션 05':{a:'지구 대기 밖에서 망원경으로 별, 성운, 먼 은하를 더 자세히 보려고 했다.',
+            b:'직접 가지 않아도 빛을 분석하면 먼 천체의 온도나 성분, 별이 태어나는 모습을 알 수 있게 되었다.',
+            c:'사진 한 장으로는 확실히 말하기 어렵다. 다른 파장으로, 여러 번 다시 관측해서 비교해야 한다.'},
+ '미션 06':{a:'명왕성 가까이 지나가면서 표면의 지형과 얼음, 대기를 알아보려고 했다.',
+            b:'명왕성에 산과 평원, 얼음, 얇은 대기가 있다는 걸 알게 되었고, 착륙하지 않아도 가까이 가면 많은 걸 알 수 있다는 것도 확인했다.',
+            c:'한 번 스쳐 지나갔을 뿐이라, 계절에 따라 어떻게 변하는지나 속이 어떻게 생겼는지는 아직 모른다.'}};
+function renderReadHelp(){
+  const c=card(); const ex=c&&READ_EX[c.no]||{};
+  $$('#v-s1 .exhelp').forEach(d=>{const k=d.dataset.ex; d.querySelector('div').innerHTML=
+    `<p class="frame">문장 틀 · ${READ_FRAME[k]}</p>`+
+    (ex[k]?`<p class="exam">예시 (${esc(c.title)}) · <em>${esc(ex[k])}</em></p>`:'')+
+    `<p class="tiny">예시를 그대로 옮기지 말고, 카드에서 내가 찾은 내용으로 바꿔 써요. 틀의 밑줄 부분만 바꿔도 좋아요.</p>`;});
+}
 function renderRef(sel){
   const c=card(), box=$(sel);
   if(!c){box.innerHTML='<div class="empty">먼저 ‘모둠 카드’ 단계에서 기본카드를 골라 주세요.</div>';return;}
-  box.innerHTML=`<div class="cardref"><span class="ci">${c.em}${c.img?`<img src="${c.img}" alt="" onerror="this.remove()">`:''}</span><div class="cx"><b>${esc(c.title)}</b><p><em>아직 남은 점</em> ${esc(c.remain)}</p><div><button class="btn sm" data-open>카드 전체 다시 읽기</button></div></div></div>`;
+  box.innerHTML=`<div class="cardref"><span class="ci">${c.em}${c.img?`<img src="${c.img}" alt="" onerror="this.remove()">`:''}</span><div class="cx"><b>${esc(c.title)}</b><p><em>아직 남은 점</em> ${esc(c.remain)}</p><div><button class="btn sm" data-open>카드 전체 다시 읽기</button></div></div></div>${dataBox(c,true)}`;
   box.querySelector('[data-open]').addEventListener('click',()=>openOv(S.s1.card));
+  renderReadHelp();
 }
 // 카드 문장을 거의 그대로 옮겼는지 살펴봄 (두 글자 묶음이 얼마나 겹치는지)
 function grams(s){s=String(s||'').replace(/\s+/g,'');const g=new Set();for(let i=0;i<s.length-1;i++)g.add(s.slice(i,i+2));return g;}
@@ -1402,7 +1497,8 @@ function copyCheck(el){
   const c=card(); let w=el.nextElementSibling; if(!w||!w.classList.contains('copywarn')){w=document.createElement('p');w.className='copywarn';el.after(w);}
   const v=el.value.replace(/\s+/g,''); if(!c||v.length<25){w.textContent='';return;}
   const A=grams(v),B=grams(c[el.dataset.copy]); let n=0; A.forEach(x=>{if(B.has(x))n++;});
-  w.textContent=n/A.size>0.7?'카드 문장과 거의 같아요. 핵심만 골라 내 말로 바꿔 써 볼까요?':'';
+  const exk={story:'a',meaning:'b',remain:'c'}[el.dataset.copy], ex=(READ_EX[c.no]||{})[exk]; let n2=0; if(ex){const E=grams(ex); A.forEach(x=>{if(E.has(x))n2++;});}
+  w.textContent=n2/A.size>0.7?'예시 문장과 거의 같아요. 카드에서 내가 찾은 내용으로 바꿔 써 볼까요?':(n/A.size>0.7?'카드 문장과 거의 같아요. 핵심만 골라 내 말로 바꿔 써 볼까요?':'');
 }
 
 /* ---------- 1차시: 나의 질문 ---------- */
@@ -1418,9 +1514,13 @@ function renderBuilder(){
   $('#builder').innerHTML=`<div class="tsel">${TPL.map((T,i)=>`<button data-t="${i}" aria-pressed="${i===t}">틀 ${i+1}: ${esc(T.name)}</button>`).join('')}</div>
     <div class="bs">${t===0?`<input id="bA" placeholder="장소" value="${esc(qb.a||'')}">에서 <input id="bB" placeholder="대상" value="${esc(qb.b||'')}">을(를) <select id="bV">${sel0.map(x=>`<option ${qb.v===x?'selected':''}>${x}</option>`).join('')}</select>하면 <input id="bC" placeholder="알고 싶은 것" value="${esc(qb.c||'')}">을(를) 알 수 있을까?`
       :`<input id="bA" placeholder="천체·장소" value="${esc(qb.a||'')}">의 <input id="bB" placeholder="대상" value="${esc(qb.b||'')}">은(는) <select id="bV">${sel1.map(x=>`<option ${qb.v===x?'selected':''}>${x}</option>`).join('')}</select>에 따라 어떻게 달라질까?`}</div>
+    ${(()=>{const c=card(),d=c&&CARD_DATA[c.no]; if(!d) return ''; const ch=(arr,to)=>arr.map(x=>`<button type="button" class="dchip" data-to="${to}" data-x="${esc(x)}">${esc(x)}</button>`).join('');
+      return `<div class="fillchips"><p class="hint">카드의 자료 상자에서 눌러 채우기 — 누른 뒤 내 말로 고쳐도 좋아요.</p>
+        <div><b>장소·대상 →</b> ${ch(d.place,'bA')}</div><div><b>관측·측정할 것 →</b> ${ch(d.target,'bB')}</div>${t===0?`<div><b>아직 모르는 것(알고 싶은 것) →</b> ${ch(d.unknown,'bC')}</div>`:''}</div>`;})()}
     <div class="rowb"><span class="prev">만들어진 문장: <b id="bPrev"></b></span><button class="btn sm pri" id="bUse">이 문장을 나의 질문 ${QI+1}로</button></div>`;
   const upd=()=>{qb.a=$('#bA').value;qb.b=$('#bB').value;qb.v=$('#bV').value;if($('#bC'))qb.c=$('#bC').value;$('#bPrev').textContent=TPL[t].f(qb);persist();};
   ['#bA','#bB','#bV','#bC'].forEach(s=>{const e=$(s); if(e) e.addEventListener('input',upd);}); upd();
+  $$('#builder .dchip').forEach(b=>b.addEventListener('click',()=>{const e=$('#'+b.dataset.to); if(!e) return; e.value=b.dataset.x; e.dispatchEvent(new Event('input',{bubbles:true})); e.focus();}));
   $$('#builder .tsel button').forEach(b=>b.addEventListener('click',()=>{qb.t=+b.dataset.t; qb.v=''; save(); renderBuilder();}));
   $('#bUse').addEventListener('click',()=>{S.s1.q[QI]=TPL[t].f(qb); $('#qText').value=S.s1.q[QI]; save(); renderCheck(); toast('나의 질문 '+(QI+1)+'에 넣었어요. 더 다듬어도 좋아요.');});
   $('#qLabel').textContent='나의 질문 '+(QI+1); $('#qText').value=S.s1.q[QI]||'';
