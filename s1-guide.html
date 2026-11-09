@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우주 탐사 기획단 · 1차시 수업 안내</title>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--space:#070B1E;--panel:#111834;--panel2:#0D1329;--line:#26335E;--ink:#EAF0FF;--mut:#9BA8CE;--flame:#FF9F45;--ion:#6FB7FF;--gold:#FFD166;--danger:#FF7A7A;--ok:#7BE0AD}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--space);color:var(--ink);font-family:'Noto Sans KR',sans-serif;line-height:1.5;overflow:hidden}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.disp{font-family:'Do Hyeon',sans-serif;letter-spacing:.02em}
+.deck{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
+.slide{display:none;flex:1;padding:clamp(24px,5vh,56px) clamp(24px,6vw,96px);flex-direction:column;justify-content:center;gap:clamp(14px,2.5vh,28px);max-width:1400px;width:100%;margin:0 auto}
+.slide.on{display:flex}
+.eyebrow{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 16px;font-size:clamp(.85rem,1.4vw,1.1rem);color:var(--ion);background:rgba(111,183,255,.07);width:max-content}
+h1{font-size:clamp(2.2rem,6.5vw,5rem);line-height:1.15}
+h1 .hl{color:var(--flame)}
+h2{font-size:clamp(1.8rem,4.6vw,3.6rem);line-height:1.2}
+h2 .hl{color:var(--flame)}
+p.lead{font-size:clamp(1.1rem,2.4vw,1.9rem);color:var(--mut)}
+.big{font-size:clamp(1.4rem,3.2vw,2.6rem);line-height:1.4}
+.big b{color:var(--gold)}
+.cards{display:grid;gap:clamp(10px,1.6vw,20px)}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(14px,2.2vw,28px);font-size:clamp(1rem,2vw,1.6rem)}
+.card h3{font-size:clamp(1.15rem,2.4vw,1.9rem);margin-bottom:8px;color:var(--ion)}
+.card.warm h3{color:var(--flame)}.card.ok h3{color:var(--ok)}.card.bad h3{color:var(--danger)}
+.card .em{font-size:clamp(1.8rem,4vw,3.2rem);display:block;margin-bottom:6px}
+.num{display:inline-grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;background:var(--flame);color:#1a0d00;font-weight:900;margin-right:.5em;flex:none}
+ol.steps{list-style:none;display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);font-size:clamp(1.05rem,2.2vw,1.75rem)}
+ol.steps li{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:clamp(8px,1.4vh,16px) clamp(12px,2vw,24px)}
+ol.steps li .t{margin-left:auto;color:var(--gold);font-weight:700;white-space:nowrap}
+ol.steps li .d{color:var(--mut);font-size:.85em}
+ol.steps li button{margin-left:10px;background:transparent;border:1px solid var(--line);color:var(--ion);border-radius:999px;padding:4px 12px;font:inherit;font-size:.75em;cursor:pointer}
+ol.steps li button:hover{background:rgba(111,183,255,.12)}
+table{width:100%;border-collapse:collapse;font-size:clamp(.95rem,1.9vw,1.5rem)}
+th,td{text-align:left;padding:clamp(8px,1.3vh,14px) clamp(10px,1.4vw,18px);border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:500;font-size:.85em}
+td.bad{color:var(--danger)}td.good{color:var(--ok)}
+.chk{display:flex;flex-direction:column;gap:10px;font-size:clamp(1.1rem,2.4vw,1.9rem)}
+.chk span{display:flex;gap:12px;align-items:flex-start}
+.chk span::before{content:'☐';color:var(--gold)}
+.warn{border-left:5px solid var(--flame);background:rgba(255,159,69,.08);padding:12px 18px;border-radius:0 12px 12px 0;font-size:clamp(1rem,2vw,1.5rem)}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;gap:10px;padding:10px 18px;color:var(--mut);font-size:.85rem;background:linear-gradient(transparent,rgba(7,11,30,.9))}
+.foot .pg{margin-left:auto}
+.foot button{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
+.foot a{color:var(--mut)}
+#timer{position:fixed;top:14px;right:18px;z-index:3;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 14px;display:flex;align-items:center;gap:10px;font-size:.95rem}
+#timer .tm{font-family:'Do Hyeon',sans-serif;font-size:2rem;min-width:3.2em;text-align:center;color:var(--gold)}
+#timer.over .tm{color:var(--danger);animation:bl 1s steps(2) infinite}
+@keyframes bl{to{opacity:.3}}
+#timer button{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}
+#timer button:hover{background:rgba(255,255,255,.06)}
+@media (max-width:760px){.c3,.c4{grid-template-columns:1fr 1fr}.c2{grid-template-columns:1fr}#timer .tm{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div id="timer" title="시간 재기: 흐름 슬라이드의 ▶ 버튼 또는 숫자 키">
+  <span class="tm" id="tm">--:--</span>
+  <button data-m="3">3분</button><button data-m="5">5분</button><button data-m="8">8분</button><button data-m="10">10분</button>
+  <button id="tstop">■</button>
+</div>
+
+<div class="deck">
+
+<!-- 1 -->
+<section class="slide on">
+  <span class="eyebrow">수행평가 · 우주 탐사 기획단 · 1차시</span>
+  <h1 class="disp">성과에서 <span class="hl">다음 질문</span> 찾기</h1>
+  <p class="lead">기존 탐사는 무엇을 밝혔고, 어떤 질문을 남겼을까?</p>
+  <p class="big">오늘 우리가 하는 일은 성공한 탐사를 <b>소개</b>하는 게 아니라,<br>그 탐사가 남긴 질문을 찾아 <b>우리 모둠의 대표 질문 한 문장</b>을 만드는 것.</p>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <span class="eyebrow">수행평가 한눈에</span>
+  <h2 class="disp">3차시 + 개인 최종 <span class="hl">10점</span></h2>
+  <div class="cards c4">
+    <div class="card"><span class="em">❓</span><h3>1차시 · 오늘</h3>질문 찾기 → 모둠 대표 질문</div>
+    <div class="card"><span class="em">🛰️</span><h3>2차시</h3>질문에 답하는 탐사 계획</div>
+    <div class="card"><span class="em">🏛️</span><h3>3차시</h3>탐사위원회 (브리핑·투자 토큰)</div>
+    <div class="card warm"><span class="em">✍️</span><h3>개인 최종</h3>혼자 쓰는 활동지 · 여기서 채점</div>
+  </div>
+  <div class="cards c2">
+    <div class="card ok"><h3>평가하는 것</h3><b>질문 – 자료 – 방법 – 임무</b>가 서로 연결된 계획의 타당성</div>
+    <div class="card bad"><h3>평가하지 않는 것</h3>어떤 카드를 골랐는지 · 도전카드 교환 여부 · 발표 실력 · 디자인 · 토큰 수</div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <span class="eyebrow">시작 전 체크</span>
+  <h2 class="disp">먼저 <span class="hl">세 가지</span>를 고르세요</h2>
+  <div class="chk">
+    <span>사이트 접속 → 위쪽에서 <b>&nbsp;반 · 모둠 · 번호&nbsp;</b> 선택</span>
+    <span>화면에 <b>&nbsp;'선생님께 저장됨 ✓'&nbsp;</b> 가 뜨는지 확인 (번호를 안 고르면 저장되지 않아요)</span>
+    <span>탭에서 <b>&nbsp;1차시&nbsp;</b> 누르기</span>
+  </div>
+  <div class="warn">와이파이가 잠깐 끊겨도 괜찮아요. 쓴 내용은 기기에 먼저 저장되고, 연결되면 올라갑니다.</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <span class="eyebrow">오늘의 흐름 · 45분</span>
+  <h2 class="disp">개인 작성 → 모둠 공유 → <span class="hl">대표 질문</span></h2>
+  <ol class="steps">
+    <li><span class="num">1</span>탐사의 가치 <span class="d">· 오늘 내가 쓴 우주 기술 한 가지</span><span class="t">3분</span><button data-m="3">▶</button></li>
+    <li><span class="num">2</span>모둠 카드 고르기 <span class="d">· 앞면만 보고 1장</span><span class="t">7분</span><button data-m="7">▶</button></li>
+    <li><span class="num">3</span>카드 자세히 읽기 <span class="d">· ①②③ 내 말로</span><span class="t">8분</span><button data-m="8">▶</button></li>
+    <li><span class="num">4</span>나의 질문 만들기 <span class="d">· 질문 틀 채우기 → 점검</span><span class="t">10분</span><button data-m="10">▶</button></li>
+    <li><span class="num">5</span>모둠 대표 질문 <span class="d">· 친구 질문 불러오기 → 한 문장</span><span class="t">9분</span><button data-m="9">▶</button></li>
+  </ol>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <span class="eyebrow">오늘의 규칙</span>
+  <h2 class="disp">세 가지만 <span class="hl">지켜요</span></h2>
+  <div class="cards c3">
+    <div class="card"><span class="em">🙈</span><h3>고르기 전엔 '자세히 보기' 금지</h3>앞면 정보만으로 비교하는 것도 훈련이에요. 카드가 다른 모둠과 겹쳐도 괜찮아요.</div>
+    <div class="card"><span class="em">🗣️</span><h3>카드 문장을 베끼지 않기</h3>내 말로 짧게. 베끼면 화면이 "내 말로 바꿔 써 볼까요?" 하고 알려 줘요.</div>
+    <div class="card"><span class="em">🎬</span><h3>영상은 다음 시간에</h3>오늘은 읽고 질문 만드는 데 집중. 우리 모둠 카드 영상은 2차시 시작할 때 봐요.</div>
+  </div>
+  <div class="warn">도전카드 교환(1회)은 대표 질문이 정해진 뒤에, "다른 카드가 우리 질문과 더 잘 맞는 이유" 한 문장과 함께 선생님께 말하세요.</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <span class="eyebrow">4단계 · 나의 질문</span>
+  <h2 class="disp">좋은 탐사 질문의 <span class="hl">네 가지 조건</span></h2>
+  <ol class="steps">
+    <li><span class="num">1</span>우리가 고른 탐사 <b>&nbsp;성과에서 자연스럽게 이어진다</b></li>
+    <li><span class="num">2</span>우주 탐사로 <b>&nbsp;자료를 모아 답할 수 있다</b></li>
+    <li><span class="num">3</span>답을 알게 되면 <b>&nbsp;과학이나 인류에게 의미</b>가 있다</li>
+    <li><span class="num">4</span>너무 크거나 막연하지 않고 <b>&nbsp;관측·측정할 내용이 드러난다</b></li>
+  </ol>
+  <p class="lead">질문 틀의 빈칸을 채우면 문장이 만들어져요. 점검표는 <b style="color:var(--gold)">가장 자신 없는 조건 하나</b>만 골라 표시해도 됩니다.</p>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <span class="eyebrow">4단계 · 예시</span>
+  <h2 class="disp">이렇게 <span class="hl">고쳐</span> 보세요</h2>
+  <table>
+    <thead><tr><th>아직 부족한 질문</th><th>왜?</th><th>고친 질문</th></tr></thead>
+    <tbody>
+      <tr><td class="bad">화성에 물이 있을까?</td><td>이미 알려진 답</td><td class="good">화성 극지방 지하에서 얼음의 깊이를 레이더로 측정하면 물의 양을 알 수 있을까?</td></tr>
+      <tr><td class="bad">우주에 생명체가 있을까?</td><td>너무 큼</td><td class="good">예제로 충돌구의 다른 지층에서 암석 성분을 분석하면 과거 물 환경을 구분할 수 있을까?</td></tr>
+      <tr><td class="bad">달에 기지를 지을 수 있을까?</td><td>무엇을 잴지 안 보임</td><td class="good">달 남극 후보지에서 경사·온도·햇빛 시간을 측정하면 장기 체류 가능성을 판단할 수 있을까?</td></tr>
+    </tbody>
+  </table>
+  <p class="lead">막히면 카드 '자세히 보기'의 <b style="color:var(--gold)">질문 발판</b> 중 하나를 골라, 장소나 측정 대상 하나만 더 구체적으로 바꿔 보세요.</p>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <span class="eyebrow">5단계 · 모둠 대표 질문</span>
+  <h2 class="disp">한 문장으로, <span class="hl">전원이 같은 문장</span>으로</h2>
+  <ol class="steps">
+    <li><span class="num">1</span>"모둠원 질문 불러오기" → 친구 질문에서 <b>&nbsp;좋다고 생각한 점 한 줄</b></li>
+    <li><span class="num">2</span>토의해서 대표 질문 1개 결정 (합치거나 고쳐도 좋아요)</li>
+    <li><span class="num">3</span>기록 담당이 읽어 주면 <b>&nbsp;모두 자기 화면에 같은 문장</b> 입력 — 다음 시간 각자 화면에 떠야 해요</li>
+    <li><span class="num">4</span>선택한 이유 태그 <b>&nbsp;2개 이상</b> + 한두 문장 설명</li>
+  </ol>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <span class="eyebrow">정리 · 다음 시간</span>
+  <h2 class="disp">장비부터 고르지 말고,<br><span class="hl">필요한 자료</span>부터</h2>
+  <p class="big">2차시에는 오늘 만든 대표 질문에 답하려면 <b>어떤 자료</b>가 필요한지부터 정하고,<br>그 자료를 얻을 <b>장소 → 방법 → 장비·임무</b>를 차례로 연결합니다.</p>
+  <div class="cards c2">
+    <div class="card ok"><h3>오늘 끝났는지 확인</h3>나의 질문 1 저장 ✓ &nbsp; 모둠 대표 질문 + 이유 저장 ✓</div>
+    <div class="card"><h3>다음 시간 준비</h3>우리 모둠 카드의 영상을 함께 봅니다. 도전카드를 바꾸고 싶으면 이유 한 문장을 생각해 오세요.</div>
+  </div>
+</section>
+
+</div>
+
+<div class="foot">
+  <button id="prev">◀ 이전</button><button id="next">다음 ▶</button>
+  <span>← → 또는 스페이스 · F: 전체 화면 · 숫자 키 1~9: 타이머(분)</span>
+  <span class="pg"><span id="pg"></span> · <a href="./#s1">← 1차시 화면으로</a></span>
+</div>
+
+<script>
+(function(){
+  // 별 배경
+  const cv=document.getElementById('stars'),cx=cv.getContext('2d');
+  function draw(){cv.width=innerWidth;cv.height=innerHeight;cx.clearRect(0,0,cv.width,cv.height);
+    for(let i=0;i<220;i++){cx.globalAlpha=Math.random()*.7+.2;cx.fillStyle='#fff';cx.beginPath();cx.arc(Math.random()*cv.width,Math.random()*cv.height,Math.random()*1.3+.2,0,7);cx.fill();}}
+  draw();addEventListener('resize',draw);
+
+  // 슬라이드
+  const S=[...document.querySelectorAll('.slide')];let i=Math.max(0,Math.min(S.length-1,(parseInt(location.hash.slice(1),10)||1)-1));
+  function show(n){i=(n+S.length)%S.length;S.forEach((s,k)=>s.classList.toggle('on',k===i));document.getElementById('pg').textContent=(i+1)+' / '+S.length;history.replaceState(null,'','#'+(i+1));}
+  show(i);
+  document.getElementById('prev').onclick=()=>show(i-1);document.getElementById('next').onclick=()=>show(i+1);
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+    else if(/^[1-9]$/.test(e.key)){start(+e.key);}
+    else if(e.key==='Escape'){stop();}
+  });
+  // 터치: 좌우 스와이프
+  let x0=null;addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
+  addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)show(i+(dx<0?1:-1));x0=null;});
+
+  // 타이머
+  const T=document.getElementById('timer'),tm=document.getElementById('tm');let end=null,iv=null,beeped=false;
+  function fmt(ms){const s=Math.max(0,Math.round(ms/1000));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+  function tick(){const left=end-Date.now();tm.textContent=fmt(left);if(left<=0){T.classList.add('over');tm.textContent='00:00';if(!beeped){beeped=true;beep();}clearInterval(iv);iv=null;}}
+  function start(min){stop();end=Date.now()+min*60000;beeped=false;tick();iv=setInterval(tick,250);}
+  function stop(){if(iv)clearInterval(iv);iv=null;end=null;T.classList.remove('over');tm.textContent='--:--';}
+  function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.35,.7].forEach(t=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.setValueAtTime(.2,a.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.3);o.start(a.currentTime+t);o.stop(a.currentTime+t+.3);});}catch(e){}}
+  document.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();start(+b.dataset.m);}));
+  document.getElementById('tstop').onclick=stop;
+})();
+</script>
+</body>
+</html>

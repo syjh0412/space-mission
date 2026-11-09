@@ -388,12 +388,97 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 .lv button[aria-pressed="true"]{border-color:var(--flame);background:rgba(255,159,69,.12)}
 .ttotal{font-family:'Do Hyeon',sans-serif;font-size:1.5rem;color:var(--gold)}
 .toast2{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--gold);color:#1a1200;font-weight:700;padding:9px 20px;border-radius:999px;z-index:80;font-size:.9rem}
+
+/* ---------- 입장 화면 ---------- */
+#gate{position:fixed;inset:0;z-index:60;background:radial-gradient(1200px 600px at 50% -10%,rgba(111,183,255,.14),transparent 60%),var(--space);overflow-y:auto;-webkit-overflow-scrolling:touch;transition:opacity .55s ease,transform .55s ease}
+#gate.off{opacity:0;transform:translateY(-6%);pointer-events:none}
+#gate[hidden]{display:none}
+#gate .gin{max-width:760px;margin:0 auto;padding:40px 18px 48px;position:relative;z-index:1}
+#gate .gtop{text-align:center;margin-bottom:22px}
+#gate h1{font-size:clamp(2.2rem,8vw,3.6rem);line-height:1.15;margin-top:10px}
+#gate .gsub{color:var(--mut);margin-top:10px;font-size:clamp(.95rem,2.6vw,1.1rem)}
+#gate .gsub b{color:var(--ink)}
+#gate .gbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;margin-top:14px}
+#gate .gbox h2{font-size:1rem;color:var(--ion);letter-spacing:.04em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+#gate .gbox h2 .ey{font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--mut);font-weight:500}
+#gate .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#gate .flow div{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;font-size:.86rem;line-height:1.35}
+#gate .flow div b{display:block;color:var(--gold);font-size:.78rem;margin-bottom:4px}
+#gate .flow div.fin{border-color:rgba(255,159,69,.5)}
+#gate .flow div.fin b{color:var(--flame)}
+#gate .ev{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+#gate .ev div{border-radius:12px;padding:10px 12px;font-size:.88rem;line-height:1.45}
+#gate .ev .y{background:rgba(123,224,173,.08);border:1px solid rgba(123,224,173,.35)}
+#gate .ev .n{background:rgba(255,122,122,.06);border:1px solid rgba(255,122,122,.3)}
+#gate .ev b{display:block;margin-bottom:3px}
+#gate .ev .y b{color:var(--ok)}#gate .ev .n b{color:var(--danger)}
+#gate .gnote{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:var(--mut);margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+#gate .gnote span:first-child{font-size:1.1rem}
+#gate .idg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+#gate .idg label{display:flex;flex-direction:column;gap:5px;font-size:.82rem;color:var(--mut)}
+#gate .idg select,#gate .idg input{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 10px;font:inherit;font-size:1rem;width:100%}
+#gate .idg .nm{grid-column:1/-1}
+#gate .ghint{font-size:.82rem;color:var(--mut);margin-top:10px;min-height:1.2em}
+#gate .ghint.ok{color:var(--ok)}
+#gate .go{display:block;width:100%;margin-top:16px;background:linear-gradient(135deg,var(--flame),#ff7a2f);color:#1a0d00;border:0;border-radius:14px;padding:16px;font:inherit;font-family:'Do Hyeon',sans-serif;font-size:1.45rem;letter-spacing:.03em;cursor:pointer;box-shadow:0 10px 30px rgba(255,159,69,.25);transition:transform .15s}
+#gate .go:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+#gate .go:not(:disabled):hover{transform:translateY(-2px)}
+#gate .go.launch{animation:lift .55s ease forwards}
+@keyframes lift{to{transform:translateY(-40px);opacity:0}}
+#gate .go2{display:block;text-align:center;margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--ink);text-decoration:none;font-size:.95rem}
+#gate .go2:hover{background:rgba(255,255,255,.05)}
+#gate .glinks{display:flex;justify-content:center;gap:18px;margin-top:14px;font-size:.82rem}
+#gate .glinks a,#gate .glinks button{color:var(--mut);background:none;border:0;font:inherit;font-size:.82rem;text-decoration:underline;cursor:pointer}
+@media (max-width:560px){#gate .flow{grid-template-columns:1fr 1fr}#gate .ev{grid-template-columns:1fr}#gate .idg{grid-template-columns:1fr 1fr}}
+
+/* ---------- 브리핑·카드 단추 ---------- */
+.hflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.hflow a{display:flex;flex-direction:column;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--ink);text-decoration:none;transition:border-color .15s,transform .15s}
+.hflow a:hover{border-color:var(--ion);transform:translateY(-2px)}
+.hflow a b{color:var(--gold);font-size:.82rem}
+.hflow a.fin b{color:var(--flame)}.hflow a.fin{border-color:rgba(255,159,69,.45)}
+.hflow a span{font-weight:700}
+.hflow a small{color:var(--mut);line-height:1.4}
+.hflow a.done{border-color:rgba(123,224,173,.6)}
+.hflow a.done b::after{content:' ✓';color:var(--ok)}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hgrid .box p{margin:0;font-size:.95rem}
+.cardfab{position:fixed;right:14px;bottom:16px;z-index:40;background:var(--panel);border:1px solid var(--ion);color:var(--ink);border-radius:999px;padding:10px 16px;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.cardfab:hover{background:var(--panel2)}
+.cardfab[hidden]{display:none}
+.intro .chips{margin:8px 0 6px}
+.intro .punch{text-align:left;margin:8px 0 12px}
+@media (max-width:640px){.hflow{grid-template-columns:1fr 1fr}.hgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <nav class="unitnav" aria-label="별과 우주 활동"><div class="in"><span class="lbl">별과 우주 활동</span><a href="star-hunt/">우리은하 천체 탐험대</a><a href="expanding-universe/">팽창하는 우주 탐구실</a><a href="./" aria-current="page">우주 탐사 기획단</a></div></nav>
 <div class="tband" id="tband" hidden><b>교사 시범 모드</b><span>이 기기에서 학생 화면에 입력한 내용은 구글 시트에 저장되지 않고, 학생들 화면에도 나타나지 않아요.</span><button type="button" id="tbandOff">시범 모드 끝내기</button></div>
+
+<!-- ========== 입장 화면 ========== -->
+<div id="gate" role="dialog" aria-label="우주 탐사 기획단 입장" hidden>
+  <div class="gin">
+    <div class="gtop">
+      <div class="badge">MISSION PLANNING OFFICE · 중2 과학 Ⅷ. 별과 우주</div>
+      <h1 class="disp">우주 탐사 <span class="hl">기획단</span></h1>
+      <p class="gsub">기획단원 신분을 확인합니다.<br>지난 시간과 <b>같은 반·모둠·번호</b>로 들어오면 기록이 이어져요.</p>
+    </div>
+    <div class="gbox">
+      <div class="idg">
+        <label>반<select id="gCls"><option value="">선택</option><option>2-1</option><option>2-2</option><option>2-3</option><option>2-4</option><option>2-5</option></select></label>
+        <label>모둠<select id="gGrp"><option value="">선택</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+        <label>번호<select id="gNum"><option value="">선택</option></select></label>
+        <label class="nm">이름 <small>(선택)</small><input id="gName" autocomplete="off" placeholder="이름"></label>
+      </div>
+      <p class="ghint" id="gHint"></p>
+      <button type="button" class="go" id="gGo" disabled>🚀 기획단 입장</button>
+      <a class="go2" href="#teacher" id="gTeacher">선생님으로 입장</a>
+      <div class="glinks"><button type="button" id="gSkip">둘러보기만 할게요 (저장 안 됨)</button></div>
+    </div>
+  </div>
+</div>
 <div id="stars"></div>
+<a class="cardfab" id="cardfab" href="#cards" hidden>📇 카드</a>
 <div class="wrap">
 
 <header>
@@ -411,7 +496,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 </div>
 
 <nav class="mtabs" aria-label="수행평가 단계"><div class="in" id="mtabs">
-  <a href="#cards" data-v="cards">미션 카드</a>
+  <a href="#home" data-v="home">브리핑</a>
   <a href="#s1" data-v="s1">1차시 <small>질문 찾기</small></a>
   <a href="#s2" data-v="s2">2차시 <small>탐사 계획</small></a>
   <a href="#s3" data-v="s3">3차시 <small>탐사위원회</small></a>
@@ -419,13 +504,37 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 </div></nav>
 
 
-<section class="view" id="v-cards">
-<section class="hook">
-  <h2 class="disp"><span class="q">"우주 탐사? 나랑 무슨 상관인데…"</span></h2>
-  <p class="lead">그럴까? 오늘 하루를 돌아보자. 아래에서 오늘 해당하는 것을 눌러 봐.</p>
-  <div class="chips" id="chips"></div>
-  <p class="punch" id="punch">방금 확인했듯이, 너는 오늘 이미 <b>우주 기술을 여러 번</b> 썼어.<br>우주 탐사는 '먼 이야기'가 아니라 <b>네 하루를 굴리는 기술의 뿌리</b>야. 그럼, 다음 탐사는 뭘 알아내야 할까?</p>
+
+<!-- ========== 임무 브리핑 ========== -->
+<section class="view" id="v-home" hidden>
+  <div class="vhead"><span class="eyebrow">MISSION BRIEFING · 임무 브리핑</span><h2 id="homeHello">기획단원, 환영합니다</h2>
+    <p>인류는 화성에 로버를 내리고, 달 궤도에 다누리를 띄우고, 명왕성을 스쳐 지나갔어요. 그런데 탐사가 끝날 때마다 답보다 <b>질문</b>이 더 많이 남았죠. 기획단의 임무는 성공한 탐사를 소개하는 게 아니라, 탐사가 남긴 <b>다음 질문</b>을 찾아 <b>새 임무</b>를 제안하는 것입니다.</p></div>
+
+  <div class="box">
+    <h3>임무 순서</h3>
+    <div class="hflow">
+      <a href="#s1" data-v="s1"><b>1차시</b><span>성과에서 다음 질문 찾기</span><small>도입 질문 → 모둠 카드 → 카드 읽기 → 나의 질문 → 대표 질문</small></a>
+      <a href="#s2" data-v="s2"><b>2차시</b><span>질문에 답하는 탐사 계획</span><small>필요한 자료 → 대상·장소 → 방법 → 장비·임무 → 가치·책임</small></a>
+      <a href="#s3" data-v="s3"><b>3차시</b><span>우주탐사위원회</span><small>2분 브리핑 → 위원 기록 → 투자 토큰 → 최종 수정</small></a>
+      <a href="#final" data-v="final" class="fin"><b>개인 최종 · 10점</b><span>혼자 쓰는 활동지</span><small>모둠 기록은 참고만, 답은 내 말로</small></a>
+    </div>
+  </div>
+
+  <div class="hgrid">
+    <div class="box"><h3>평가하는 것</h3><p>질문 – 필요한 자료 – 탐사 방법 – 임무가 서로 <b>연결</b>된 계획의 타당성. 장비가 화려한 계획이 아니라 <b>질문에 답하는</b> 계획이 좋은 계획이에요.</p></div>
+    <div class="box"><h3>기록</h3><p>쓴 내용은 이 기기에 먼저 저장되고, 반·모둠·번호가 맞으면 선생님께도 저장돼요. 다음 시간에 같은 번호로 들어오면 이어서 할 수 있어요.</p></div>
+  </div>
+
+  <div class="box">
+    <h3>미션 카드</h3>
+    <p class="hint">실제 탐사 6개의 성과와 아직 남은 점이 담긴 카드예요. 1차시에서 모둠 카드를 고르고, 이후 언제든 오른쪽 아래 <b>📇 카드</b> 단추로 다시 열어 볼 수 있어요.</p>
+    <p><a class="btn sm" href="#cards">📇 미션 카드 전체 보기</a> <a class="btn sm" href="s1-guide.html" target="_blank" rel="noopener">📽 1차시 수업 안내 슬라이드</a></p>
+  </div>
+  <a class="btn pri nextb" href="#s1">1차시 시작 →</a>
 </section>
+
+<section class="view" id="v-cards">
+<p style="margin:10px 0 0"><a class="btn sm" href="#home" id="cardsBack">← 활동으로 돌아가기</a></p>
 
 <section>
   <h2 class="sec-title disp"><span class="tag">MISSION GUIDE</span>진행 방법</h2>
@@ -452,9 +561,10 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 <!-- ========== 1차시 ========== -->
 <section class="view" id="v-s1" hidden>
   <div class="vhead"><span class="eyebrow">1차시 · 성과에서 다음 질문 찾기</span><h2>기존 탐사는 무엇을 밝혔고, 어떤 질문을 남겼을까?</h2>
-    <p>개인 작성 → 모둠 공유 → 대표 질문 선정 순서로 진행해요.</p></div>
+    <p>개인 작성 → 모둠 공유 → 대표 질문 선정 순서로 진행해요.</p>
+    <p><a class="btn sm" href="s1-guide.html" target="_blank" rel="noopener">📽 1차시 수업 안내 슬라이드 (교실 화면용)</a></p></div>
   <div class="subnav" role="tablist">
-    <button data-p="a" aria-selected="true"><span class="sn">1</span>탐사의 가치</button>
+    <button data-p="a" aria-selected="true"><span class="sn">1</span>도입 질문</button>
     <button data-p="b"><span class="sn">2</span>모둠 카드</button>
     <button data-p="c"><span class="sn">3</span>카드 읽기</button>
     <button data-p="d"><span class="sn">4</span>나의 질문</button>
@@ -462,12 +572,14 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   </div>
 
   <div class="pane" data-p="a">
-    <div class="box fld">
-      <h3>공통 도입에서 발견한 우주 탐사의 가치</h3>
-      <span>우주 탐사가 새롭게 알게 해 준 것, 또는 우리 생활·과학에 준 도움 <small>한 가지 이상</small></span>
+    <div class="box fld intro">
+      <h3>도입 질문 · "우주 탐사? 나랑 무슨 상관인데…"</h3>
+      <p class="hint">그럴까? 오늘 하루를 돌아보자. 해당하는 것을 눌러 봐.</p>
+      <div class="chips" id="chips"></div>
+      <p class="punch" id="punch">방금 확인했듯이, 너는 오늘 이미 <b>우주 기술을 여러 번</b> 썼어. 우주 탐사는 '먼 이야기'가 아니라 <b>네 하루를 굴리는 기술의 뿌리</b>야. 그럼, 다음 탐사는 뭘 알아내야 할까?</p>
+      <span>오늘 내 하루에서 우주 기술 덕분에 가능했던 일, 또는 우주 탐사가 새롭게 알게 해 준 것을 <b>내 말로</b> 써 보자 <small>한 가지 이상</small></span>
       <div class="starter" data-for="s1.value"><button>일기예보의 구름 사진은</button><button>지도 앱의 내 위치는</button><button>재난 문자와 산불 감시는</button><button>병원 검사 기술 일부는</button></div>
-      <textarea data-k="s1.value" placeholder="예) 기상위성 덕분에 태풍을 미리 알 수 있어서…"></textarea>
-      <p class="hint">미션 카드 탭 맨 위의 ‘오늘 해당하는 것’을 눌러 보면 떠올리기 쉬워요.</p>
+      <textarea data-k="s1.value" placeholder="예) 아침에 본 일기예보의 구름 사진은 기상위성이 찍은 거라서, 태풍을 미리 알 수 있다."></textarea>
     </div>
     <button class="btn pri nextb pnext">다음: 모둠 카드 고르기 →</button>
   </div>
@@ -545,13 +657,25 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
     <p>좋은 계획은 장비가 화려한 계획이 아니라, <b>질문 - 필요한 자료 - 탐사 방법 - 임무</b>가 서로 연결된 계획이에요.</p></div>
   <div class="chainbar" id="chainbar"></div>
   <div class="subnav" role="tablist">
-    <button data-p="a" aria-selected="true"><span class="sn">1</span>질문 확인</button>
+    <button data-p="0" aria-selected="true"><span class="sn">★</span>도입 질문</button>
+    <button data-p="a"><span class="sn">1</span>질문 확인</button>
     <button data-p="b"><span class="sn">2</span>필요한 자료</button>
     <button data-p="c"><span class="sn">3</span>대상·장소</button>
     <button data-p="d"><span class="sn">4</span>탐사 방법</button>
     <button data-p="e"><span class="sn">5</span>장비·임무</button>
     <button data-p="f"><span class="sn">6</span>결과·가치·책임</button>
     <button data-p="g"><span class="sn">7</span>연결 문장</button>
+  </div>
+
+  <div class="pane" data-p="0">
+    <div class="box fld intro">
+      <h3>도입 질문 · 장비보다 먼저</h3>
+      <span>우리 모둠 대표 질문</span>
+      <textarea data-k="s1.rep" class="short" readonly></textarea>
+      <span>이 질문의 답을 알려면 <b>무엇을 재거나 보아야</b> 할까? 장비 이름 말고, <b>알아내야 할 것</b>을 내 말로 한 가지 <small>예) 지하 얼음이 어느 깊이에 얼마나 있는지</small></span>
+      <textarea data-k="s2.intro" placeholder="예) 그 장소의 흙 속에 물이 얼마나 있는지를 알아야 한다."></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 질문 확인 →</button>
   </div>
 
   <div class="pane" data-p="a">
@@ -665,11 +789,21 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <div class="vhead"><span class="eyebrow">3차시 · 우주탐사위원회</span><h2>어떤 탐사가 가치 있고 책임 있는 계획일까?</h2>
     <p>발표는 점수 경쟁이 아니라 계획을 검증하고 보완하는 과정이에요.</p></div>
   <div class="subnav" role="tablist">
-    <button data-p="a" aria-selected="true"><span class="sn">1</span>2분 브리핑</button>
+    <button data-p="0" aria-selected="true"><span class="sn">★</span>도입 질문</button>
+    <button data-p="a"><span class="sn">1</span>2분 브리핑</button>
     <button data-p="b"><span class="sn">2</span>발표 전 점검</button>
     <button data-p="c"><span class="sn">3</span>위원 기록</button>
     <button data-p="d"><span class="sn">4</span>투자 토큰</button>
     <button data-p="e"><span class="sn">5</span>최종 수정</button>
+  </div>
+
+  <div class="pane" data-p="0">
+    <div class="box fld intro">
+      <h3>도입 질문 · 위원의 눈으로</h3>
+      <span>내가 우주탐사위원회 위원이라면, 어떤 계획에 투자할까? 계획을 고를 때 <b>꼭 확인할 조건 한 가지</b>를 내 말로 <small>예) 모은 자료로 정말 질문에 답할 수 있는지</small></span>
+      <textarea data-k="s3.intro" placeholder="예) 탐사 방법이 질문에 필요한 자료를 실제로 얻을 수 있는지 확인하겠다."></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 2분 브리핑 →</button>
   </div>
 
   <div class="pane" data-p="a">
@@ -748,11 +882,21 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <details class="mydraft" id="myDraft"><summary>참고: 내가 1~3차시에 쓴 기록 보기</summary><div id="draftBody"></div></details>
 
   <div class="subnav" role="tablist">
-    <button data-p="a" aria-selected="true"><span class="sn">1</span>질문 설정 <span class="pt">3</span></button>
+    <button data-p="0" aria-selected="true"><span class="sn">★</span>도입 질문</button>
+    <button data-p="a"><span class="sn">1</span>질문 설정 <span class="pt">3</span></button>
     <button data-p="b"><span class="sn">2</span>자료·방법 <span class="pt">2</span></button>
     <button data-p="c"><span class="sn">3</span>대상·장비·임무 <span class="pt">2</span></button>
     <button data-p="d"><span class="sn">4</span>가치·책임 <span class="pt">3</span></button>
     <button data-p="e"><span class="sn">5</span>점검·제출</button>
+  </div>
+
+  <div class="pane" data-p="0">
+    <div class="box fld intro">
+      <h3>도입 질문 · 돌아보기</h3>
+      <span>1차시에 만든 우리 질문과 지금의 계획을 비교하면, <b>처음과 달라진 점</b>이나 <b>더 분명해진 점</b>은 무엇인가? <small>채점하지 않는 칸이에요. 아래 답을 쓰기 전에 생각을 정리해요.</small></span>
+      <textarea data-k="fin.intro" placeholder="예) 처음엔 '물이 있을까'였는데, 지금은 어느 깊이에 얼마나 있는지를 레이더로 재는 계획이 되었다."></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 질문 설정 →</button>
   </div>
 
   <div class="pane" data-p="a">
@@ -835,7 +979,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a></p>
 
 
 </div>
@@ -1191,12 +1335,16 @@ async function push(){ if(!GAS||sending||!S.unsent||!S.cls||!S.grp||!S.num||isDe
 setInterval(()=>{if(S.unsent)push();},15000); window.addEventListener('online',()=>{if(S.unsent)push();});
 
 /* ---------- 화면 전환 ---------- */
-const VIEWS=['cards','s1','s2','s3','final','teacher']; const SUB={};
+const VIEWS=['home','cards','s1','s2','s3','final','teacher']; const SUB={}; let LASTV='home';
+function renderHome(){const h=$('#homeHello'); if(!h) return; const who=(S.cls&&S.grp&&S.num)?`${S.cls}반 ${S.grp}모둠 ${S.num}번${S.name?' '+S.name:''} 기획단원, 환영합니다`:'기획단원, 환영합니다'; h.textContent=who;}
 function show(){
-  let v=(location.hash||'').slice(1); if(!VIEWS.includes(v)) v='cards';
+  let v=(location.hash||'').slice(1); if(!VIEWS.includes(v)) v='home';
   VIEWS.forEach(x=>{const el=$('#v-'+x); if(el) el.hidden=(x!==v);});
   $$('#mtabs a').forEach(a=>{if(a.dataset.v===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  document.body.classList.toggle('compact',v!=='cards');
+  document.body.classList.add('compact');
+  const fab=$('#cardfab'); if(fab) fab.hidden=!(v==='s1'||v==='s2'||v==='s3'||v==='final');
+  if(v==='cards'){const bk=$('#cardsBack'); if(bk) bk.href='#'+(LASTV||'home');} else LASTV=v;
+  if(v==='home') renderHome();
   $('#idbar').hidden=(v==='teacher'); $('.mtabs').hidden=(v==='teacher');
   const sec=$('#v-'+v); if(sec&&sec._go) sec._go(SUB[sec.id]||sec.querySelector('.pane').dataset.p,false);
   if(v==='teacher') teacherOpen();
@@ -1220,14 +1368,14 @@ function initSubs(){
 const has=v=>!!String(v||'').trim();
 function paneDone(sec,p){const s1=S.s1,s2=S.s2,s3=S.s3,f=S.fin;
   const M={'v-s1':{a:has(s1.value),b:s1.card!=null,c:has(s1.read.a)&&has(s1.read.b)&&has(s1.read.c),d:has(s1.q[0])&&has(s1.q[1]),e:has(s1.rep)&&has(s1.repWhy)},
-   'v-s2':{a:has(s2.cardSum)&&has(s1.rep),b:s2.data.some(r=>r&&has(r.d)&&has(r.how)),c:has(s2.target.body)&&has(s2.target.place)&&has(s2.target.why),d:s2.methods.length>0&&has(s2.methodWhy),e:s2.gear.some(r=>r&&has(r.g)&&has(r.job)),f:has(s2.expect)&&has(s2.value)&&has(s2.debrisPlan),g:has(s2.link.d)&&has(s2.link.m)&&has(s2.link.g)&&has(s2.link.j)},
-   'v-s3':{a:s3.brief.some(r=>r&&has(r.line)),b:s3.check.filter(Boolean).length>=5,c:Object.values(s3.peer||{}).some(r=>r&&(has(r.best)||has(r.ask))),d:!!s3.token.grp&&has(s3.token.text),e:has(s3.revised)},
-   'v-final':{a:has(f.a1)&&has(f.a2)&&has(f.a3),b:has(f.b1)&&has(f.b2),c:f.c.some(r=>r&&has(r.t)&&has(r.g))&&has(f.c2),d:has(f.d1)&&has(f.d2)&&has(f.d3),e:!!f.submitted}};
+   'v-s2':{'0':has(s2.intro),a:has(s2.cardSum)&&has(s1.rep),b:s2.data.some(r=>r&&has(r.d)&&has(r.how)),c:has(s2.target.body)&&has(s2.target.place)&&has(s2.target.why),d:s2.methods.length>0&&has(s2.methodWhy),e:s2.gear.some(r=>r&&has(r.g)&&has(r.job)),f:has(s2.expect)&&has(s2.value)&&has(s2.debrisPlan),g:has(s2.link.d)&&has(s2.link.m)&&has(s2.link.g)&&has(s2.link.j)},
+   'v-s3':{'0':has(s3.intro),a:s3.brief.some(r=>r&&has(r.line)),b:s3.check.filter(Boolean).length>=5,c:Object.values(s3.peer||{}).some(r=>r&&(has(r.best)||has(r.ask))),d:!!s3.token.grp&&has(s3.token.text),e:has(s3.revised)},
+   'v-final':{'0':has(f.intro),a:has(f.a1)&&has(f.a2)&&has(f.a3),b:has(f.b1)&&has(f.b2),c:f.c.some(r=>r&&has(r.t)&&has(r.g))&&has(f.c2),d:has(f.d1)&&has(f.d2)&&has(f.d3),e:!!f.submitted}};
   return !!(M[sec]&&M[sec][p]);}
 function refreshDone(){
   $$('section.view').forEach(sec=>sec.querySelectorAll('.subnav button').forEach(b=>b.classList.toggle('done',paneDone(sec.id,b.dataset.p)&&b.getAttribute('aria-selected')!=='true')));
   const tab={s1:paneDone('v-s1','e'),s2:paneDone('v-s2','g'),s3:paneDone('v-s3','e'),final:!!S.fin.submitted};
-  $$('#mtabs a').forEach(a=>a.classList.toggle('done',!!tab[a.dataset.v]));
+  $$('#mtabs a, .hflow a').forEach(a=>a.classList.toggle('done',!!tab[a.dataset.v]));
 }
 
 /* ---------- 1차시: 카드 고르기 ---------- */
@@ -1404,6 +1552,34 @@ if(isDemo()){ pill('ok','교사 시범 · 저장 안 함'); } else if(GAS){ if(S
 show();
 })();
 
+</script>
+<script>
+/* ---------- 입장 화면 ---------- */
+(function(){
+  const g=document.getElementById('gate'); if(!g) return;
+  const q=s=>document.querySelector(s);
+  const SEEN='space-mission-gate-seen';
+  const map=[['gCls','idCls'],['gGrp','idGrp'],['gNum','idNum'],['gName','idName']];
+  q('#gNum').innerHTML='<option value="">선택</option>'+Array.from({length:23},(_,i)=>`<option>${i+1}</option>`).join('');
+  function pull(){ map.forEach(([a,b])=>{const src=q('#'+b); if(src) q('#'+a).value=src.value;}); check(); }
+  function pushTo(a,b){ const src=q('#'+b); if(!src) return; src.value=q('#'+a).value; src.dispatchEvent(new Event('input',{bubbles:true})); }
+  function check(){
+    const c=q('#gCls').value,gr=q('#gGrp').value,n=q('#gNum').value, ok=c&&gr&&n;
+    q('#gGo').disabled=!ok;
+    const h=q('#gHint'); h.className='ghint'+(ok?' ok':'');
+    h.textContent=ok?`${c}반 ${gr}모둠 ${n}번으로 입장해요. 다음 시간에도 똑같이 골라 주세요.`:'반·모둠·번호를 모두 골라야 선생님께 저장돼요.';
+  }
+  map.forEach(([a,b])=>q('#'+a).addEventListener('input',()=>{pushTo(a,b);check();}));
+  function open(){ pull(); g.hidden=false; g.classList.remove('off'); document.body.style.overflow='hidden'; }
+  function close(){ g.classList.add('off'); document.body.style.overflow=''; try{sessionStorage.setItem(SEEN,'1');}catch(e){} setTimeout(()=>{g.hidden=true;},600); }
+  q('#gGo').addEventListener('click',()=>{ const b=q('#gGo'); b.classList.add('launch'); b.textContent='🚀 발사!'; setTimeout(()=>{close(); if(location.hash!=='#home'){location.hash='#home';} else {window.dispatchEvent(new Event('hashchange'));}},350); });
+  q('#gSkip').addEventListener('click',()=>{close(); if(!location.hash||location.hash==='#cards') location.hash='#home';});
+  q('#gTeacher').addEventListener('click',()=>{close();});
+  const again=document.getElementById('gateAgain'); if(again) again.addEventListener('click',e=>{e.preventDefault();open();});
+  let seen=false; try{seen=sessionStorage.getItem(SEEN)==='1';}catch(e){}
+  const h=(location.hash||'').slice(1);
+  if(!seen && h!=='teacher') open();
+})();
 </script>
 </body>
 </html>
