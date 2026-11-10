@@ -1010,7 +1010,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1110b</span></p>
 
 
 </div>
@@ -1489,7 +1489,7 @@ function renderRef(sel){
   const c=card(), box=$(sel);
   if(!c){box.innerHTML='<div class="empty">먼저 ‘모둠 카드’ 단계에서 기본카드를 골라 주세요.</div>';return;}
   box.innerHTML=`<div class="cardref"><span class="ci">${c.em}${c.img?`<img src="${c.img}" alt="" onerror="this.remove()">`:''}</span><div class="cx"><b>${esc(c.title)}</b><p><em>아직 남은 점</em> ${esc(c.remain)}</p><div><button class="btn sm" data-open>카드 전체 다시 읽기</button></div></div></div>${dataBox(c,true)}`;
-  box.querySelector('[data-open]').addEventListener('click',()=>openOv(S.s1.card));
+  box.querySelector('[data-open]').addEventListener('click',()=>{try{openOv(S.s1.card);}catch(e){toast('카드를 열지 못했어요: '+(e&&e.message||e)+' — 새로고침(Ctrl+Shift+R) 후 다시 눌러 보세요');}});
   renderReadHelp();
 }
 // 카드 문장을 거의 그대로 옮겼는지 살펴봄 (두 글자 묶음이 얼마나 겹치는지)
