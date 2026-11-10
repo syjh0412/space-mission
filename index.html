@@ -1452,6 +1452,7 @@ function dataBox(c,compact){
     <div class="dchips"><b>📍 장소·대상 후보</b> ${d.place.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
     <div class="dchips"><b>📏 관측·측정할 것</b> ${d.target.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`;
 }
+window.dataBox=dataBox; // 카드 상세(다른 스크립트 블록)에서도 쓰므로 전역으로 공개
 
 /* ---------- 1차시: 카드 읽기 도움(문장 틀 + 카드별 예시) ---------- */
 const READ_FRAME={
