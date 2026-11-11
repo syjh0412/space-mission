@@ -521,7 +521,7 @@ canvas.gsc{width:100%;height:190px;display:block}
       <div class="panel stack">
         <h3>준비물</h3>
         <div class="kit"><span>둥근 풍선</span><span>줄자 (또는 실 + 자)</span><span>펜</span><span>붙임딱지 <small>부록 336쪽</small></span></div>
-        <div class="callout info"><b>잘 되는 요령</b><br>· 딱지는 풍선 <b>입구 근처를 피해</b> 가운데 둘레에 붙여요.<br>· 1~2는 가깝게, 1~3은 두 배쯤 멀게 붙여요.</div>
+        <div class="callout info"><b>잘 되는 요령</b><br>· 딱지는 꼭지(입구)와 그 반대쪽 끝(머리)을 피해 <b>풍선 옆면 둘레</b>에 붙여요. 풍선은 고르게 부풀지 않아서 옆면이 가장 잘 늘어나요.<br>· 1~2는 가깝게, 1~3은 두 배쯤 멀게 붙여요.</div>
       </div>
       <div class="panel stack">
         <h3>모둠 역할</h3>
@@ -936,7 +936,7 @@ function feedback(){
     else {kind='warn';msgs.push('처음에 더 가까웠던 쌍이 더 많이 늘었네요. 측정 오차일 수 있어요. 줄자를 표면에 밀착했는지, 딱지 가운데를 기준으로 쟀는지 확인하고 한 번 더 재 보세요.');}
     const diff=Math.abs(r12-r13)/((r12+r13)/2);
     if(diff<=0.15) msgs.push(`그런데 ‘몇 배’ 값은 <b class="num">${f2(r12)}배</b>와 <b class="num">${f2(r13)}배</b>로 비슷해요. 풍선 전체가 <b>같은 비율로</b> 늘어났다는 뜻입니다.`);
-    else msgs.push(`‘몇 배’ 값이 <span class="num">${f2(r12)}배</span>와 <span class="num">${f2(r13)}배</span>로 차이가 조금 커요. 풍선이 고르게 부풀지 않았거나(입구 근처는 덜 늘어나요) 측정 오차가 있을 수 있어요.`);
+    else msgs.push(`‘몇 배’ 값이 <span class="num">${f2(r12)}배</span>와 <span class="num">${f2(r13)}배</span>로 차이가 조금 커요. 풍선이 고르게 부풀지 않았거나(꼭지와 그 반대쪽 끝은 덜 늘어나요) 측정 오차가 있을 수 있어요.`);
     if(S.pred) msgs.push(`우리 모둠의 예측: “${PRED_TEXT[S.pred]}” → 실험 결과와 비교해 보세요.`);
   }
   box.innerHTML=`<div class="callout ${kind}">${msgs.map(m=>'<p>'+m+'</p>').join('')}</div>`;
@@ -1030,7 +1030,7 @@ function chartNotes(){
       sc+=`<p>점들이 대체로 <b>오른쪽 위로</b> 올라가요. 처음 거리가 먼 쌍일수록 더 많이 늘어났어요.</p>`;
       sc+=`<p>다만 <b>${odd.n}</b>의 점이 직선에서 조금 떨어져 있어요(처음 거리의 ${Math.round(odd.r*100)}% 증가). 풍선이 고르게 부풀지 않았거나 측정 오차일 수 있어요.</p>`;
     } else {
-      sc+=`<p>점들이 직선에서 많이 벗어나 있어요. 특히 <b>${odd.n}</b>을 다시 재 보세요. 줄자를 표면에 밀착했는지, 딱지 가운데에서 가운데까지 쟀는지, 풍선 입구 근처를 피했는지 확인해요.</p>`;
+      sc+=`<p>점들이 직선에서 많이 벗어나 있어요. 특히 <b>${odd.n}</b>을 다시 재 보세요. 줄자를 표면에 밀착했는지, 딱지 가운데에서 가운데까지 쟀는지, 딱지를 꼭지와 반대쪽 끝이 아닌 옆면에 붙였는지 확인해요.</p>`;
     }
     sc+=`<p class="link">우주에 비유하면: 멀리 있는 은하일수록 더 빨리, 더 많이 멀어진다는 뜻이에요.</p>`;
     if(Q.length===2) sc+='<p class="ex2">2~3 거리도 재면 점이 3개가 되어 경향이 더 분명해져요.</p>';
