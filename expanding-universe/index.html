@@ -958,6 +958,7 @@ function applyTeam(r){S.data={}; DKEYS.forEach(([p,k])=>{const v=String(r['d'+p+
   DKEYS.forEach(([p,k])=>{const el=$('#d'+p+k); if(el) el.value=(S.data[p]||{})[k]||'';}); updateLab(); paintTeam();}
 function paintTeam(){
   const box=$('#teamSync'); if(!box) return;
+  if(!GAS){box.hidden=true;return;} // 시트에 연결되지 않은 사본에서는 모둠 공유 안내를 숨김
   if(!GAS||!S.cls||!S.grp||!S.num){box.hidden=false; box.className='teamsync'; box.innerHTML='<span>반·모둠·번호를 고르면 모둠 친구가 입력한 측정값을 함께 볼 수 있어요.</span>'; return;}
   box.hidden=false;
   const r=TEAMROW;
