@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>탐구실 기록 모으기 설정</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* 한 줄로 따라가는 설정 단계 안내. 탐구실과 같은 밤하늘색 바탕에 금색 강조 */
+:root{
+  --bg:#0a0c18; --surface:#12162b; --surface-2:#191e38; --ink:#ebe9f7; --muted:#9a9dc2; --line:#2a3058;
+  --accent:#f2c14e; --on-accent:#1a1405; --indigo:#7fb1ff; --good:#6fdc9a; --warn:#ffb46e;
+  --f-display:"Do Hyeon","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7}
+[hidden]{display:none!important}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px;display:flex;flex-direction:column;gap:22px}
+h1,h2{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.25;text-wrap:balance}
+h1{font-size:clamp(28px,5vw,40px)}
+h1 b{font-weight:400;color:var(--accent)}
+h2{font-size:22px}
+p{margin:0}
+a{color:var(--indigo)}
+.lead{color:var(--muted);max-width:62ch}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.facts div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);font-size:14.5px}
+.facts b{display:block;color:var(--accent);font-family:var(--f-display);font-weight:400;font-size:17px}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:st}
+ol.steps>li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 18px 18px 64px;position:relative;display:flex;flex-direction:column;gap:10px;min-width:0}
+ol.steps>li::before{content:counter(st);position:absolute;left:16px;top:16px;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-family:var(--f-display);font-size:19px}
+.path{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14.5px}
+.path span{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:2px 10px}
+.path i{font-style:normal;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:8px 18px;font:inherit;font-size:15px;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--indigo)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+details.code summary{cursor:pointer;color:var(--indigo);font-size:14.5px}
+pre{margin:8px 0 0;max-height:280px;overflow:auto;background:#05060d;border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--f-mono);font-size:12.5px;line-height:1.5;white-space:pre}
+.warn{border-left:4px solid var(--warn);background:rgba(255,180,110,.08);border-radius:4px 10px 10px 4px;padding:10px 14px;font-size:14.5px}
+.warn b{color:var(--warn)}
+.tip{font-size:14px;color:var(--muted)}
+input.url{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;color:var(--ink);font-family:var(--f-mono);font-size:13px;padding:10px 12px}
+input.url.bad{border-color:var(--warn)}
+.out{display:flex;flex-direction:column;gap:12px}
+.lk{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px;min-width:0}
+.lk b{font-family:var(--f-display);font-weight:400;font-size:18px}
+.lk code{font-family:var(--f-mono);font-size:12px;color:var(--muted);overflow-wrap:anywhere;user-select:all}
+.qrbox{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+#qr{background:#fff;padding:10px;border-radius:10px;width:max-content}
+#qr img,#qr canvas{display:block}
+.state{font-size:14.5px}
+.state.ok{color:var(--good)} .state.no{color:var(--warn)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--on-accent);padding:8px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:9}
+@media (max-width:520px){ol.steps>li{padding:56px 16px 16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row"><a href="./">← 팽창하는 우주 탐구실로</a></div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <h1>학생 기록을 <b>내 구글 시트</b>에 모으기</h1>
+    <p class="lead">한 번만 설정하면, 우리 반 학생들이 탐구실에 입력한 예측·측정값·토의 문장·퀴즈 결과가 선생님의 구글 시트에 모이고, 선생님 화면에서 모둠별·학생별로 볼 수 있어요. 10분쯤 걸려요.</p>
+  </div>
+  <div class="facts">
+    <div><b>기록은 선생님 드라이브에만</b>선생님이 만든 구글 시트에만 저장돼요. 다른 학교나 공유한 사람에게는 가지 않아요.</div>
+    <div><b>학생은 로그인 없이</b>반·모둠·번호만 고르면 돼요. 이름은 받지 않아요.</div>
+    <div><b>모둠 공유도 함께</b>기록 담당 한 명이 측정값을 넣으면 같은 모둠 친구 화면에도 들어가요.</div>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>새 구글 시트를 만들고 Apps Script 열기</h2>
+      <div class="path"><a class="btn" href="https://sheets.new" target="_blank" rel="noopener">새 구글 시트 열기 ↗</a><i>→</i><span>확장 프로그램</span><i>→</i><span>Apps Script</span></div>
+      <p class="tip">시트 이름은 아무거나 괜찮아요. 예: “우주팽창 기록 2학년”</p>
+    </li>
+    <li>
+      <h2>코드를 붙여 넣고 PIN 바꾸기</h2>
+      <div class="row"><button class="btn pri" id="copyCode" type="button">코드 복사</button><span class="tip" id="codeState">코드를 불러오는 중…</span></div>
+      <p>Apps Script 편집기에 원래 있던 <code>function myFunction() {…}</code>을 모두 지우고 붙여 넣어요.</p>
+      <p>맨 위의 <b>const PIN = '0000';</b>에서 <b>0000</b>을 선생님만 아는 숫자로 바꾼 뒤 저장(Ctrl+S)해요. 이 숫자가 선생님 화면 비밀번호예요.</p>
+      <details class="code"><summary>코드 보기</summary><pre id="codeBox">불러오는 중…</pre></details>
+    </li>
+    <li>
+      <h2>웹 앱으로 배포하기</h2>
+      <div class="path"><span>배포</span><i>→</i><span>새 배포</span><i>→</i><span>⚙ 유형 선택: 웹 앱</span></div>
+      <div class="path"><span>실행 사용자: 나</span><span>액세스 권한이 있는 사용자: 모든 사용자</span><i>→</i><span>배포</span></div>
+      <div class="warn"><b>처음 한 번 권한 확인이 나와요.</b> [액세스 승인] → 내 계정 선택 → “Google에서 확인하지 않은 앱” 화면이 나오면 [고급] → [(안전하지 않음)으로 이동] → [허용]. 선생님이 직접 만든 코드라서 나오는 안내예요. 이 코드는 이 시트에만 기록해요.</div>
+      <p>배포가 끝나면 나오는 <b>웹 앱 URL</b>(https://script.google.com/macros/s/…/exec)을 복사해요.</p>
+    </li>
+    <li>
+      <h2>학생용·선생님용 링크 만들기</h2>
+      <label for="u" class="tip">웹 앱 URL을 붙여 넣으세요</label>
+      <input id="u" class="url" placeholder="https://script.google.com/macros/s/……/exec" autocomplete="off" spellcheck="false">
+      <div class="row"><button class="btn" id="test" type="button" disabled>연결 시험</button><span class="state" id="state"></span></div>
+      <div class="out" id="out" hidden>
+        <div class="lk"><b>학생용 링크</b><span class="tip">학생들에게 이 링크나 QR을 나눠 주세요. 링크 안에 선생님 시트 주소가 들어 있어요.</span><code id="stu"></code>
+          <div class="row"><button class="btn pri" type="button" data-copy="stu">학생용 링크 복사</button><a class="btn" id="stuOpen" target="_blank" rel="noopener">열어 보기 ↗</a></div>
+          <div class="qrbox"><div id="qr" aria-label="학생용 링크 QR 코드"></div><span class="tip">화면에 띄우거나 캡처해서 수업 자료에 넣어 쓰세요.</span></div>
+        </div>
+        <div class="lk"><b>선생님용 링크</b><span class="tip">선생님 화면이 바로 열려요. PIN을 넣으면 모둠별·학생별 기록이 보여요. 학생에게는 주지 마세요.</span><code id="tch"></code>
+          <div class="row"><button class="btn" type="button" data-copy="tch">선생님용 링크 복사</button><a class="btn" id="tchOpen" target="_blank" rel="noopener">열어 보기 ↗</a></div>
+        </div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="warn" style="border-left-color:var(--indigo);background:rgba(127,177,255,.07)">
+    <b style="color:var(--indigo)">알아 두면 좋은 점</b><br>
+    · 학생 기록은 시트의 <b>우주팽창</b> 탭에 날짜·반·모둠·번호마다 한 줄씩 쌓여요. 같은 학생이 다시 저장하면 그 줄이 갱신돼요.<br>
+    · 선생님 화면에서 PIN을 넣은 기기는 <b>교사 시범 모드</b>가 되어, 그 기기에서 학생 화면에 입력한 것은 시트에 저장되지 않아요. 노란 띠의 [끝내기]로 끌 수 있어요.<br>
+    · 나중에 코드를 고칠 때는 [배포 → 배포 관리 → 연필(수정) → 버전: 새 버전 → 배포]로 해야 주소가 바뀌지 않아요. [새 배포]를 누르면 주소가 바뀌니 링크를 다시 만들어야 해요.
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  const $=s=>document.querySelector(s);
+  const RE=/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/;
+  const BASE=new URL('./',location.href).href;
+  let CODE='';
+  function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,1800);}
+  function copy(text,msg){
+    const done=()=>toast(msg||'복사했어요');
+    const fb=()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){toast('복사하지 못했어요. 직접 선택해 복사해 주세요');}ta.remove();};
+    try{navigator.clipboard.writeText(text).then(done,fb);}catch(e){fb();}
+  }
+  fetch('Code.gs',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text();}).then(t=>{CODE=t;$('#codeBox').textContent=t;$('#codeState').textContent=`${t.split('\n').length}줄짜리 코드예요.`;})
+    .catch(()=>{$('#codeState').textContent='코드를 불러오지 못했어요. 새로고침해 주세요.';$('#codeBox').textContent='';});
+  $('#copyCode').addEventListener('click',()=>{ if(CODE) copy(CODE,'코드를 복사했어요. Apps Script에 붙여 넣으세요'); });
+  function clean(v){return String(v||'').trim().replace(/[“”‘’"'<>\s]/g,'').replace(/\?.*$/,'');}
+  let qr=null;
+  function build(){
+    const v=clean($('#u').value), ok=RE.test(v);
+    $('#u').classList.toggle('bad',!!$('#u').value.trim()&&!ok);
+    $('#test').disabled=!ok; $('#out').hidden=!ok;
+    if(!$('#u').value.trim()){$('#state').textContent='';$('#state').className='state';return;}
+    if(!ok){$('#state').className='state no';$('#state').textContent=/\/dev$/.test(v)?'주소가 /dev로 끝나요. [새 배포]에서 나온 /exec 주소를 넣어 주세요.':'https://script.google.com/macros/s/…/exec 모양의 주소가 아니에요.';return;}
+    $('#state').className='state';$('#state').textContent='주소 모양이 맞아요. [연결 시험]으로 확인해 보세요.';
+    const stu=BASE+'?sheet='+encodeURIComponent(v), tch=stu+'#teacher';
+    $('#stu').textContent=stu; $('#tch').textContent=tch; $('#stuOpen').href=stu; $('#tchOpen').href=tch;
+    const box=$('#qr'); box.innerHTML='';
+    if(window.QRCode){ qr=new QRCode(box,{text:stu,width:180,height:180,correctLevel:QRCode.CorrectLevel.L}); } else box.hidden=true;
+  }
+  $('#u').addEventListener('input',build);
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]'); if(b) copy($('#'+b.dataset.copy).textContent, b.textContent.replace(' 복사','')+'를 복사했어요');});
+  $('#test').addEventListener('click',async()=>{
+    const v=clean($('#u').value); $('#state').className='state'; $('#state').textContent='시험하는 중…';
+    try{
+      const r=await fetch(`${v}?app=expand&mode=team&cls=__test&grp=0&t=${Date.now()}`,{cache:'no-store'});
+      const j=await r.json();
+      if(j&&j.ok){$('#state').className='state ok';$('#state').textContent='연결됐어요. 학생용 링크를 나눠 주면 돼요.';}
+      else throw 0;
+    }catch(e){$('#state').className='state no';$('#state').textContent='연결되지 않았어요. 배포할 때 액세스 권한을 “모든 사용자”로 했는지, 코드를 저장한 뒤 배포했는지 확인해 주세요.';}
+  });
+})();
+</script>
+</body>
+</html>

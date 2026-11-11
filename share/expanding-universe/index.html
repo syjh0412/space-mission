@@ -562,7 +562,7 @@ canvas.gsc{width:100%;height:190px;display:block}
           <tbody id="tbody"></tbody>
         </table>
       </div>
-      <p class="note">늘어난 거리와 몇 배인지는 자동으로 계산돼요. 모둠원 모두 같은 측정값을 입력해요.</p>
+      <p class="note">늘어난 거리와 몇 배인지는 자동으로 계산돼요. <span id="mnote">모둠원 모두 같은 측정값을 입력해요.</span></p>
     </div>
     <button class="btn primary next pnext">결과 보러 가기 →</button>
   </div>
@@ -754,7 +754,7 @@ canvas.gsc{width:100%;height:190px;display:block}
   <a class="btn next" href="#open" style="text-decoration:none">학생 화면으로</a>
 </section>
 </main>
-<footer class="foot wrap"><p class="note">재미있는 과학수업 만들기(재과만) 공유용 · 입력한 내용은 각 기기에만 저장되고 어디로도 보내지지 않아요.</p></footer>
+<footer class="foot wrap"><p class="note" id="footN"></p><p class="note"><a href="#teacher" id="footT" hidden>선생님 화면</a> <a href="setup.html" id="footS">선생님: 학생 기록을 내 구글 시트에 모으려면 →</a></p></footer>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -762,7 +762,7 @@ canvas.gsc{width:100%;height:190px;display:block}
    GAS_URL: 구글 Apps Script 웹 앱 주소(…/exec)를 큰따옴표 안에 붙여 넣으세요.
    비워 두면 기록은 각 기기에만 저장됩니다. */
 window.CONFIG = {
-  GAS_URL: ""
+  GAS_URL: (function(){try{var q=new URLSearchParams(location.search).get('sheet')||''; return /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(q)?q:'';}catch(e){return '';}})()
 };
 </script>
 <script>
@@ -1478,7 +1478,7 @@ function seoulToday(){const d=new Date(Date.now()+9*3600e3);return d.toISOString
 function teacherOpen(){
   if(!$('#tDay').value) $('#tDay').value=seoulToday();
   try{const p=sessionStorage.getItem('eu-pin'); if(p&&!$('#tPin').value) $('#tPin').value=p;}catch(e){}
-  if(!GAS){$('#tOut').innerHTML='<div class="callout warn">구글 시트가 아직 연결되지 않았어요. index.html 위쪽 CONFIG의 GAS_URL에 Apps Script 웹 앱 주소를 넣어 주세요.</div>';return;}
+  if(!GAS){$('#tOut').innerHTML='<div class="callout warn">구글 시트가 연결되지 않은 링크예요. <a href=\'setup.html\'>설정 안내</a>에서 만든 <b>선생님용 링크</b>로 들어와 주세요.</div>';return;}
   if($('#tPin').value) tLoad();
 }
 async function tLoad(){
@@ -1687,5 +1687,12 @@ if(isDemo()) pill('ok','교사 시범 · 저장 안 함');
 })();
 </script>
 
+<script>
+(function(){var g=!!(window.CONFIG&&CONFIG.GAS_URL);
+  document.getElementById('footT').hidden=!g;
+  document.getElementById('footN').textContent=g?'재과만 공유용 · 기록은 이 링크를 만든 선생님의 구글 시트에만 저장돼요.':'재과만 공유용 · 입력한 내용은 각 기기에만 저장되고 어디로도 보내지지 않아요.';
+  if(g) document.getElementById('mnote').innerHTML='모둠에서 <b>한 명(기록 담당)만 입력</b>하면 같은 모둠 친구들 화면에도 자동으로 들어가요.';
+})();
+</script>
 </body>
 </html>
