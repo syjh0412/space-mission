@@ -768,7 +768,7 @@ window.CONFIG = {
 <script>
 (function(){
 'use strict';
-const KEY='expanding-universe-lab-v1';
+const KEY='eu-share-lab-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>Array.from(document.querySelectorAll(s));
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -789,10 +789,9 @@ if(QP.get('cls')||QP.get('grp')||QP.get('num')){
   S.cls=nc; S.grp=ng; S.num=nn;
 }
 /* 탐험대에서 고른 반·모둠·번호가 있으면 처음에 그대로 가져옴 */
-if(!S.cls&&!S.grp&&!S.num){ try{ const h=JSON.parse(localStorage.getItem('mw-hunt-v3')||'{}'); if(h.cls) S.cls=String(h.cls); if(h.teamNo) S.grp=String(h.teamNo); if(h.num) S.num=String(h.num); }catch(e){} }
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 /* ---------- 교사 시범 모드: 선생님 기기에서 학생 화면에 입력한 것은 시트로 보내지 않고, 모둠 친구에게도 보이지 않음 ---------- */
-const DEMO='space-teacher-demo', DKEY=KEY+'-demo', BKEY=KEY+'-student';
+const DEMO='eu-share-no-demo', DKEY=KEY+'-demo', BKEY=KEY+'-student';
 function isDemo(){try{return localStorage.getItem(DEMO)==='1';}catch(e){return false;}}
 function applyDemo(){try{
   if(isDemo()&&!localStorage.getItem(DKEY)){ // 시범 시작: 이 기기의 학생 기록을 따로 보관하고 빈 기록으로 시작
