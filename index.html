@@ -346,6 +346,8 @@ details.swap[open]{display:flex;flex-direction:column;gap:8px}
 .peer .pin{padding:0 14px 14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
 .peer.filled{border-color:rgba(123,224,173,.5)}
 .peer.sent{border-color:var(--gold)}
+.refl h3 .rn{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--flame);color:#1a1200;font-size:.85em;margin-right:6px}
+.refl h3 small{margin-left:6px}
 .twist{margin-top:14px;padding:11px 13px;border:1px dashed var(--gold);border-radius:12px;background:rgba(255,210,100,.05);display:flex;flex-direction:column;gap:6px}
 .twist > b{color:var(--gold);font-family:'Do Hyeon',sans-serif;font-weight:400}
 .cflag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;border:1px solid var(--danger);color:var(--danger);font-size:.72rem;font-style:normal;white-space:nowrap}
@@ -886,6 +888,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
     <button data-p="c"><span class="sn">3</span>위원 기록</button>
     <button data-p="d"><span class="sn">4</span>투자 토큰</button>
     <button data-p="e"><span class="sn">5</span>최종 수정</button>
+    <button data-p="f"><span class="sn">6</span>성찰</button>
   </div>
 
   <div class="pane" data-p="0">
@@ -969,6 +972,52 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       <textarea data-k="s3.got"></textarea>
       <span>그 의견을 반영하여 수정한 내용</span>
       <textarea data-k="s3.revised"></textarea>
+    </div>
+    <button class="btn pri nextb pnext">다음: 성찰 →</button>
+  </div>
+
+  <div class="pane" data-p="f" hidden>
+    <div class="rule"><b>성찰</b> 우주 탐사 기획단 활동을 돌아보며 <b>내가 느낀 점과 알게 된 점</b>을 써요. 잘 썼는지 점수를 매기는 칸이 아니에요. 솔직하고 구체적일수록 좋아요. 아래 1~5단계를 차례로, <b>‘이런 말로 시작해도 좋아요’</b> 버튼을 눌러 시작하면 쉬워요.</div>
+
+    <div class="box fld refl">
+      <h3><span class="rn">1</span> 처음과 지금 <small>생각이 어떻게 달라졌나?</small></h3>
+      <span>1차시에 처음 세운 질문이나 생각과 지금의 계획을 비교해 보면, 무엇이 달라졌나요?</span>
+      <div class="starter" data-for="s3.ref.r1"><button>처음에는 ___라고 생각했는데</button><button>지금은 ___라고 생각한다</button><button>그렇게 달라진 까닭은 ___이다</button></div>
+      <textarea data-k="s3.ref.r1" class="short"></textarea>
+    </div>
+
+    <div class="box fld refl">
+      <h3><span class="rn">2</span> 가장 어려웠던 점 <small>어디서 막혔고 어떻게 풀었나?</small></h3>
+      <span>계획을 세우면서 가장 어려웠던 순간은 언제였나요? 그때 어떻게 해결했나요(또는 해결하지 못했다면 왜)?</span>
+      <div class="starter" data-for="s3.ref.r2"><button>가장 어려웠던 것은 ___이다</button><button>왜냐하면 ___</button><button>그래서 ___ 방법으로 해결했다</button></div>
+      <textarea data-k="s3.ref.r2" class="short"></textarea>
+    </div>
+
+    <div class="box fld refl">
+      <h3><span class="rn">3</span> 알게 된 것 <small>과학 내용과 탐사하는 방법</small></h3>
+      <span>이 활동으로 새로 알게 된 <b>과학 내용</b>이나 <b>탐사를 계획하는 방법</b>을 한 가지 이상 써요.</span>
+      <div class="starter" data-for="s3.ref.r3"><button>새로 알게 된 것은 ___이다</button><button>좋은 탐사 질문은 ___해야 한다는 것을 알았다</button><button>자료와 방법이 ___처럼 이어져야 한다는 것을 알았다</button></div>
+      <textarea data-k="s3.ref.r3" class="short"></textarea>
+    </div>
+
+    <div class="box fld refl">
+      <h3><span class="rn">4</span> 친구에게서 배운 점 <small>다른 모둠과 우리 모둠</small></h3>
+      <span>다른 모둠의 발표나 친구가 준 제안에서 <b>배운 점</b>, 또는 우리 모둠 친구와 함께해서 <b>좋았던 점</b>은 무엇인가요?</span>
+      <div class="starter" data-for="s3.ref.r4"><button>___ 모둠의 ___ 부분이 인상 깊었다</button><button>친구의 제안으로 ___을(를) 고쳤다</button><button>우리 모둠은 ___ 점이 잘 맞았다</button></div>
+      <textarea data-k="s3.ref.r4" class="short"></textarea>
+    </div>
+
+    <div class="box fld refl">
+      <h3><span class="rn">5</span> 다음에는 <small>더 잘하고 싶은 것과 남은 궁금증</small></h3>
+      <span>다음에 비슷한 활동을 한다면 <b>다르게 해 보고 싶은 것</b>과, 아직 <b>남은 궁금증</b>을 써요.</span>
+      <div class="starter" data-for="s3.ref.r5"><button>다음에는 ___을(를) 다르게 해 보고 싶다</button><button>아직 궁금한 것은 ___이다</button><button>이 궁금증은 ___로 알아볼 수 있을 것 같다</button></div>
+      <textarea data-k="s3.ref.r5" class="short"></textarea>
+    </div>
+
+    <div class="box fld refl">
+      <h3><span class="rn">★</span> 한 문장으로 정리하기</h3>
+      <span>이 프로젝트를 한 문장으로 말한다면?</span>
+      <textarea data-k="s3.ref.sum" class="short" placeholder="예) 좋은 탐사 계획은 질문, 자료, 방법이 서로 이어져야 한다는 것을 배웠다."></textarea>
     </div>
     <a class="btn pri nextb" href="#final">개인 최종 수행평가로 →</a>
   </div>
@@ -1088,7 +1137,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118c</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118d</span></p>
 
 
 </div>
@@ -1480,7 +1529,7 @@ const has=v=>!!String(v||'').trim();
 function paneDone(sec,p){const s1=S.s1,s2=S.s2,s3=S.s3,f=S.fin;
   const M={'v-s1':{a:has(s1.value),b:s1.card!=null,c:has(s1.read.a)&&has(s1.read.b)&&has(s1.read.c),d:has(s1.q[0])&&has(s1.q[1]),e:has(s1.rep)&&has(s1.repWhy)},
    'v-s2':{'0':has(s2.intro),a:has(s2.cardSum)&&has(s1.rep),b:s2.data.some(r=>r&&has(r.d)&&has(r.how)),c:has(s2.target.body)&&has(s2.target.place)&&has(s2.target.why),d:s2.methods.length>0&&has(s2.methodWhy),e:s2.gear.some(r=>r&&has(r.g)&&has(r.job)),f:has(s2.expect)&&has(s2.value)&&has(s2.debrisPlan),g:has(s2.link.d)&&has(s2.link.m)&&has(s2.link.g)&&has(s2.link.j)},
-   'v-s3':{'0':has(s3.intro),a:s3.brief.some(r=>r&&has(r.line)),b:s3.check.filter(Boolean).length>=5,c:Object.values(s3.peer||{}).some(r=>r&&(has(r.best)||has(r.ask))),d:!!s3.token.grp&&has(s3.token.text),e:has(s3.revised)},
+   'v-s3':{'0':has(s3.intro),a:s3.brief.some(r=>r&&has(r.line)),b:s3.check.filter(Boolean).length>=5,c:Object.values(s3.peer||{}).some(r=>r&&(has(r.best)||has(r.ask))),d:!!s3.token.grp&&has(s3.token.text),e:has(s3.revised),f:['r1','r2','r3','r4','r5'].every(k=>has((s3.ref||{})[k]))},
    'v-final':{'0':has(f.intro),a:has(f.a1)&&has(f.a2)&&has(f.a3)&&has(f.a4),b:has(f.b1)&&has(f.b2)&&has(f.b3),c:f.c.some(r=>r&&has(r.t)&&has(r.g))&&has(f.c2)&&has(f.c3),d:has(f.d1)&&has(f.d2)&&has(f.d3)&&has(f.d4),e:!!f.submitted}};
   return !!(M[sec]&&M[sec][p]);}
 function refreshDone(){
@@ -1813,6 +1862,8 @@ function tRender(){
     try{navigator.clipboard.writeText(t).then(done,()=>toast('복사하지 못했어요'));}catch(e){toast('복사하지 못했어요');} });
   if(TSEL){const r=rows.find(x=>x.key===TSEL); if(r) tDetail(r);}
 }
+function refOf(r){const rf=(r.d.s3||{}).ref||{}; const L=[['1 처음과 지금',rf.r1],['2 어려웠던 점',rf.r2],['3 알게 된 것',rf.r3],['4 친구에게서 배운 점',rf.r4],['5 다음에는',rf.r5],['한 문장',rf.sum]].filter(x=>has(x[1]));
+  return L.length?`<div class="ans"><i>3차시 성찰 (참고 · 채점 아님)</i>${esc(L.map(x=>x[0]+': '+x[1]).join('\n'))}</div>`:'';}
 function peOf(r){const s3=r.d.s3||{}; const sent=Object.keys(s3.peer||{}).filter(k=>s3.peer[k]&&s3.peer[k].sent&&has(s3.peer[k].ask)).map(k=>`→ ${k}모둠 [${s3.peer[k].type||''}] ${s3.peer[k].ask}`); const inb=Object.keys(s3.inb||{}).filter(k=>s3.inb[k]&&(s3.inb[k].star||s3.inb[k].v)).map(k=>`${k.split('-')[0]}모둠 제안: ${s3.inb[k].star?'⭐ ':''}${s3.inb[k].v||''}${s3.inb[k].why?' — '+s3.inb[k].why:''}`);
   return (sent.length||inb.length)?`<div class="ans"><i>3차시 동료평가 (참고)</i>${esc(sent.concat(inb).join('\n'))}</div>`:'';}
 function tDetail(r){
@@ -1821,7 +1872,7 @@ function tDetail(r){
   const A=A0.map(g=>g.map(([l,v,k])=>[l+(k&&FL[k]?FL[k].map(w=>`<em class="cflag">${w}</em>`).join(''):''),v]));
   $('#tDet').innerHTML=`<div class="det"><div class="rowb"><h3>${esc(r.num)}번 ${esc(r.name||'')} · ${esc(r.grp)}모둠 ${f.submitted?'<span class="pt">제출 '+esc(f.submitted)+'</span>':'<span class="hint">(아직 제출 전)</span>'}</h3><span class="ttotal" id="tTot">${sc.total!=null?sc.total+' / 10':'채점 전'}</span></div>
     <p class="hint">기본카드: ${esc(r.card||'-')} · 도전카드: ${esc(r.chal||'-')} · 대표 질문: ${esc(r.rep||'-')}</p>
-    ${peOf(r)}${pqOf(r).length?`<div class="ans"><i>1차시 나의 질문 (참고)</i>${pqOf(r).map(x=>esc(x.t)).join('\n')}</div>`:''}
+    ${refOf(r)}${peOf(r)}${pqOf(r).length?`<div class="ans"><i>1차시 나의 질문 (참고)</i>${pqOf(r).map(x=>esc(x.t)).join('\n')}</div>`:''}
     ${RUB.map((R,i)=>`<div class="rb"><h4><span>${i+1}. ${R.t}</span><span class="pt">${R.max}점</span></h4>${A[i].map(([l,v])=>`<div class="ans"><i>${l}</i>${esc(v||'(비어 있음)')}</div>`).join('')}
       <div class="lv">${R.lv.map(([p,t])=>`<button data-e="${i}" data-p="${p}" aria-pressed="${sc.s[i]===p}"><b>${p}</b>${t}</button>`).join('')}</div></div>`).join('')}
     <label class="fld"><span>교사 메모 <small>학생에게는 보이지 않아요</small></span><textarea id="tMemo" class="short">${esc(r.memo||'')}</textarea></label>
