@@ -346,6 +346,9 @@ details.swap[open]{display:flex;flex-direction:column;gap:8px}
 .peer .pin{padding:0 14px 14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
 .peer.filled{border-color:rgba(123,224,173,.5)}
 .peer.sent{border-color:var(--gold)}
+.twist{margin-top:14px;padding:11px 13px;border:1px dashed var(--gold);border-radius:12px;background:rgba(255,210,100,.05);display:flex;flex-direction:column;gap:6px}
+.twist > b{color:var(--gold);font-family:'Do Hyeon',sans-serif;font-weight:400}
+.cflag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;border:1px solid var(--danger);color:var(--danger);font-size:.72rem;font-style:normal;white-space:nowrap}
 #brOv{position:fixed;inset:0;z-index:80;background:radial-gradient(ellipse at 50% 0,#14204a,#070B1E 70%);display:none;flex-direction:column;color:var(--ink)}
 #brOv.on{display:flex}
 #brOv .bt{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
@@ -974,8 +977,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 <!-- ========== 개인 최종 ========== -->
 <section class="view" id="v-final" hidden>
   <div class="vhead"><span class="eyebrow">개인 최종 수행평가 활동지</span><h2>우주 탐사 성과를 바탕으로 탐사 계획 세우기 <span class="pt big">10점</span></h2></div>
-  <div class="rule"><b>작성 원칙</b> 모둠에서 논의한 내용을 참고할 수 있지만, 아래 답은 각자 <b>자신의 말</b>로 써요. 전문적인 장비 이름보다 <b>질문과 자료·방법·임무의 연결</b>이 중요해요.</div>
-  <details class="mydraft" id="myDraft"><summary>참고: 내가 1~3차시에 쓴 기록 보기</summary><div id="draftBody"></div></details>
+  <div class="rule"><b>작성 원칙</b> 모둠에서 논의한 내용을 참고할 수 있지만, 아래 답은 각자 <b>자신의 말</b>로 써요. 전문적인 장비 이름보다 <b>질문과 자료·방법·임무의 연결</b>이 중요해요. 각 쪽의 <b>‘생각해 보기’</b>는 내 계획의 낱말을 써서 이유와 함께 답해요. 앞에 쓴 글을 그대로 옮기면 답이 되지 않아요.</div>
+  <details class="mydraft" id="myDraft"><summary>참고: 내 계획의 핵심 낱말만 보기</summary><div id="draftBody"></div></details>
 
   <div class="subnav" role="tablist">
     <button data-p="0" aria-selected="true"><span class="sn">★</span>도입 질문</button>
@@ -1004,6 +1007,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       <textarea data-k="fin.a2" class="short"></textarea>
       <span>성과와 질문이 어떻게 연결되는가?</span>
       <textarea data-k="fin.a3"></textarea>
+      <div class="twist"><b>생각해 보기</b><span>우리 대표 질문으로 <b>알 수 있는 것</b>과 <b>알 수 없는 것</b>을 하나씩 써요. <small>알 수 없는 것도 써야 질문을 제대로 이해한 거예요.</small></span>
+      <textarea data-k="fin.a4" class="short" placeholder="알 수 있는 것: …&#10;알 수 없는 것: …"></textarea></div>
     </div>
     <button class="btn pri nextb pnext">다음 →</button>
   </div>
@@ -1014,6 +1019,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       <textarea data-k="fin.b1"></textarea>
       <span>자료를 얻을 탐사 방법과 그 방법을 선택한 이유</span>
       <textarea data-k="fin.b2"></textarea>
+      <div class="twist"><b>생각해 보기</b><span>계획한 자료 중 <b>하나를 얻지 못하게</b> 되었어요(장비 고장 등). 질문에 대한 답은 어떻게 달라지고, 무엇으로 보완하겠어요?</span>
+      <textarea data-k="fin.b3" class="short"></textarea></div>
     </div>
     <button class="btn pri nextb pnext">다음 →</button>
   </div>
@@ -1027,6 +1034,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       </tbody></table></div>
       <span>대상·장소·장비·임무가 대표 질문과 연결되는 까닭</span>
       <textarea data-k="fin.c2"></textarea>
+      <div class="twist"><b>생각해 보기</b><span>탐사 장소를 <b>다른 곳으로 바꾼다면</b>(같은 천체의 다른 지역이나 다른 천체) 장비 중 무엇을 바꾸고 무엇은 그대로 쓰겠어요? 이유도 써요.</span>
+      <textarea data-k="fin.c3" class="short"></textarea></div>
     </div>
     <button class="btn pri nextb pnext">다음 →</button>
   </div>
@@ -1039,6 +1048,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       <textarea data-k="fin.d2"></textarea>
       <span>우주 쓰레기를 줄이기 위한 실천 가능한 방안 <small>임무 종료 후까지 고려</small></span>
       <textarea data-k="fin.d3"></textarea>
+      <div class="twist"><b>생각해 보기</b><span>탐사 결과가 <b>예상과 반대로</b> 나왔어요. 그래도 이 탐사에 가치가 있다면 그 이유는 무엇인가요?</span>
+      <textarea data-k="fin.d4" class="short"></textarea></div>
     </div>
     <button class="btn pri nextb pnext">다음: 점검·제출 →</button>
   </div>
@@ -1053,6 +1064,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
         <label><input type="checkbox" data-k="fin.self.4">유용성 구체화</label>
         <label><input type="checkbox" data-k="fin.self.5">우주 쓰레기 방안</label>
       </div>
+      <div class="twist"><b>친구에게 받은 의견</b><span>3차시에 받은 제안 카드 중 하나를 골라, 계획에 <b>반영했는지 또는 그대로 두었는지</b>와 그 이유를 써요. <small>받은 제안이 없었다면 다른 모둠 발표에서 들은 의견으로 써요.</small></span>
+      <textarea data-k="fin.e1" class="short"></textarea></div>
       <div id="finMiss"></div>
       <div class="rowb"><button class="btn pri" id="submitFin">최종 제출하기</button><span id="submitState" class="hint"></span></div>
       <p class="hint">제출한 뒤에도 선생님이 마감하기 전까지는 고칠 수 있어요. 고치면 다시 제출해 주세요.</p>
@@ -1075,7 +1088,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118b</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118c</span></p>
 
 
 </div>
@@ -1423,7 +1436,7 @@ function pill(kind,t){const p=$('#sync'); p.className='sync '+kind; p.textConten
 function card(){return S.s1.card!=null?CARDS[S.s1.card]:null;}
 function chalNo(){const c=card(); return S.s1.chal||(c?c.chal:null);}
 function finText(){const f=S.fin||{}; const rows=(f.c||[]).filter(r=>r&&(r.t||r.g||r.j)).map(r=>`${r.t||'-'} / ${r.g||'-'} / ${r.j||'-'}`).join('\n');
-  return {f1:`[목적·성과] ${f.a1||''}\n[질문] ${f.a2||''}\n[연결] ${f.a3||''}`,f2:`[자료] ${f.b1||''}\n[방법·이유] ${f.b2||''}`,f3:`${rows}\n[연결 까닭] ${f.c2||''}`,f4:`[예상 결과] ${f.d1||''}\n[도움] ${f.d2||''}\n[우주 쓰레기] ${f.d3||''}`};}
+  return {f1:`[목적·성과] ${f.a1||''}\n[질문] ${f.a2||''}\n[연결] ${f.a3||''}\n[알 수 있는/없는 것] ${f.a4||''}`,f2:`[자료] ${f.b1||''}\n[방법·이유] ${f.b2||''}\n[자료를 못 얻으면] ${f.b3||''}`,f3:`${rows}\n[연결 까닭] ${f.c2||''}\n[장소를 바꾸면] ${f.c3||''}`,f4:`[예상 결과] ${f.d1||''}\n[도움] ${f.d2||''}\n[우주 쓰레기] ${f.d3||''}\n[반대 결과의 가치] ${f.d4||''}\n[받은 의견] ${f.e1||''}`};}
 function payload(){const c=card(),ch=chalNo(); const d=Object.assign({},S); delete d.unsent;
   return Object.assign({app:'mission',cls:S.cls,grp:S.grp,num:S.num,name:S.name,card:c?c.title:'',chal:ch?CHAL[ch].name:'',rep:S.s1.rep||'',submitted:S.fin.submitted||'',data:JSON.stringify(d)},finText());}
 function queue(){ if(!GAS){pill('','기록은 이 기기에 저장돼요');return;} if(isDemo()){pill('ok','교사 시범 · 저장 안 함');return;} if(!S.cls||!S.grp||!S.num){pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요');return;} pill('wait','저장 대기'); clearTimeout(timer); timer=setTimeout(push,2500); }
@@ -1468,7 +1481,7 @@ function paneDone(sec,p){const s1=S.s1,s2=S.s2,s3=S.s3,f=S.fin;
   const M={'v-s1':{a:has(s1.value),b:s1.card!=null,c:has(s1.read.a)&&has(s1.read.b)&&has(s1.read.c),d:has(s1.q[0])&&has(s1.q[1]),e:has(s1.rep)&&has(s1.repWhy)},
    'v-s2':{'0':has(s2.intro),a:has(s2.cardSum)&&has(s1.rep),b:s2.data.some(r=>r&&has(r.d)&&has(r.how)),c:has(s2.target.body)&&has(s2.target.place)&&has(s2.target.why),d:s2.methods.length>0&&has(s2.methodWhy),e:s2.gear.some(r=>r&&has(r.g)&&has(r.job)),f:has(s2.expect)&&has(s2.value)&&has(s2.debrisPlan),g:has(s2.link.d)&&has(s2.link.m)&&has(s2.link.g)&&has(s2.link.j)},
    'v-s3':{'0':has(s3.intro),a:s3.brief.some(r=>r&&has(r.line)),b:s3.check.filter(Boolean).length>=5,c:Object.values(s3.peer||{}).some(r=>r&&(has(r.best)||has(r.ask))),d:!!s3.token.grp&&has(s3.token.text),e:has(s3.revised)},
-   'v-final':{'0':has(f.intro),a:has(f.a1)&&has(f.a2)&&has(f.a3),b:has(f.b1)&&has(f.b2),c:f.c.some(r=>r&&has(r.t)&&has(r.g))&&has(f.c2),d:has(f.d1)&&has(f.d2)&&has(f.d3),e:!!f.submitted}};
+   'v-final':{'0':has(f.intro),a:has(f.a1)&&has(f.a2)&&has(f.a3)&&has(f.a4),b:has(f.b1)&&has(f.b2)&&has(f.b3),c:f.c.some(r=>r&&has(r.t)&&has(r.g))&&has(f.c2)&&has(f.c3),d:has(f.d1)&&has(f.d2)&&has(f.d3)&&has(f.d4),e:!!f.submitted}};
   return !!(M[sec]&&M[sec][p]);}
 function refreshDone(){
   $$('section.view').forEach(sec=>sec.querySelectorAll('.subnav button').forEach(b=>b.classList.toggle('done',paneDone(sec.id,b.dataset.p)&&b.getAttribute('aria-selected')!=='true')));
@@ -1656,6 +1669,7 @@ $('#classReload').addEventListener('click',async()=>{ if(!GAS||!S.cls){toast('�
   try{const r=await fetch(`${GAS}?app=mission&mode=class&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json(); CLASSQ={}; (j.rows||[]).forEach(x=>CLASSQ[x.grp]=x.rep); renderPeers(); toast('다른 모둠 대표 질문을 불러왔어요');}catch(e){toast('불러오지 못했어요');}});
 
 /* ---------- 3차시: 모둠 발표 화면 ---------- */
+document.addEventListener('paste',e=>{const el=e.target; if(!el||!el.dataset||!/^fin\./.test(el.dataset.k||'')) return; let t=''; try{t=(e.clipboardData||window.clipboardData).getData('text')||'';}catch(x){} if(t.trim().length>=15){ S.fin.pst=S.fin.pst||{}; const k=el.dataset.k.slice(4); S.fin.pst[k]=(S.fin.pst[k]||0)+t.trim().length; save(); } },true);
 let BR={i:0,t:120,iv:null};
 function brSlides(){
   const c=card(),s1=S.s1,s2=S.s2,br=S.s3.brief||[]; const L=i=>(br[i]||{}).line||''; const W=i=>(br[i]||{}).who||'';
@@ -1719,8 +1733,9 @@ function renderTokens(){const box=$('#tokenPick'); if(!box) return; box.innerHTM
   $$('#tokenPick button').forEach(b=>b.addEventListener('click',()=>{S.s3.token.grp=b.dataset.g;save();renderTokens();}));}
 
 /* ---------- 개인 최종 ---------- */
-function renderDraft(){const s1=S.s1,s2=S.s2,c=card(); const it=[['기본카드',c?c.title:''],['카드 읽기',[s1.read.a,s1.read.b,s1.read.c].filter(Boolean).join(' / ')],['나의 질문',s1.q.filter(Boolean).join(' / ')],['대표 질문',s1.rep],['필요한 자료',s2.data.filter(r=>r&&r.d).map(r=>`${r.d}(${r.how||''})`).join(', ')],['탐사 방법',s2.methods.join(', ')+(s2.methodWhy?' — '+s2.methodWhy:'')],['대상·장소',[s2.target.body,s2.target.place].filter(Boolean).join(' · ')],['장비·임무',s2.gear.filter(r=>r&&r.g).map(r=>`${r.g}: ${r.job||''}`).join(' / ')],['예상 결과',s2.expect],['가치',s2.value],['우주 쓰레기',s2.debrisPlan],['받은 의견과 수정',[S.s3.got,S.s3.revised].filter(Boolean).join(' → ')]];
-  $('#draftBody').innerHTML=it.filter(x=>has(x[1])).map(x=>`<div><b>${x[0]}</b>${esc(x[1])}</div>`).join('')||'<p class="hint">아직 1~3차시 기록이 없어요.</p>';}
+function renderDraft(){const s1=S.s1,s2=S.s2,c=card();
+  const it=[['기본카드',c?c.title:''],['대표 질문',s1.rep],['필요한 자료',s2.data.filter(r=>r&&r.d).map(r=>r.d).join(', ')],['탐사 방법',(s2.methods||[]).join(', ')],['대상',s2.target.body],['장비',s2.gear.filter(r=>r&&r.g).map(r=>r.g).join(', ')]];
+  $('#draftBody').innerHTML='<p class="hint">낱말만 보여요. 문장은 내 말로 새로 써요.</p>'+(it.filter(x=>has(x[1])).map(x=>`<div><b>${x[0]}</b>${esc(x[1])}</div>`).join('')||'<p class="hint">아직 1~3차시 기록이 없어요.</p>');}
 function renderMiss(){const m=[]; ['a','b','c','d'].forEach((p,i)=>{if(!paneDone('v-final',p))m.push(['1. 질문 설정','2. 자료·방법','3. 대상·장비·임무','4. 가치·책임'][i]);});
   $('#finMiss').innerHTML=m.length?`<p class="missl">아직 덜 쓴 곳: ${m.join(', ')}</p>`:'<p class="submitted">네 부분을 모두 썼어요.</p>';
   $('#submitState').innerHTML=S.fin.submitted?`<span class="submitted">제출함 · ${esc(S.fin.submitted)}</span>`:'아직 제출하지 않았어요';}
@@ -1756,6 +1771,19 @@ function pevHtml(rows){
     return `<details class="pqg"><summary><b>${g}모둠</b> 보낸 제안 ${bySender[g].length}개 · 받은 ⭐ ${st}</summary><div class="tw"><table class="obs pev"><thead><tr><th>보낸 학생</th><th>받는 모둠</th><th>유형</th><th>제안 내용</th><th>⭐</th><th>고침/지킴</th></tr></thead><tbody>${items}</tbody></table></div></details>`;}).join('');
   return `<div class="box"><div class="rowb"><h3>3차시 동료평가 <small class="hint">보낸 제안 ${cards.length}개 · ⭐ ${totalStar}</small></h3></div><p class="hint">제안 카드를 받은 모둠원이 ⭐(최대 2개)와 고침/지킴을 표시한 결과예요. 개수는 평가에 쓰지 않고, 근거가 있는 제안과 타당한 판단 이유를 관찰하는 참고 자료예요.</p>${body}</div>`;
 }
+const FKEYS=[['a1','성과'],['a2','질문'],['a3','연결'],['a4','알 수 있는/없는 것'],['b1','자료'],['b2','방법·이유'],['b3','자료를 못 얻으면'],['c2','연결 까닭'],['c3','장소를 바꾸면'],['d1','예상 결과'],['d2','도움'],['d3','우주 쓰레기'],['d4','반대 결과의 가치'],['e1','받은 의견']];
+function normT(t){return String(t||'').replace(/[\s.,·\-()'"“”‘’!?~]/g,'');}
+function shingles(t,n){const a=new Set(); for(let i=0;i+n<=t.length;i++) a.add(t.slice(i,i+n)); return a;}
+function overlap(t,corpus){ if(t.length<12) return 0; const A=shingles(t,6); if(!A.size) return 0; const B=shingles(corpus,6); let c=0; A.forEach(x=>{if(B.has(x)) c++;}); return c/A.size;}
+function priorText(d){const out=[]; const walk=o=>{ if(o==null) return; if(typeof o==='string') out.push(o); else if(Array.isArray(o)) o.forEach(walk); else if(typeof o==='object') Object.keys(o).forEach(k=>walk(o[k])); }; walk(d.s1); walk(d.s2); walk(d.s3); return normT(out.join(' '));}
+function flagsOf(r,rows){ const f=r.d.fin||{}, pst=f.pst||{}, out={}; const prior=priorText(r.d);
+  const mates=rows.filter(x=>x!==r&&String(x.grp)===String(r.grp)).map(x=>x.d.fin||{});
+  FKEYS.forEach(([k])=>{const t=normT(f[k]); if(t.length<12) return; const why=[];
+    if((pst[k]||0)>=15) why.push('붙여넣음');
+    if(overlap(t,prior)>=.7) why.push('1~3차시 기록과 거의 같음');
+    if(mates.some(m=>overlap(t,normT(m[k]))>=.7)) why.push('모둠원과 거의 같음');
+    if(why.length) out[k]=why;});
+  return out;}
 const QN=['①','②','③','④'];
 function pqOf(r){const s1=r.d.s1||{}; const q=s1.q||[], qc=s1.qc||[];
   return [0,1].map(i=>has(q[i])?{i,t:q[i],c:QCOND.map((_,k)=>qc[i]&&qc[i][k]?QN[k]:'').filter(Boolean).join(' ')}:null).filter(Boolean);}
@@ -1774,8 +1802,8 @@ function tRender(){
   const tok={}; rows.forEach(r=>{const g=((r.d.s3||{}).token||{}).grp; if(g) tok[g]=(tok[g]||0)+1;});
   let h=`<div class="tsum"><div class="box"><h3>모둠별 기본카드와 대표 질문</h3><div class="grq">${Object.keys(groups).sort((a,b)=>a-b).map(g=>{const rr=groups[g]; const rep=(rr.map(r=>r.rep).filter(Boolean).sort((a,b)=>b.length-a.length)[0])||'-'; const cd=rr.map(r=>r.card).find(Boolean)||'-'; return `<div><b>${g}모둠</b> · ${esc(cd)}${tok[g]?` · 투자 토큰 ${tok[g]}개`:''}<br>${esc(rep)}</div>`;}).join('')}</div></div>
     <div class="box"><h3>읽는 법</h3><p class="hint">● 표시는 학생 기록에 해당 내용이 있는지 자동으로 확인한 것이에요. 수준 판단은 학생을 눌러 최종 활동지를 보며 해 주세요. 카드 종류·교환 여부, 투자 토큰 수는 평가하지 않아요. 미응시자(1점)는 직접 처리해 주세요.</p></div></div>
-    <div class="box"><div class="tw"><table class="obs"><thead><tr><th>번호</th><th>이름</th><th>모둠</th><th>개인 질문 작성</th><th>성과↔질문</th><th>자료↔방법</th><th>임무 연결</th><th>피드백 반영</th><th>개인 최종 기록</th><th>점수</th></tr></thead><tbody>`;
-  rows.forEach(r=>{const o=obsOf(r.d),sc=scoreOf(r); const k=r.key; h+=`<tr class="r${TSEL===k?' sel':''}" data-k="${esc(k)}"><td>${esc(r.num)}</td><td class="l">${esc(r.name||'')}</td><td>${esc(r.grp)}</td>${o.map(x=>`<td><span class="dot${x?' y':''}"></span></td>`).join('')}<td>${sc.total!=null?`<b>${sc.total}</b>/10`:'-'}</td></tr>`;});
+    <div class="box"><div class="tw"><table class="obs"><thead><tr><th>번호</th><th>이름</th><th>모둠</th><th>개인 질문 작성</th><th>성과↔질문</th><th>자료↔방법</th><th>임무 연결</th><th>피드백 반영</th><th>개인 최종 기록</th><th title="붙여넣기·기록과 같음·모둠원과 같음">복사 주의</th><th>점수</th></tr></thead><tbody>`;
+  rows.forEach(r=>{const o=obsOf(r.d),sc=scoreOf(r); const k=r.key; h+=`<tr class="r${TSEL===k?' sel':''}" data-k="${esc(k)}"><td>${esc(r.num)}</td><td class="l">${esc(r.name||'')}</td><td>${esc(r.grp)}</td>${o.map(x=>`<td><span class="dot${x?' y':''}"></span></td>`).join('')}<td>${(n=>n?`<span class="cflag">${n}칸</span>`:'-')(Object.keys(flagsOf(r,rows)).length)}</td><td>${sc.total!=null?`<b>${sc.total}</b>/10`:'-'}</td></tr>`;});
   h+='</tbody></table></div></div>'+pqHtml(groups)+pevHtml(rows)+'<div id="tDet"></div>';
   $('#tOut').innerHTML=h;
   $$('#tOut tr.r').forEach(tr=>tr.addEventListener('click',()=>{TSEL=tr.dataset.k; tRender(); setTimeout(()=>{const d=$('#tDet'); if(d) d.scrollIntoView({behavior:'smooth',block:'start'});},50);}));
@@ -1789,7 +1817,8 @@ function peOf(r){const s3=r.d.s3||{}; const sent=Object.keys(s3.peer||{}).filter
   return (sent.length||inb.length)?`<div class="ans"><i>3차시 동료평가 (참고)</i>${esc(sent.concat(inb).join('\n'))}</div>`:'';}
 function tDetail(r){
   const f=r.d.fin||{}, sc=scoreOf(r);
-  const A=[[['목적·성과',f.a1],['새로운 탐사 질문',f.a2],['성과와 질문의 연결',f.a3]],[['필요한 자료',f.b1],['방법과 선택 이유',f.b2]],[['대상·장비·임무',(f.c||[]).filter(x=>x&&(x.t||x.g||x.j)).map(x=>`${x.t||'-'} | ${x.g||'-'} | ${x.j||'-'}`).join('\n')],['연결되는 까닭',f.c2]],[['예상 결과',f.d1],['과학·인류에 주는 도움',f.d2],['우주 쓰레기 저감 방안',f.d3]]];
+  const FL=flagsOf(r,TROWS.filter(x=>x.cls===r.cls)); const A0=[[['목적·성과',f.a1,'a1'],['새로운 탐사 질문',f.a2,'a2'],['성과와 질문의 연결',f.a3,'a3'],['알 수 있는 것 / 알 수 없는 것 (변형)',f.a4,'a4']],[['필요한 자료',f.b1,'b1'],['방법과 선택 이유',f.b2,'b2'],['자료를 못 얻는다면 (변형)',f.b3,'b3']],[['대상·장비·임무',(f.c||[]).filter(x=>x&&(x.t||x.g||x.j)).map(x=>`${x.t||'-'} | ${x.g||'-'} | ${x.j||'-'}`).join('\n')],['연결되는 까닭',f.c2,'c2'],['장소를 바꾼다면 (변형)',f.c3,'c3']],[['예상 결과',f.d1,'d1'],['과학·인류에 주는 도움',f.d2,'d2'],['우주 쓰레기 저감 방안',f.d3,'d3'],['예상과 반대 결과의 가치 (변형)',f.d4,'d4'],['받은 의견 반영 (참고)',f.e1,'e1']]];
+  const A=A0.map(g=>g.map(([l,v,k])=>[l+(k&&FL[k]?FL[k].map(w=>`<em class="cflag">${w}</em>`).join(''):''),v]));
   $('#tDet').innerHTML=`<div class="det"><div class="rowb"><h3>${esc(r.num)}번 ${esc(r.name||'')} · ${esc(r.grp)}모둠 ${f.submitted?'<span class="pt">제출 '+esc(f.submitted)+'</span>':'<span class="hint">(아직 제출 전)</span>'}</h3><span class="ttotal" id="tTot">${sc.total!=null?sc.total+' / 10':'채점 전'}</span></div>
     <p class="hint">기본카드: ${esc(r.card||'-')} · 도전카드: ${esc(r.chal||'-')} · 대표 질문: ${esc(r.rep||'-')}</p>
     ${peOf(r)}${pqOf(r).length?`<div class="ans"><i>1차시 나의 질문 (참고)</i>${pqOf(r).map(x=>esc(x.t)).join('\n')}</div>`:''}
