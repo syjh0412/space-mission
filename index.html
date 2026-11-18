@@ -346,6 +346,29 @@ details.swap[open]{display:flex;flex-direction:column;gap:8px}
 .peer .pin{padding:0 14px 14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
 .peer.filled{border-color:rgba(123,224,173,.5)}
 .peer.sent{border-color:var(--gold)}
+#brOv{position:fixed;inset:0;z-index:80;background:radial-gradient(ellipse at 50% 0,#14204a,#070B1E 70%);display:none;flex-direction:column;color:var(--ink)}
+#brOv.on{display:flex}
+#brOv .bt{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#brOv .bt .ttl{font-family:'Do Hyeon',sans-serif;font-size:1.15rem;color:var(--gold)}
+#brOv .bt .sp{flex:1}
+#brOv .bt button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:.9rem;cursor:pointer}
+#brOv .bt .tm{font-family:'Do Hyeon',sans-serif;font-size:1.5rem;font-variant-numeric:tabular-nums;color:var(--gold);min-width:3.2em;text-align:center}
+#brOv .bt .tm.over{color:var(--danger)}
+#brOv .bs{flex:1;overflow-y:auto;padding:4vh 6vw;display:flex;flex-direction:column;justify-content:center;gap:2.2vh}
+#brOv .bk{font-family:'Do Hyeon',sans-serif;color:var(--flame);font-size:clamp(1rem,2vw,1.4rem)}
+#brOv h2{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:clamp(1.6rem,4.2vw,3.2rem);line-height:1.3;margin:0}
+#brOv .bq{font-size:clamp(1.3rem,3.4vw,2.6rem);line-height:1.45;border-left:6px solid var(--gold);padding:6px 0 6px 20px;color:#fff}
+#brOv .bg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+#brOv .bb{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:clamp(1rem,2vw,1.5rem);line-height:1.5}
+#brOv .bb i{display:block;font-style:normal;color:var(--mut);font-size:.62em;margin-bottom:4px}
+#brOv .bb.wide{grid-column:1/-1}
+#brOv .bsay{font-size:clamp(.95rem,1.7vw,1.3rem);color:var(--gold);border-top:1px dashed var(--line);padding-top:12px}
+#brOv .bsay i{font-style:normal;color:var(--mut);margin-right:8px;font-size:.85em}
+#brOv .bn{display:flex;gap:10px;padding:10px 18px;border-top:1px solid var(--line);align-items:center;justify-content:center}
+#brOv .bn button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:8px 20px;font:inherit;cursor:pointer}
+#brOv .bn .dots{display:flex;gap:7px}
+#brOv .bn .dots span{width:11px;height:11px;border-radius:50%;background:var(--line);cursor:pointer}
+#brOv .bn .dots span.on{background:var(--flame)}
 .pcard{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:4px;background:rgba(255,255,255,.02)}
 .pcard .pty{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
 .pcard .pty button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:.82rem;cursor:pointer}
@@ -880,6 +903,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
         <tr><td>3</td><td>대상·장소 → 장비·임무</td><td><input class="t" data-k="s3.brief.2.who"></td><td><textarea class="short" data-k="s3.brief.2.line"></textarea></td></tr>
         <tr><td>4</td><td>예상 결과 → 가치·책임</td><td><input class="t" data-k="s3.brief.3.who"></td><td><textarea class="short" data-k="s3.brief.3.line"></textarea></td></tr>
       </tbody></table></div>
+      <div class="rowb" style="margin-top:12px"><button class="btn pri" id="brOpen">🎤 발표 화면 열기</button><span class="hint">위 표와 2차시 기록으로 발표 화면이 만들어져요. 교실 화면에 띄워 발표해요.</span></div>
       <div class="timer"><button class="btn sm" id="tStart">2분 연습 타이머</button><span class="tnum" id="tNum">2:00</span></div>
     </div>
     <button class="btn pri nextb pnext">다음: 발표 전 점검 →</button>
@@ -1051,10 +1075,11 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118a</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118b</span></p>
 
 
 </div>
+<div id="brOv" role="dialog" aria-label="모둠 발표 화면"><div class="bt"><span class="ttl" id="brTtl"></span><span class="sp"></span><span class="tm" id="brTm">2:00</span><button id="brTS">▶ 타이머</button><button id="brFS">전체 화면</button><button id="brX">닫기 ✕</button></div><div class="bs" id="brBody"></div><div class="bn"><button id="brP">← 이전</button><div class="dots" id="brD"></div><button id="brN">다음 →</button></div></div>
 <div class="ov" id="ov"><button class="close" onclick="closeOv()">✕</button><div class="sheet" id="sheet"></div></div>
 <script>
 /* ---------- starfield ---------- */
@@ -1629,6 +1654,44 @@ function renderPeers(){
 }
 $('#classReload').addEventListener('click',async()=>{ if(!GAS||!S.cls){toast('반을 먼저 골라 주세요');return;}
   try{const r=await fetch(`${GAS}?app=mission&mode=class&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json(); CLASSQ={}; (j.rows||[]).forEach(x=>CLASSQ[x.grp]=x.rep); renderPeers(); toast('다른 모둠 대표 질문을 불러왔어요');}catch(e){toast('불러오지 못했어요');}});
+
+/* ---------- 3차시: 모둠 발표 화면 ---------- */
+let BR={i:0,t:120,iv:null};
+function brSlides(){
+  const c=card(),s1=S.s1,s2=S.s2,br=S.s3.brief||[]; const L=i=>(br[i]||{}).line||''; const W=i=>(br[i]||{}).who||'';
+  const list=a=>a.length?a.map(x=>'• '+esc(x)).join('<br>'):'<span style="color:var(--mut)">(2차시에 아직 쓰지 않았어요)</span>';
+  const data=(s2.data||[]).filter(r=>r&&(r.d||r.how));
+  const gear=(s2.gear||[]).filter(r=>r&&(r.g||r.job));
+  const say=i=>L(i)?`<div class="bsay"><i>${W(i)?esc(W(i))+'번 발표':'핵심 문장'}</i>${esc(L(i))}</div>`:'';
+  return [
+   {k:'표지',h:`${esc(S.grp||'')}모둠 우주 탐사 계획`,b:`<div class="bq">${esc(s1.rep||'대표 질문을 1차시에 정해요')}</div><div class="bg"><div class="bb"><i>기본카드</i>${esc(c?c.title:'-')}</div><div class="bb"><i>발표 순서</i>성과·질문 → 자료·방법 → 대상·장비·임무 → 결과·가치·책임</div></div>`},
+   {k:'1 · 성과 → 대표 질문',h:'기존 탐사 성과에서 이어진 질문',b:`<div class="bg"><div class="bb"><i>이어받은 성과</i>${esc(c?c.title:'-')}${has(s1.read&&s1.read.b)?'<br><small>'+esc(s1.read.b)+'</small>':''}</div><div class="bb"><i>우리의 대표 질문</i>${esc(s1.rep||'-')}</div></div>${say(0)}`},
+   {k:'2 · 자료 → 방법',h:'질문에 답하려면 어떤 자료를, 어떻게 얻을까?',b:`<div class="bg"><div class="bb"><i>필요한 자료와 얻는 방법</i>${list(data.map(r=>(r.d||'?')+(r.how?' ← '+r.how:'')+(r.j?' → '+r.j:'')))}</div><div class="bb"><i>탐사 방법</i>${esc((s2.methods||[]).join(' · ')||'-')}${has(s2.methodWhy)?'<br><small>'+esc(s2.methodWhy)+'</small>':''}</div></div>${say(1)}`},
+   {k:'3 · 대상·장소 → 장비·임무',h:'어디에서, 어떤 장비로 무엇을 할까?',b:`<div class="bg"><div class="bb"><i>탐사 대상·장소</i>${esc([s2.target&&s2.target.body,s2.target&&s2.target.place].filter(Boolean).join(' · ')||'-')}</div><div class="bb"><i>장비와 임무</i>${list(gear.map(r=>(r.g||'?')+(r.job?': '+r.job:'')+(r.data?' → '+r.data:'')))}</div></div>${say(2)}`},
+   {k:'4 · 결과 → 가치·책임',h:'무엇을 알게 되고, 누구에게 도움이 될까?',b:`<div class="bg"><div class="bb"><i>예상 결과</i>${esc(s2.expect||'-')}${has(s2.alt)?'<br><small>예상과 다르다면: '+esc(s2.alt)+'</small>':''}</div><div class="bb"><i>과학·인류에 주는 도움</i>${esc(s2.value||'-')}</div><div class="bb wide"><i>책임 있는 탐사 · 우주 쓰레기</i>${esc(s2.debrisPlan||'-')}</div></div>${say(3)}`},
+   {k:'위원께',h:'위원님들께 묻고 싶어요',b:`<div class="bq">우리 계획에서 <b>가장 확인받고 싶은 연결</b>은 무엇인가요?</div><div class="bb"><i>듣고 싶은 의견</i>자료로 질문에 답할 수 있는지 · 방법이 알맞은지 · 장비와 임무가 연결되는지</div>`}
+  ];
+}
+function brDraw(){
+  const sl=brSlides(); BR.i=Math.max(0,Math.min(sl.length-1,BR.i)); const x=sl[BR.i];
+  $('#brTtl').textContent=`${S.grp?S.grp+'모둠 · ':''}${x.k}`;
+  $('#brBody').innerHTML=`<div class="bk">${esc(x.k)}</div><h2>${x.h}</h2>${x.b}`;
+  $('#brD').innerHTML=sl.map((_,i)=>`<span class="${i===BR.i?'on':''}" data-i="${i}"></span>`).join('');
+  $$('#brD span').forEach(d=>d.addEventListener('click',()=>{BR.i=+d.dataset.i;brDraw();}));
+  $('#brP').disabled=BR.i===0; $('#brN').disabled=BR.i===sl.length-1;
+}
+function brTime(){const a=Math.abs(BR.t); const el=$('#brTm'); el.textContent=(BR.t<0?'+':'')+Math.floor(a/60)+':'+String(a%60).padStart(2,'0'); el.classList.toggle('over',BR.t<0);}
+function brStop(){clearInterval(BR.iv);BR.iv=null;$('#brTS').textContent='▶ 타이머';}
+function brOpen(){BR.i=0;BR.t=120;brStop();brTime();$('#brOv').classList.add('on');brDraw();}
+function brClose(){brStop();$('#brOv').classList.remove('on'); try{if(document.fullscreenElement) document.exitFullscreen();}catch(e){}}
+$('#brOpen').addEventListener('click',brOpen);
+$('#brX').addEventListener('click',brClose);
+$('#brP').addEventListener('click',()=>{BR.i--;brDraw();});
+$('#brN').addEventListener('click',()=>{BR.i++;brDraw();});
+$('#brTS').addEventListener('click',()=>{ if(BR.iv){brStop();return;} if(BR.t<=0) BR.t=120; $('#brTS').textContent='■ 멈춤'; brTime(); BR.iv=setInterval(()=>{BR.t--;brTime();},1000);});
+$('#brFS').addEventListener('click',()=>{try{const e=$('#brOv'); if(document.fullscreenElement) document.exitFullscreen(); else e.requestFullscreen();}catch(err){}});
+document.addEventListener('keydown',e=>{ if(!$('#brOv').classList.contains('on')) return; if(['INPUT','TEXTAREA'].includes((e.target||{}).tagName)) return; if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();BR.i++;brDraw();} else if(e.key==='ArrowLeft'||e.key==='PageUp'){BR.i--;brDraw();} else if(e.key==='Escape') brClose(); });
+let brX0=null; $('#brBody').addEventListener('touchstart',e=>{brX0=e.touches[0].clientX;},{passive:true}); $('#brBody').addEventListener('touchend',e=>{ if(brX0==null) return; const dx=e.changedTouches[0].clientX-brX0; brX0=null; if(Math.abs(dx)>60){BR.i+=dx<0?1:-1;brDraw();}});
 let INBOX=null;
 function renderInbox(){
   const box=$('#inboxList'); if(!box) return; const fill=$('#inboxFill');
