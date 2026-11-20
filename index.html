@@ -293,6 +293,9 @@ details.swap[open]{display:flex;flex-direction:column;gap:8px}
 .cardref .cx p{font-size:.86rem;color:var(--mut)}
 .cardref .cx p em{font-style:normal;color:var(--gold)}
 .empty{font-size:.9rem;color:var(--flame);border:1px dashed var(--flame);border-radius:12px;padding:12px 14px}
+.lockbox{border:1px dashed var(--flame);text-align:center;padding:28px 18px}
+.lockbox h3{color:var(--flame)}
+.lockm{margin-left:4px}
 
 /* 질문 만들기 */
 .qtabs{display:flex;gap:6px;margin:10px 0}
@@ -590,7 +593,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a href="#s1" data-v="s1">1차시 <small>질문 찾기</small></a>
   <a href="#s2" data-v="s2">2차시 <small>탐사 계획</small></a>
   <a href="#s3" data-v="s3">3차시 <small>탐사위원회</small></a>
-  <a href="#final" data-v="final">개인 최종 <small>수행평가 10점</small></a>
+  <a href="#final" data-v="final">개인 최종 <small>수행평가 10점</small><span class="lockm">🔒</span></a>
 </div></nav>
 
 
@@ -606,7 +609,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       <a href="#s1" data-v="s1"><b>1차시</b><span>성과에서 다음 질문 찾기</span><small>도입 질문 → 모둠 카드 → 카드 읽기 → 나의 질문 → 대표 질문</small></a>
       <a href="#s2" data-v="s2"><b>2차시</b><span>질문에 답하는 탐사 계획</span><small>필요한 자료 → 대상·장소 → 방법 → 장비·임무 → 가치·책임</small></a>
       <a href="#s3" data-v="s3"><b>3차시</b><span>우주탐사위원회</span><small>2분 브리핑 → 위원 기록 → 투자 토큰 → 최종 수정</small></a>
-      <a href="#final" data-v="final" class="fin"><b>개인 최종 · 10점</b><span>혼자 쓰는 활동지</span><small>모둠 기록은 참고만, 답은 내 말로</small></a>
+      <a href="#final" data-v="final" class="fin"><b>개인 최종 · 10점<span class="lockm">🔒</span></b><span>혼자 쓰는 활동지</span><small>모둠 기록은 참고만, 답은 내 말로</small></a>
     </div>
   </div>
 
@@ -1025,6 +1028,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 
 <!-- ========== 개인 최종 ========== -->
 <section class="view" id="v-final" hidden>
+  <div id="finLock" class="box lockbox" hidden></div>
+  <div id="finWrap">
   <div class="vhead"><span class="eyebrow">개인 최종 수행평가 활동지</span><h2>우주 탐사 성과를 바탕으로 탐사 계획 세우기 <span class="pt big">10점</span></h2></div>
   <div class="rule"><b>작성 원칙</b> 모둠에서 논의한 내용을 참고할 수 있지만, 아래 답은 각자 <b>자신의 말</b>로 써요. 전문적인 장비 이름보다 <b>질문과 자료·방법·임무의 연결</b>이 중요해요. 각 쪽의 <b>‘생각해 보기’</b>는 내 계획의 낱말을 써서 이유와 함께 답해요. 앞에 쓴 글을 그대로 옮기면 답이 되지 않아요.</div>
   <details class="mydraft" id="myDraft"><summary>참고: 내 계획의 핵심 낱말만 보기</summary><div id="draftBody"></div></details>
@@ -1120,6 +1125,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
       <p class="hint">제출한 뒤에도 선생님이 마감하기 전까지는 고칠 수 있어요. 고치면 다시 제출해 주세요.</p>
     </div>
   </div>
+  </div>
 </section>
 
 <!-- ========== 선생님 ========== -->
@@ -1133,11 +1139,17 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
     <button class="btn sm" id="tCopy">점수표 복사</button>
     <span class="hint" id="tStatus"></span>
   </div>
+  <div class="box tctl" id="finLockCtl">
+    <span class="hint">개인 최종 잠금 (선택한 반)</span>
+    <button class="btn sm" id="tFinOpen" type="button">🔓 이 반 열기</button>
+    <button class="btn sm" id="tFinClose" type="button">🔒 이 반 잠그기</button>
+    <span class="hint" id="tFinStatus"></span>
+  </div>
   <div id="tOut"></div>
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1118d</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1120a</span></p>
 
 
 </div>
@@ -1477,7 +1489,7 @@ function syncSame(src){ $$(`[data-k="${src.dataset.k}"]`).forEach(el=>{ if(el!==
 
 /* ---------- 신원 ---------- */
 $('#idNum').innerHTML='<option value="">선택</option>'+Array.from({length:23},(_,i)=>`<option>${i+1}</option>`).join('');
-[['idCls','cls'],['idGrp','grp'],['idNum','num'],['idName','name']].forEach(([id,k])=>{const el=$('#'+id); el.value=S[k]||''; el.addEventListener('input',()=>{S[k]=el.value.trim();save(); if(k==='grp'){renderPeers();renderTokens();}});});
+[['idCls','cls'],['idGrp','grp'],['idNum','num'],['idName','name']].forEach(([id,k])=>{const el=$('#'+id); el.value=S[k]||''; el.addEventListener('input',()=>{S[k]=el.value.trim();save(); if(k==='grp'){renderPeers();renderTokens();} if(k==='cls'){checkFinalLock();}});});
 
 /* ---------- 구글 시트 저장 ---------- */
 let sending=false,timer=null;
@@ -1494,6 +1506,53 @@ async function push(){ if(!GAS||sending||!S.unsent||!S.cls||!S.grp||!S.num||isDe
   catch(e){S.unsent=true;persist();pill('wait','전송 대기 · 자동으로 다시 보냄');} sending=false; }
 setInterval(()=>{if(S.unsent)push();},15000); window.addEventListener('online',()=>{if(S.unsent)push();});
 
+/* ---------- 개인 최종 잠금 (선생님이 열어주기 전엔 못 열게) ---------- */
+let FINAL_OPEN=false, FINAL_CHECKED=false;
+async function checkFinalLock(){
+  if(!GAS){ FINAL_OPEN=true; FINAL_CHECKED=true; paintFinalLock(); return; }
+  if(!S.cls){ paintFinalLock(); return; }
+  try{
+    const r=await fetch(`${GAS}?mode=finalLock&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'});
+    const j=await r.json();
+    if(j&&j.ok) FINAL_OPEN=!!j.open;
+  }catch(e){ /* 확인 실패 시 이전 상태 유지(처음엔 잠김) */ }
+  FINAL_CHECKED=true; paintFinalLock();
+}
+function paintFinalLock(){
+  const open=isDemo()||FINAL_OPEN;
+  $$('.lockm').forEach(el=>el.hidden=open);
+  const wrap=$('#finWrap'), lock=$('#finLock');
+  if(!wrap||!lock) return;
+  wrap.hidden=!open; lock.hidden=open;
+  if(!open){
+    lock.innerHTML = FINAL_CHECKED
+      ? '<h3>🔒 아직 열리지 않았어요</h3><p class="hint">선생님이 열어주시면 시작할 수 있어요. 3차시를 먼저 마쳐요.</p><button class="btn sm" id="finRecheck" type="button">다시 확인</button>'
+      : '<h3>🔒 확인하는 중…</h3><p class="hint">잠시만 기다려 주세요.</p>';
+    const rb=$('#finRecheck'); if(rb) rb.addEventListener('click',()=>checkFinalLock());
+  }
+}
+async function setFinalLock(cls,open){
+  if(!cls){toast('반을 먼저 골라 주세요');return;}
+  if(!TPIN){toast('PIN을 먼저 입력해 주세요');return;}
+  $('#tFinStatus').textContent='처리 중…';
+  try{
+    const res=await fetch(GAS,{method:'POST',body:JSON.stringify({app:'finalLock',pin:TPIN,cls,open})});
+    const j=await res.json();
+    if(!j.ok){$('#tFinStatus').textContent=j.error==='PIN'?'PIN이 맞지 않아요':'저장하지 못했어요';return;}
+    $('#tFinStatus').textContent=(j.open?'🔓 열림':'🔒 잠김')+' · '+cls+'반';
+    if(cls===S.cls){FINAL_OPEN=!!j.open; FINAL_CHECKED=true; paintFinalLock();}
+  }catch(e){$('#tFinStatus').textContent='연결 실패 · 다시 눌러 주세요';}
+}
+async function refreshFinLockStatus(){
+  const cls=$('#tCls').value; if(!cls||!GAS){ if($('#tFinStatus'))$('#tFinStatus').textContent=''; return;}
+  $('#tFinStatus').textContent='확인하는 중…';
+  try{
+    const r=await fetch(`${GAS}?mode=finalLock&cls=${encodeURIComponent(cls)}&t=${Date.now()}`,{cache:'no-store'});
+    const j=await r.json();
+    $('#tFinStatus').textContent = (j&&j.ok) ? ((j.open?'🔓 열림':'🔒 잠김')+' · '+cls+'반') : '확인하지 못했어요';
+  }catch(e){$('#tFinStatus').textContent='확인하지 못했어요';}
+}
+
 /* ---------- 화면 전환 ---------- */
 const VIEWS=['home','cards','s1','s2','s3','final','teacher']; const SUB={}; let LASTV='home';
 function renderHome(){const h=$('#homeHello'); if(!h) return; const who=(S.cls&&S.grp&&S.num)?`${S.cls}반 ${S.grp}모둠 ${S.num}번${S.name?' '+S.name:''} 기획단원, 환영합니다`:'기획단원, 환영합니다'; h.textContent=who;}
@@ -1505,6 +1564,7 @@ function show(){
   const fab=$('#cardfab'); if(fab) fab.hidden=!(v==='s1'||v==='s2'||v==='s3'||v==='final');
   if(v==='cards'){const bk=$('#cardsBack'); if(bk) bk.href='#'+(LASTV||'home');} else LASTV=v;
   if(v==='home') renderHome();
+  if(v==='final'){ checkFinalLock(); paintFinalLock(); }
   $('#idbar').hidden=(v==='teacher'); $('.mtabs').hidden=(v==='teacher');
   const sec=$('#v-'+v); if(sec&&sec._go) sec._go(SUB[sec.id]||sec.querySelector('.pane').dataset.p,false);
   if(v==='teacher') teacherOpen();
@@ -1798,7 +1858,9 @@ const RUB=[{t:'탐사 성과에 근거한 탐사 질문 설정',max:3,lv:[[3,'�
  {t:'탐사의 가치와 책임 설명',max:3,lv:[[3,'결과가 과학·인류에 주는 도움을 구체적으로 설명하고, 실천 가능한 우주 쓰레기 저감 방안을 제시함'],[2,'유용성과 책임 방안을 모두 제시했으나 한 내용이 부족하거나 구체적이지 않음'],[1,'둘 중 하나만 제시하거나 제시하지 못함']]}];
 let TROWS=[],TSEL=null,TPIN='';
 function teacherOpen(){ try{const p=sessionStorage.getItem('eu-pin'); if(p&&!$('#tPin').value) $('#tPin').value=p;}catch(e){} if(S.cls) $('#tCls').value=S.cls;
-  if(!GAS){$('#tOut').innerHTML='<div class="empty">구글 시트가 아직 연결되지 않았어요. index.html 위쪽 CONFIG의 GAS_URL을 확인해 주세요.</div>';return;} if($('#tPin').value) tLoad(); }
+  if(!GAS){$('#tOut').innerHTML='<div class="empty">구글 시트가 아직 연결되지 않았어요. index.html 위쪽 CONFIG의 GAS_URL을 확인해 주세요.</div>';return;}
+  refreshFinLockStatus();
+  if($('#tPin').value) tLoad(); }
 async function tLoad(){ TPIN=$('#tPin').value.trim(); if(!TPIN){$('#tStatus').textContent='PIN을 입력해 주세요';return;} try{sessionStorage.setItem('eu-pin',TPIN);}catch(e){}
   $('#tStatus').textContent='불러오는 중…';
   try{const r=await fetch(`${GAS}?app=mission&pin=${encodeURIComponent(TPIN)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json();
@@ -1884,7 +1946,9 @@ function tDetail(r){
       [r.s1,r.s2,r.s3,r.s4]=cur.map(x=>x==null?'':x); r.memo=$('#tMemo').value; tRender(); toast(r.num+'번 점수를 저장했어요');}
     catch(e){$('#tSave').textContent='저장하지 못했어요. 다시 눌러 주세요.';} });
 }
-$('#tLoad').addEventListener('click',tLoad); $('#tCls').addEventListener('change',()=>{TSEL=null; if(TROWS.length) tRender();});
+$('#tLoad').addEventListener('click',tLoad); $('#tCls').addEventListener('change',()=>{TSEL=null; if(TROWS.length) tRender(); refreshFinLockStatus();});
+$('#tFinOpen').addEventListener('click',()=>setFinalLock($('#tCls').value,true));
+$('#tFinClose').addEventListener('click',()=>setFinalLock($('#tCls').value,false));
 $('#tPin').addEventListener('keydown',e=>{if(e.key==='Enter')tLoad();});
 $('#tCopy').addEventListener('click',()=>{ const cls=$('#tCls').value; const rows=TROWS.filter(r=>r.cls===cls).sort((a,b)=>(+a.num)-(+b.num)); if(!rows.length){toast('먼저 불러오기를 눌러 주세요');return;}
   const t=['번호\t이름\t모둠\t질문설정(3)\t자료·방법(2)\t대상·장비·임무(2)\t가치·책임(3)\t합계'].concat(rows.map(r=>{const sc=scoreOf(r);return [r.num,r.name||'',r.grp,...sc.s.map(x=>x==null?'':x),sc.total==null?'':sc.total].join('\t');})).join('\n');
@@ -1897,6 +1961,9 @@ bindAll(); initSubs();
 $('#linkQ').textContent=S.s1.rep||'(1차시 대표 질문)';
 paintDemo(); document.getElementById('tband').querySelector('button').addEventListener('click',exitDemo);
 if(isDemo()){ pill('ok','교사 시범 · 저장 안 함'); } else if(GAS){ if(S.unsent) setTimeout(push,800); else if(S.cls&&S.grp&&S.num) pill('ok','선생님께 저장됨 ✓'); else pill('wait','반·모둠·번호를 고르면 선생님께 저장돼요'); }
+if(!GAS){FINAL_OPEN=true;} else if(S.cls){checkFinalLock();}
+paintFinalLock();
+setInterval(()=>{ if(GAS&&S.cls) checkFinalLock(); },25000);
 show();
 })();
 
