@@ -1512,7 +1512,7 @@ async function checkFinalLock(){
   if(!GAS){ FINAL_OPEN=true; FINAL_CHECKED=true; paintFinalLock(); return; }
   if(!S.cls){ paintFinalLock(); return; }
   try{
-    const r=await fetch(`${GAS}?mode=finalLock&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'});
+    const r=await fetch(`${GAS}?app=finalLock&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'});
     const j=await r.json();
     if(j&&j.ok) FINAL_OPEN=!!j.open;
   }catch(e){ /* 확인 실패 시 이전 상태 유지(처음엔 잠김) */ }
@@ -1547,7 +1547,7 @@ async function refreshFinLockStatus(){
   const cls=$('#tCls').value; if(!cls||!GAS){ if($('#tFinStatus'))$('#tFinStatus').textContent=''; return;}
   $('#tFinStatus').textContent='확인하는 중…';
   try{
-    const r=await fetch(`${GAS}?mode=finalLock&cls=${encodeURIComponent(cls)}&t=${Date.now()}`,{cache:'no-store'});
+    const r=await fetch(`${GAS}?app=finalLock&cls=${encodeURIComponent(cls)}&t=${Date.now()}`,{cache:'no-store'});
     const j=await r.json();
     $('#tFinStatus').textContent = (j&&j.ok) ? ((j.open?'🔓 열림':'🔒 잠김')+' · '+cls+'반') : '확인하지 못했어요';
   }catch(e){$('#tFinStatus').textContent='확인하지 못했어요';}
