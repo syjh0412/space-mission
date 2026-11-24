@@ -394,6 +394,9 @@ details.swap[open]{display:flex;flex-direction:column;gap:8px}
 .inb .ic button[aria-pressed="true"]{background:rgba(255,159,69,.15);border-color:var(--flame);color:var(--flame);font-weight:700}
 .inb input.t{margin-top:6px;width:100%}
 .pev td,.pev th{font-size:.82rem}
+.pevm{display:flex;gap:6px;flex-wrap:wrap}
+.pevn{padding:4px 12px 12px;font-size:.84rem;display:flex;flex-direction:column;gap:4px}
+.pevn b{color:var(--gold);font-weight:400;font-family:'Do Hyeon',sans-serif}
 
 .tokens{display:flex;flex-wrap:wrap;gap:8px}
 .tokens button{width:62px;height:62px;border-radius:50%;border:2px dashed var(--line);background:var(--panel2);color:var(--ink);font-family:'Do Hyeon',sans-serif;font-size:1.05rem;cursor:pointer}
@@ -1158,7 +1161,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1124c</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1124d</span></p>
 
 
 </div>
@@ -1885,17 +1888,40 @@ async function tLoad(){ TPIN=$('#tPin').value.trim(); if(!TPIN){$('#tStatus').te
 function obsOf(d){const s1=d.s1||{},s2=d.s2||{},s3=d.s3||{},f=d.fin||{}; const q=s1.q||[];
   return [has(q[0])||has(q[1]),has((s1.read||{}).b)&&has(s1.rep),(s2.data||[]).some(r=>r&&has(r.d))&&(s2.methods||[]).length>0,(s2.gear||[]).some(r=>r&&has(r.g)&&has(r.job)),has(s3.revised),!!f.submitted];}
 function scoreOf(r){const s=[r.s1,r.s2,r.s3,r.s4].map(x=>x===''||x==null?null:+x); return {s,total:s.every(x=>x!=null)?s.reduce((a,b)=>a+b,0):null};}
+let PEVMODE='to';
 function pevHtml(rows){
   const byGrp={}; rows.forEach(r=>{(byGrp[r.grp]=byGrp[r.grp]||[]).push(r);});
-  const cards=[]; rows.forEach(r=>{const pe=(r.d.s3||{}).peer||{}; Object.keys(pe).forEach(to=>{const c=pe[to]; if(c&&c.sent&&has(c.ask)) cards.push({from:r,to:String(to),type:c.type||'',text:c.ask,id:r.grp+'-'+r.num});});});
-  if(!cards.length) return '<div class="box"><h3>3차시 동료평가</h3><p class="hint">아직 보낸 제안 카드가 없어요.</p></div>';
-  const mark=(card)=>{const rcv=(byGrp[card.to]||[]); let star=0,fix=0,keep=0,n=0; const whys=[]; rcv.forEach(r=>{const m=(((r.d.s3||{}).inb)||{})[card.id]; if(!m) return; if(m.star) star++; if(m.v==='고침') fix++; if(m.v==='지킴') keep++; if(m.v) n++; if(m.why) whys.push(r.num+'번: '+m.why);}); return {star,fix,keep,whys,size:rcv.length};};
-  const bySender={}; cards.forEach(c=>{(bySender[c.from.grp]=bySender[c.from.grp]||[]).push(c);});
-  const gs=Object.keys(bySender).sort((a,b)=>a-b);
-  let totalStar=0;
-  const body=gs.map(g=>{let st=0; const items=bySender[g].map(c=>{const m=mark(c); st+=m.star; return `<tr><td>${esc(c.from.num)}번 ${esc(c.from.name||'')}</td><td>${esc(c.to)}모둠</td><td>${esc(c.type)}</td><td class="l">${esc(c.text)}</td><td>${m.star?'⭐'+m.star:'-'}</td><td>${m.fix?'고침 '+m.fix:''}${m.fix&&m.keep?' · ':''}${m.keep?'지킴 '+m.keep:''}${!m.fix&&!m.keep?'-':''}</td></tr>${m.whys.length?`<tr><td></td><td colspan="5" class="l hint">${m.whys.map(esc).join(' / ')}</td></tr>`:''}`;}).join(''); totalStar+=st;
-    return `<details class="pqg"><summary><b>${g}모둠</b> 보낸 제안 ${bySender[g].length}개 · 받은 ⭐ ${st}</summary><div class="tw"><table class="obs pev"><thead><tr><th>보낸 학생</th><th>받는 모둠</th><th>유형</th><th>제안 내용</th><th>⭐</th><th>고침/지킴</th></tr></thead><tbody>${items}</tbody></table></div></details>`;}).join('');
-  return `<div class="box"><div class="rowb"><h3>3차시 동료평가 <small class="hint">보낸 제안 ${cards.length}개 · ⭐ ${totalStar}</small></h3></div><p class="hint">제안 카드를 받은 모둠원이 ⭐(최대 2개)와 고침/지킴을 표시한 결과예요. 개수는 평가에 쓰지 않고, 근거가 있는 제안과 타당한 판단 이유를 관찰하는 참고 자료예요.</p>${body}</div>`;
+  const cards=[], notes=[]; let drafts=0;
+  rows.forEach(r=>{const pe=(r.d.s3||{}).peer||{}; Object.keys(pe).forEach(to=>{const c=pe[to]; if(!c) return;
+    if(c.sent&&has(c.ask)) cards.push({from:r,to:String(to),type:c.type||'',text:c.ask,id:r.grp+'-'+r.num}); else if(has(c.ask)) drafts++;
+    if(has(c.best)) notes.push({from:r,to:String(to),text:c.best});});});
+  const head=`<div class="rowb"><h3>3차시 동료평가 · 제안 카드 <small class="hint">보낸 카드 ${cards.length}개${drafts?` · 쓰고 안 보낸 글 ${drafts}개`:''}</small></h3>
+    <div class="pevm"><button class="btn sm${PEVMODE==='to'?' pri':''}" data-pevm="to">받은 모둠별</button><button class="btn sm${PEVMODE==='from'?' pri':''}" data-pevm="from">보낸 모둠별</button><button class="btn sm" id="pevOpen">모두 펼치기</button><button class="btn sm" id="pevCopy">표로 복사</button></div></div>
+    <p class="hint">⭐(최대 2개)와 고침/지킴은 카드를 받은 모둠원이 표시한 결과예요. 개수는 평가에 쓰지 않고, 근거 있는 제안과 타당한 판단 이유를 보는 참고 자료예요.</p>`;
+  if(!cards.length&&!notes.length) return `<div class="box">${head}<p class="hint">아직 보낸 제안 카드가 없어요.</p></div>`;
+  const mark=(card)=>{const rcv=(byGrp[card.to]||[]); let star=0,fix=0,keep=0; const whys=[]; rcv.forEach(r=>{const m=(((r.d.s3||{}).inb)||{})[card.id]; if(!m) return; if(m.star) star++; if(m.v==='고침') fix++; if(m.v==='지킴') keep++; if(m.why) whys.push(r.num+'번'+(m.v?'('+m.v+')':'')+': '+m.why);}); return {star,fix,keep,whys};};
+  const vt=m=>`${m.fix?'고침 '+m.fix:''}${m.fix&&m.keep?' · ':''}${m.keep?'지킴 '+m.keep:''}${!m.fix&&!m.keep?'-':''}`;
+  const row=(c,who)=>{const m=mark(c); return `<tr><td>${who}</td><td>${esc(c.type)}</td><td class="l">${esc(c.text)}</td><td>${m.star?'⭐'+m.star:'-'}</td><td>${vt(m)}</td></tr>${m.whys.length?`<tr><td></td><td colspan="4" class="l hint">↳ ${m.whys.map(esc).join(' / ')}</td></tr>`:''}`;};
+  const tbl=(w,body)=>`<div class="tw"><table class="obs pev"><thead><tr><th>${w}</th><th>유형</th><th>제안 내용</th><th>⭐</th><th>고침/지킴</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  const keys=o=>Object.keys(o).sort((a,b)=>a-b);
+  let body='';
+  if(PEVMODE==='to'){
+    const by={}; cards.forEach(c=>(by[c.to]=by[c.to]||[]).push(c)); const nb={}; notes.forEach(n=>(nb[n.to]=nb[n.to]||[]).push(n));
+    body=keys(Object.assign({},by,nb)).map(g=>{const cs=(by[g]||[]).sort((a,b)=>(+a.from.grp)-(+b.from.grp)||(+a.from.num)-(+b.from.num)); const st=cs.reduce((a,c)=>a+mark(c).star,0); const ns=nb[g]||[];
+      return `<details class="pqg"><summary><b>${esc(g)}모둠이 받은 카드</b> ${cs.length}개${st?' · ⭐ '+st:''}${ns.length?' · 위원 기록 '+ns.length:''}</summary>${cs.length?tbl('보낸 학생',cs.map(c=>row(c,`${esc(c.from.grp)}모둠 ${esc(c.from.num)}번 ${esc(c.from.name||'')}`)).join('')):'<p class="hint" style="padding:0 12px">받은 카드가 없어요.</p>'}${ns.length?`<div class="pevn"><b>다른 모둠이 본 '가장 타당했던 연결'</b>${ns.map(n=>`<div><span class="hint">${esc(n.from.grp)}모둠 ${esc(n.from.num)}번</span> ${esc(n.text)}</div>`).join('')}</div>`:''}</details>`;}).join('');
+  } else {
+    const by={}; cards.forEach(c=>(by[c.from.grp]=by[c.from.grp]||[]).push(c));
+    body=keys(by).map(g=>{const cs=by[g].sort((a,b)=>(+a.from.num)-(+b.from.num)||(+a.to)-(+b.to)); const st=cs.reduce((a,c)=>a+mark(c).star,0);
+      return `<details class="pqg"><summary><b>${esc(g)}모둠이 보낸 카드</b> ${cs.length}개${st?' · 받은 ⭐ '+st:''}</summary>${tbl('보낸 학생 → 받는 모둠',cs.map(c=>row(c,`${esc(c.from.num)}번 ${esc(c.from.name||'')} → ${esc(c.to)}모둠`)).join(''))}</details>`;}).join('');
+  }
+  PEVCOPY=['받는 모둠\t보낸 모둠\t번호\t이름\t유형\t제안 내용\t⭐\t고침\t지킴\t판단 이유'].concat(cards.map(c=>{const m=mark(c); return [c.to,c.from.grp,c.from.num,c.from.name||'',c.type,c.text.replace(/\s+/g,' '),m.star,m.fix,m.keep,m.whys.join(' / ').replace(/\s+/g,' ')].join('\t');})).join('\n');
+  return `<div class="box" id="pevBox">${head}${body}</div>`;
+}
+let PEVCOPY='';
+function pevBind(){
+  $$('#pevBox [data-pevm]').forEach(b=>b.addEventListener('click',()=>{PEVMODE=b.dataset.pevm; tRender(); setTimeout(()=>{const x=$('#pevBox'); if(x) x.scrollIntoView({block:'start'});},30);}));
+  const o=$('#pevOpen'); if(o) o.addEventListener('click',()=>{const ds=$$('#pevBox .pqg'); const op=ds.some(d=>d.open); ds.forEach(d=>d.open=!op); o.textContent=op?'모두 펼치기':'모두 접기';});
+  const c=$('#pevCopy'); if(c) c.addEventListener('click',()=>{ if(!PEVCOPY){toast('복사할 카드가 없어요');return;} try{navigator.clipboard.writeText(PEVCOPY).then(()=>toast('제안 카드를 복사했어요. 엑셀·한글에 붙여 넣으세요.'),()=>toast('복사하지 못했어요'));}catch(e){toast('복사하지 못했어요');} });
 }
 const FKEYS=[['a1','성과'],['a2','질문'],['a3','연결'],['a4','알 수 있는/없는 것'],['b1','자료'],['b2','방법·이유'],['b3','자료를 못 얻으면'],['c2','연결 까닭'],['c3','장소를 바꾸면'],['d1','예상 결과'],['d2','도움'],['d3','우주 쓰레기'],['d4','반대 결과의 가치'],['e1','받은 의견']];
 function normT(t){return String(t||'').replace(/[\s.,·\-()'"“”‘’!?~]/g,'');}
@@ -1971,6 +1997,7 @@ function tRender(){
   const nx=$('#ordNext'); if(nx) nx.addEventListener('click',()=>{ const o=ordGet(cls); if(!o||!o.order){toast('먼저 🎲로 순서를 정해 주세요');return;} const g=o.order.find(x=>!(o.done||[]).includes(x)); if(!g){toast('모든 모둠이 발표했어요');return;} openG(g); });
   const rs=$('#ordReset'); if(rs) rs.addEventListener('click',()=>{ const o=ordGet(cls); if(!o){return;} o.done=[]; ordSet(cls,o); ordPaint(cls,gsAll,openG); toast('발표 표시를 지웠어요. 순서는 그대로예요'); });
   $$('#tOut tr.r').forEach(tr=>tr.addEventListener('click',()=>{TSEL=tr.dataset.k; tRender(); setTimeout(()=>{const d=$('#tDet'); if(d) d.scrollIntoView({behavior:'smooth',block:'start'});},50);}));
+  pevBind();
   const pt=$('#pqToggle'); if(pt) pt.addEventListener('click',()=>{const ds=$$('#tOut .pqg'); const open=ds.some(d=>d.open); ds.forEach(d=>d.open=!open); pt.textContent=open?'모두 펼치기':'모두 접기';});
   const pc=$('#pqCopy'); if(pc) pc.addEventListener('click',()=>{const t=['번호\t이름\t모둠\t질문 1\t질문 2'].concat(rows.map(r=>{const q=(r.d.s1||{}).q||[]; return [r.num,r.name||'',r.grp,(q[0]||'').replace(/\s+/g,' '),(q[1]||'').replace(/\s+/g,' ')].join('\t');})).join('\n');
     const done=()=>toast('개인 질문을 복사했어요. 엑셀·한글에 붙여 넣으세요.');
