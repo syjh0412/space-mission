@@ -427,6 +427,14 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
 .grq div{border-left:3px solid var(--gold);padding-left:10px}
 .grq b{color:var(--gold)}
 .brg{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+.ordbox{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;display:flex;flex-direction:column;gap:8px}
+.ordbox .rowb{gap:8px;flex-wrap:wrap;justify-content:flex-start}
+.ordl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ordc{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:inherit;font:inherit;font-size:.95rem;cursor:pointer}
+.ordc i{font-style:normal;font-family:'Do Hyeon',sans-serif;color:var(--gold);font-size:1.05rem}
+.ordc.nx{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,200,90,.25)}
+.ordc.done{opacity:.5}
+.ordc.spin{cursor:default}
 .det{background:var(--panel);border:1px solid var(--flame);border-radius:16px;padding:18px;margin-top:14px;display:flex;flex-direction:column;gap:14px}
 .det h3{font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:1.35rem}
 .rb{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
@@ -1150,7 +1158,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1124b</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1124c</span></p>
 
 
 </div>
@@ -1929,7 +1937,20 @@ function grpBrief(rr){
 }
 function grpBriefHtml(groups){
   const gs=Object.keys(groups).sort((a,b)=>a-b); if(!gs.length) return '';
-  return `<div class="box"><div class="rowb"><h3>🎤 모둠 발표 화면</h3><span class="hint">눌러서 열고 교실 화면에 공유해요. ← → 키로 넘기고 Esc로 닫아요.</span></div><div class="brg">${gs.map(g=>`<button class="btn sm" data-brg="${esc(g)}">${esc(g)}모둠 발표 화면</button>`).join('')}</div><p class="hint">모둠원 기록을 모아 만들어요. 대표 질문과 발표 문장은 모둠원 중 가장 자세히 쓴 것을, 2차시 계획은 가장 많이 채운 학생의 기록을 써요.</p></div>`;}
+  return `<div class="box"><div class="rowb"><h3>🎤 모둠 발표 화면</h3><span class="hint">눌러서 열고 교실 화면에 공유해요. ← → 키로 넘기고 Esc로 닫아요.</span></div><div class="ordbox"><div class="rowb"><b>발표 순서</b><button class="btn sm pri" id="ordRoll" type="button">🎲 랜덤으로 정하기</button><button class="btn sm" id="ordNext" type="button">▶ 다음 모둠 발표</button><button class="btn sm" id="ordReset" type="button">처음부터</button></div><div class="ordl" id="ordList"></div></div><div class="brg">${gs.map(g=>`<button class="btn sm" data-brg="${esc(g)}">${esc(g)}모둠 발표 화면</button>`).join('')}</div><p class="hint">모둠원 기록을 모아 만들어요. 대표 질문과 발표 문장은 모둠원 중 가장 자세히 쓴 것을, 2차시 계획은 가장 많이 채운 학생의 기록을 써요.</p></div>`;}
+/* 발표 순서 (반별로 이 기기에 저장) */
+function ordKey(cls){return 'sm-order-'+cls;}
+function ordGet(cls){try{return JSON.parse(localStorage.getItem(ordKey(cls))||'null');}catch(e){return null;}}
+function ordSet(cls,o){try{localStorage.setItem(ordKey(cls),JSON.stringify(o));}catch(e){}}
+function confirmOrd(){ return window.confirm('이미 정한 순서가 있어요. 새로 정할까요?'); }
+function ordShuffle(a){a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;}
+function ordPaint(cls,gs,openG){
+  const box=$('#ordList'); if(!box) return; const o=ordGet(cls);
+  if(!o||!o.order||!o.order.length){box.innerHTML='<p class="hint">🎲를 누르면 기록이 있는 모둠의 발표 순서를 무작위로 정해요.</p>'; return;}
+  const done=o.done||[]; const next=o.order.find(g=>!done.includes(g));
+  box.innerHTML=o.order.map((g,i)=>`<button type="button" class="ordc${done.includes(g)?' done':''}${g===next?' nx':''}" data-og="${esc(g)}"><i>${i+1}</i>${esc(g)}모둠${done.includes(g)?' ✓':''}</button>`).join('')+(next?'':'<span class="hint">모든 모둠 발표 끝 🎉</span>');
+  $$('#ordList [data-og]').forEach(b=>b.addEventListener('click',()=>openG(b.dataset.og)));
+}
 function tRender(){
   const cls=$('#tCls').value; const rows=TROWS.filter(r=>r.cls===cls).sort((a,b)=>(+a.num)-(+b.num));
   if(!rows.length){$('#tOut').innerHTML='<div class="empty">'+esc(cls)+'반 기록이 아직 없어요.</div>';return;}
@@ -1941,7 +1962,14 @@ function tRender(){
   rows.forEach(r=>{const o=obsOf(r.d),sc=scoreOf(r); const k=r.key; h+=`<tr class="r${TSEL===k?' sel':''}" data-k="${esc(k)}"><td>${esc(r.num)}</td><td class="l">${esc(r.name||'')}</td><td>${esc(r.grp)}</td>${o.map(x=>`<td><span class="dot${x?' y':''}"></span></td>`).join('')}<td>${(n=>n?`<span class="cflag">${n}칸</span>`:'-')(Object.keys(flagsOf(r,rows)).length)}</td><td>${sc.total!=null?`<b>${sc.total}</b>/10`:'-'}</td></tr>`;});
   h+='</tbody></table></div></div>'+grpBriefHtml(groups)+pqHtml(groups)+pevHtml(rows)+'<div id="tDet"></div>';
   $('#tOut').innerHTML=h;
-  $$('#tOut [data-brg]').forEach(b=>b.addEventListener('click',()=>{ const gb=grpBrief(groups[b.dataset.brg]||[]); if(!gb.grp) return; brOpen(gb); }));
+  const openG=g=>{ const gb=grpBrief(groups[g]||[]); if(!gb.grp){toast(g+'모둠 기록이 없어요');return;} const o=ordGet(cls); if(o&&o.order&&o.order.includes(g)){o.done=o.done||[]; if(!o.done.includes(g)) o.done.push(g); ordSet(cls,o); ordPaint(cls,gsAll,openG);} brOpen(gb); };
+  const gsAll=Object.keys(groups).sort((a,b)=>a-b);
+  $$('#tOut [data-brg]').forEach(b=>b.addEventListener('click',()=>openG(b.dataset.brg)));
+  ordPaint(cls,gsAll,openG);
+  const roll=$('#ordRoll'); if(roll) roll.addEventListener('click',()=>{ const o=ordGet(cls); if(o&&o.order&&o.order.length&&!confirmOrd()) return;
+    const box=$('#ordList'); roll.disabled=true; let n=0; const iv=setInterval(()=>{ box.innerHTML=ordShuffle(gsAll).map((g,i)=>`<span class="ordc spin"><i>${i+1}</i>${esc(g)}모둠</span>`).join(''); if(++n>=12){clearInterval(iv); ordSet(cls,{order:ordShuffle(gsAll),done:[]}); roll.disabled=false; ordPaint(cls,gsAll,openG);} },90); });
+  const nx=$('#ordNext'); if(nx) nx.addEventListener('click',()=>{ const o=ordGet(cls); if(!o||!o.order){toast('먼저 🎲로 순서를 정해 주세요');return;} const g=o.order.find(x=>!(o.done||[]).includes(x)); if(!g){toast('모든 모둠이 발표했어요');return;} openG(g); });
+  const rs=$('#ordReset'); if(rs) rs.addEventListener('click',()=>{ const o=ordGet(cls); if(!o){return;} o.done=[]; ordSet(cls,o); ordPaint(cls,gsAll,openG); toast('발표 표시를 지웠어요. 순서는 그대로예요'); });
   $$('#tOut tr.r').forEach(tr=>tr.addEventListener('click',()=>{TSEL=tr.dataset.k; tRender(); setTimeout(()=>{const d=$('#tDet'); if(d) d.scrollIntoView({behavior:'smooth',block:'start'});},50);}));
   const pt=$('#pqToggle'); if(pt) pt.addEventListener('click',()=>{const ds=$$('#tOut .pqg'); const open=ds.some(d=>d.open); ds.forEach(d=>d.open=!open); pt.textContent=open?'모두 펼치기':'모두 접기';});
   const pc=$('#pqCopy'); if(pc) pc.addEventListener('click',()=>{const t=['번호\t이름\t모둠\t질문 1\t질문 2'].concat(rows.map(r=>{const q=(r.d.s1||{}).q||[]; return [r.num,r.name||'',r.grp,(q[0]||'').replace(/\s+/g,' '),(q[1]||'').replace(/\s+/g,' ')].join('\t');})).join('\n');
