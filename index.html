@@ -937,8 +937,8 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <div class="pane" data-p="c" hidden>
     <div class="rule"><b>위원의 약속</b> 사람이 아니라 계획을 검토해요. “이건 틀렸어.” 대신 “이 자료로 질문에 답할 수 있는 이유가 무엇인가요?”처럼 근거를 물어요.</div>
     <div class="box">
-      <div class="rowb"><h3>우주탐사위원회 기록</h3><button class="btn sm" id="classReload">다른 모둠 대표 질문 불러오기</button></div>
-      <p class="hint">다른 모둠의 발표를 들으며 기록해요. 대표 질문은 불러오기로 채울 수 있어요.</p>
+      <div class="rowb"><h3>우주탐사위원회 기록</h3><button class="btn sm" id="classReload">대표 질문 다시 불러오기</button></div>
+      <p class="hint">다른 모둠의 발표를 들으며 기록해요. 대표 질문은 이 화면에 들어오면 자동으로 채워져요. 비어 있으면 위 버튼을 눌러 다시 불러와요.</p>
       <div class="rule" style="margin:8px 0"><b>제안 카드 보내기</b> 도움이 될 것 같은 모둠에게는 <b>유형을 고르고, 근거가 있는 한두 문장</b>을 써서 ‘보내기’를 눌러요. 받은 모둠은 최종 수정 때 이 카드를 읽고 ⭐ 도움이 된 제안을 골라요. 카드를 많이 보내는 것이 아니라 <b>계획에 도움이 되는 카드</b>가 중요해요.</div>
       <div id="peerList"></div>
     </div>
@@ -1149,7 +1149,7 @@ details.mydraft{background:var(--panel2);border:1px solid var(--line);border-rad
   <a class="btn nextb" href="#cards">학생 화면으로</a>
 </section>
 
-<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1120a</span></p>
+<p style="text-align:center;margin:0 0 30px"><a href="#teacher" style="color:var(--mut);font-size:.8rem">선생님 화면</a> · <a href="#" id="gateAgain" style="color:var(--mut);font-size:.8rem">입장 화면 다시 보기</a> · <span style="color:var(--mut);font-size:.72rem">v1124a</span></p>
 
 
 </div>
@@ -1574,7 +1574,7 @@ window.addEventListener('hashchange',()=>{show();window.scrollTo(0,0);});
 function onPane(sec,p){
   if(sec==='v-s1'){ if(p==='b') renderPick(); if(p==='c') renderRef('#cardRef1'); if(p==='d') renderBuilder(); if(p==='e') loadTeam(); }
   if(sec==='v-s2'){ renderChain(); renderPicked(); renderTips(); if(p==='d') renderDict(); if(p==='g') $('#linkQ').textContent=S.s1.rep||'(1차시 대표 질문)'; }
-  if(sec==='v-s3'){ if(p==='c'){renderPeers();} if(p==='d') renderTokens(); if(p==='e') renderInbox(); }
+  if(sec==='v-s3'){ if(p==='c'){renderPeers(); if(Date.now()-CLASSQ_AT>60000) loadClassQ(true);} if(p==='d') renderTokens(); if(p==='e') renderInbox(); }
   if(sec==='v-final'){ renderDraft(); if(p==='e') renderMiss(); }
 }
 function initSubs(){
@@ -1754,7 +1754,7 @@ $('#briefFill').addEventListener('click',()=>{const c=card(),s2=S.s2; const d=s2
   $$('#v-s3 textarea[data-k^="s3.brief"]').forEach(el=>el.value=getP(el.dataset.k)||''); toast(n?'빈 칸에 핵심 문장 초안을 넣었어요. 말하기 좋게 다듬어 보세요.':'이미 모두 써 있어요.');});
 let tLeft=120,tInt=null; $('#tStart').addEventListener('click',()=>{ if(tInt){clearInterval(tInt);tInt=null;$('#tStart').textContent='2분 연습 타이머';return;} tLeft=120; $('#tStart').textContent='멈추기';
   const draw=()=>{const a=Math.abs(tLeft);$('#tNum').textContent=(tLeft<0?'+':'')+Math.floor(a/60)+':'+String(a%60).padStart(2,'0');$('#tNum').classList.toggle('over',tLeft<0);}; draw(); tInt=setInterval(()=>{tLeft--;draw();},1000);});
-let CLASSQ={};
+var CLASSQ={};
 const PTYPES=['근거 묻기','연결 보완','다른 방법','잘한 점'];
 function renderPeers(){
   const box=$('#peerList'); if(!box) return; const g=[1,2,3,4,5,6,7,8].filter(x=>String(x)!==String(S.grp));
@@ -1774,8 +1774,14 @@ function renderPeers(){
     else{ if(!r.type){toast('제안 유형을 먼저 골라요');return;} if(!has(r.ask)||r.ask.trim().length<8){toast('제안 글을 8자 이상 써 주세요');return;} r.sent=true; r.sentAt=new Date().toISOString(); toast(x+'모둠에 제안 카드를 보냈어요'); }
     save(); const open=$$('#peerList details').filter(d=>d.open).map(d=>d.dataset.g); renderPeers(); $$('#peerList details').forEach(d=>{if(open.includes(d.dataset.g)) d.open=true;});}));
 }
-$('#classReload').addEventListener('click',async()=>{ if(!GAS||!S.cls){toast('반을 먼저 골라 주세요');return;}
-  try{const r=await fetch(`${GAS}?app=mission&mode=class&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json(); CLASSQ={}; (j.rows||[]).forEach(x=>CLASSQ[x.grp]=x.rep); renderPeers(); toast('다른 모둠 대표 질문을 불러왔어요');}catch(e){toast('불러오지 못했어요');}});
+var CLASSQ_AT=0, CLASSQ_BUSY=false;
+async function loadClassQ(silent){ if(!GAS||!S.cls){ if(!silent) toast('반을 먼저 골라 주세요'); return; } if(CLASSQ_BUSY) return; CLASSQ_BUSY=true;
+  try{const r=await fetch(`${GAS}?app=mission&mode=class&cls=${encodeURIComponent(S.cls)}&t=${Date.now()}`,{cache:'no-store'}); const j=await r.json(); CLASSQ={}; (j.rows||[]).forEach(x=>{ if(has(x.rep)) CLASSQ[x.grp]=x.rep; }); CLASSQ_AT=Date.now();
+    const open=$$('#peerList details').filter(d=>d.open).map(d=>d.dataset.g); renderPeers(); $$('#peerList details').forEach(d=>{if(open.includes(d.dataset.g)) d.open=true;});
+    if(!silent) toast('다른 모둠 대표 질문을 불러왔어요');}
+  catch(e){ if(!silent) toast('불러오지 못했어요'); }
+  CLASSQ_BUSY=false; }
+$('#classReload').addEventListener('click',()=>loadClassQ(false));
 
 /* ---------- 3차시: 모둠 발표 화면 ---------- */
 document.addEventListener('paste',e=>{const el=e.target; if(!el||!el.dataset||!/^fin\./.test(el.dataset.k||'')) return; let t=''; try{t=(e.clipboardData||window.clipboardData).getData('text')||'';}catch(x){} if(t.trim().length>=15){ S.fin.pst=S.fin.pst||{}; const k=el.dataset.k.slice(4); S.fin.pst[k]=(S.fin.pst[k]||0)+t.trim().length; save(); } },true);
